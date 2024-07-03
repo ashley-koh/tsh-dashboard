@@ -6,7 +6,8 @@
   "scripts": {
     "start": "tsc && node dist/app.js",
     "lint": "eslint .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --config .prettierrc 'src/**/*.ts --write"
   },
   "keywords": [],
   "author": "",
@@ -15,7 +16,9 @@
     "@eslint/js": "^9.6.0",
     "@types/express": "^4.17.1",
     "eslint": "^9.6.0",
+    "eslint-config-prettier": "^9.1.0",
     "globals": "^15.8.0",
+    "prettier": "3.3.2",
     "typescript": "^5.5.3",
     "typescript-eslint": "^7.15.0"
   },
