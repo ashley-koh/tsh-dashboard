@@ -16,6 +16,7 @@ module.exports = {
         project: "tsconfig.json",
         sourceType: "module",
       },
+      "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
     },
   ],
 };

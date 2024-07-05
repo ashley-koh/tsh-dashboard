@@ -1,12 +1,12 @@
-import express from "express";
+import App from '@/app';
+// import AuthRoute from '@routes/auth.route';
+import IndexRoute from '@routes/index.route';
+// import UsersRoute from '@routes/users.route';
+import validateEnv from '@utils/validateEnv';
 
-const app = express();
-const port = 3000;
+validateEnv();
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+// const app = new App([new IndexRoute(), new UsersRoute(), new AuthRoute()]);
+const app = new App([new IndexRoute()]);
 
-app.listen(port, () =>
-  console.log(`Express is listening at http://localhost:${port}`)
-);
+app.listen();
