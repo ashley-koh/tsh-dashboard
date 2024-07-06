@@ -8,6 +8,7 @@ import swaggerUi from "swagger-ui-express";
 import { NODE_ENV, PORT, ORIGIN, CREDENTIALS } from "@config";
 import { dbConnection } from "@databases";
 import { Routes } from "@interfaces/routes.interface";
+import errorMiddleware from "@middlewares/error.middleware";
 
 class App {
   public app: express.Application;
@@ -89,7 +90,7 @@ class App {
   }
 
   private initializeErrorHandling() {
-    // this.app.use(errorMiddleware);
+    this.app.use(errorMiddleware);
   }
 }
 
