@@ -1,6 +1,7 @@
 tags:
   - name: users
     description: users API
+
   - name: auth
     description: auth API
 
@@ -107,7 +108,7 @@ paths:
     post:
       tags:
         - auth
-      summary: Signup/Register User with email and password
+      summary: Signup/Register a new user
       parameters:
         - name: body
           in: body
@@ -115,9 +116,9 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/users'
-      reponses:
+      responses:
         201:
-          description: 'OK'
+          description: 'Created'
         400:
           description: 'Bad Request'
         409:
@@ -129,7 +130,7 @@ paths:
     post:
       tags:
         - auth
-      summary: Login User with email and password
+      summary: Login user with email and password
       parameters:
         - name: body
           in: body
@@ -137,9 +138,9 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/users'
-      reponses:
+      responses:
         201:
-          description: 'OK'
+          description: 'Created'
         400:
           description: 'Bad Request'
         409:
@@ -151,15 +152,15 @@ paths:
     post:
       tags:
         - auth
-      summary: Login User with email and password
+      summary: Logout User
       parameters:
-        - name: Authorization
-          in: header
-          description: token
+        - name: Auth Token
+          in: Authorization
+          description: Authorization Token
           required: true
-      reponses:
+      responses:
         201:
-          description: 'OK'
+          description: 'Created'
         400:
           description: 'Bad Request'
         409:
