@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/config": "^3.3.4",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
@@ -36,6 +37,9 @@
     "typescript": "^5.5.3"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
