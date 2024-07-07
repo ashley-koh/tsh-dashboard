@@ -1,5 +1,5 @@
 import React from 'react';
-import { employees, HIGH_KPI_THRESHOLD, AVERAGE_KPI_THRESHOLD } from '../data/mockData';
+import { employees, HIGH_KPI_THRESHOLD, AVERAGE_KPI_THRESHOLD } from '../../data/mockData';
 import './EmployeeRanking.css';
 
 const EmployeeRanking: React.FC = () => {

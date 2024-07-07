@@ -15,3 +15,4 @@ export const employees = [
   export const HIGH_KPI_THRESHOLD = 80;
   export const AVERAGE_KPI_THRESHOLD = 60;
   
+  export const cur_department = 'HQ'

@@ -1,6 +1,6 @@
 import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
-import { employees, HIGH_KPI_THRESHOLD, AVERAGE_KPI_THRESHOLD } from '../data/mockData';
+import { employees, HIGH_KPI_THRESHOLD, AVERAGE_KPI_THRESHOLD } from '../../data/mockData';
 
 const PieChartComponent: React.FC = () => {
   const highKPI = employees.filter(emp => emp.kpi >= HIGH_KPI_THRESHOLD).length;
@@ -13,7 +13,7 @@ const PieChartComponent: React.FC = () => {
     { name: 'Low KPI', value: lowKPI },
   ];
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
+  const COLORS = ['#00C49F', '#FFBB28', '#D70040']; // Green, Orange, Red
 
   return (
     <div style={{ width: '100%', height: '100%' }}>
