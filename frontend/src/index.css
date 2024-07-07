@@ -380,3 +380,39 @@ i {
   justify-content: center;
   width: 100%;
 }
+
+@import url('./components/Navbar.css');
+@import url('./components/Footer.css');
+@import url('./App.css');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body, html {
+  height: 100%;
+  font-family: Arial, sans-serif;
+  background-color: #f0f4f8;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  margin: 2rem;
+  background-color: #ffffff;
+}
+

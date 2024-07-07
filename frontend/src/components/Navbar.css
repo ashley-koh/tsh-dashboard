@@ -1,0 +1,76 @@
+.active {
+  background-color: #5a81ee;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0f172a;
+  color: white;
+  position: sticky;
+  top: 0;
+  padding: 1rem;
+  width: 100%;
+  z-index: 1000; /* Ensure it stays on top */
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  background-color: white; /* Add white background */
+  padding: 0.5rem; /* Optional: Add some padding for better appearance */
+  border-radius: 8px; /* Optional: Add rounded corners */
+}
+
+.logo img {
+  max-height: 50px; /* Adjust the maximum height as needed */
+  max-width: 120px; /* Adjust the maximum width as needed */
+  width: auto; /* Ensure the aspect ratio is maintained */
+  height: auto; /* Ensure the aspect ratio is maintained */
+  object-fit: contain; /* Ensure the image fits within the box */
+}
+
+ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  margin: 0 0.5rem;
+}
+
+a {
+  text-decoration: none;
+  color: white;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+a:not(.active):hover {
+  background-color: #172554;
+}
+
+@media (max-width: 480px) {
+  .nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  ul {
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  li {
+    width: 100%;
+    text-align: left;
+  }
+
+  a {
+    margin: 0.2rem 0;
+    width: 100%;
+  }
+}
