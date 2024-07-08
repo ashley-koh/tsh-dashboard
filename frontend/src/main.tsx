@@ -5,6 +5,7 @@ import App from "./App";
 import DepartmentStatistics from "./pages/DepartmentStatistics";
 import AppraisalForms from "./pages/AppraisalForms";
 import LoginPage from "./pages/Login";
+import RegisterPage from "./pages/Register";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -17,6 +18,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </Route>
 
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </Router>
   </React.StrictMode>
