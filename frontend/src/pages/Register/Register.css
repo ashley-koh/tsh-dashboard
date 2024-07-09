@@ -1,0 +1,35 @@
+.register-page {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url(bg.png);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.register-modal {
+  padding: 32px;
+  border-radius: 15px;
+  border: 1px;
+  border-color: black;
+  max-width: 90vw;
+  width: 24rem;
+  background-color: white;
+}
+
+.logo {
+  width: 250px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.register-form-button {
+  width: 100%;
+}
+
+.register-form-login-now {
+  margin-top: 10px;
+}
