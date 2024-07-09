@@ -4,9 +4,16 @@ import {
   IsIn,
   IsString,
   IsStrongPassword,
+  Length,
 } from 'class-validator';
 
 export class CreateUserDto {
+  @IsString()
+  public firstName: string;
+
+  @IsString()
+  public lastName: string;
+
   @IsEmail()
   public email: string;
 
@@ -19,14 +26,14 @@ export class CreateUserDto {
   })
   public password: string;
 
-  @IsString()
-  public firstName: string;
-
-  @IsString()
-  public lastName: string;
+  @Length(10, 10)
+  public employeeID: string;
 
   @IsIn(['employee', 'head_of_department', 'business_owner'])
   public role: string;
+
+  @IsIn(['hr_manager', 'marketing_manager', 'chief_executive_officer'])
+  public jobTitle: string;
 
   @IsIn(['hr', 'fa', 'mk'])
   public dept: string;

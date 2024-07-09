@@ -21,7 +21,20 @@ const userSchema: Schema = new Schema({
     type: String,
     required: true,
   },
+
+  employeeID: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+
   role: {
+    type: String,
+    required: true,
+  },
+
+  jobTitle: {
+    //
     type: String,
     required: true,
   },
