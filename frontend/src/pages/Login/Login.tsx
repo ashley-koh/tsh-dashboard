@@ -2,6 +2,7 @@ import React from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Flex, Button, Checkbox, Form, Input } from "antd";
 import { Link } from "react-router-dom";
+import logoImage from "@/assets/logo.png";
 import "./Login.css";
 
 const LoginModal: React.FC = () => {
@@ -16,7 +17,7 @@ const LoginModal: React.FC = () => {
   return (
     <div className="login-modal">
       <Flex vertical gap="middle">
-        <img src="/logo.png" className="logo" />
+        <img src={logoImage} className="logo" />
         <Form
           name="normal_login"
           initialValues={{ remember: true }}
