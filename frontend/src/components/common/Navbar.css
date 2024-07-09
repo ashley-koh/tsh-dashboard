@@ -31,25 +31,25 @@
   object-fit: contain; /* Ensure the image fits within the box */
 }
 
-ul {
+.nav ul {
   display: flex;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-li {
+.nav li {
   margin: 0 0.5rem;
 }
 
-a {
+.nav a {
   text-decoration: none;
   color: white;
   padding: 0.5rem;
   border-radius: 0.5rem;
 }
 
-a:not(.active):hover {
+.nav a:not(.active):hover {
   background-color: #172554;
 }
 
