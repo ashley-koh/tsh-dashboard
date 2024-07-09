@@ -34,7 +34,6 @@ const userSchema: Schema = new Schema({
   },
 
   jobTitle: {
-    //
     type: String,
     required: true,
   },
