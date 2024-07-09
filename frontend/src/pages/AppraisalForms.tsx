@@ -1,12 +1,11 @@
 import React from 'react';
-import AppraisalList from '../components/AppraisalList';
+import AppraisalForm from '../pages/appraisal/AppraisalForm';
 import './AppraisalForms.css';
 
 const AppraisalForms: React.FC = () => {
   return (
     <div className="appraisal-forms">
-      <h2>Appraisal Forms</h2>
-      <AppraisalList />
+      <AppraisalForm />
     </div>
   );
 };
