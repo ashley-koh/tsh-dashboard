@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import './Navbar.css';
 import logo from '../../assets/logo.png';
 
@@ -23,7 +23,7 @@ const Navbar: React.FC = () => {
           </li>
           <li>
             <NavLink to="/appraisals" className={({ isActive }) => isActive ? "active" : ""}>
-              Appraisal Forms
+              Appraisals
             </NavLink>
           </li>
         </ul>

@@ -1,0 +1,29 @@
+.form-container {
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+div.section-container {
+  margin-bottom: 10px;
+}
+
+div.header-container {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.required-field::after {
+  content: " *";
+  color: red;
+}
+
+.submit-container {
+  text-align: right;
+  margin-top: 10px;
+}
+
+button.submit {
+  background-color: #5a81ee;
+}
