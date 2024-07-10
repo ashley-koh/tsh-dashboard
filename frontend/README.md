@@ -55,8 +55,10 @@ root
 │   ├── components          # All simple and reusable components used throughout application
 │   ├── context             # Context files that are used across multiple pages
 │   ├── data                # JSON files that are used (form data, config, global contants)
+│   ├── lib                 # Contains facades (wrappers) for various libraries (e.g. axios)
 │   ├── hooks               # Global hooks
 │   ├── pages               # One folder for each complex component (pages) in application
+│   ├── types               # Type definitions that are used globally
 │   ├── utils               # Contains pure function like formatters
 │   ├── App.tsx             # Main Component
 └── ...
@@ -69,6 +71,7 @@ root/src
 ├── ...
 ├── pages                   # One folder for each complex component (pages) in application
 │   ├── ComponentOne            # Component name (in UpperCamelCase format)
+│   │   ├── types                   # Types folder only used in ComponentOne
 │   │   ├── index.ts                # Single root file
 │   │   ├── ComponentOneForm.tsx    # Form component that only ComponentOne uses
 │   │   ├── ComponentOneLayout.tsx  # Layout component that only ComponentOne uses

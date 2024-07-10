@@ -1,6 +1,7 @@
 import React, { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosClient from "@/services/axiosInstance";
+import axiosClient from "@/lib/axiosInstance";
+import getCookie from "@/utils/getCookie";
 
 type LoginData = {
   email: string;
@@ -36,16 +37,13 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
   const client = axiosClient();
 
   const loginAction: LoginActionFunc = async (data) => {
-    console.log("Data sent:", data);
-    client
+    return client
       .post("/login", data, { withCredentials: true })
       .then((response) => {
         setUser(response.data);
         setAuthenticatied(true);
+        console.log(getCookie("Authorization"));
         navigate("/");
-      })
-      .catch((error) => {
-        console.log("Error: ", error.response.data);
       });
   };
 
