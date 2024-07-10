@@ -4,14 +4,21 @@ import { Flex, Button, Checkbox, Form, Input } from "antd";
 import { Link } from "react-router-dom";
 import logoImage from "@/assets/logo.png";
 import "./Login.css";
+import useAuth from "@/context/auth/useAuth";
 
 const LoginModal: React.FC = () => {
+  const auth = useAuth();
+
   const onFinish = (values: {
-    username: string;
+    email: string;
     password: string;
     remember: boolean;
   }) => {
     console.log("Received values of form: ", values);
+    auth.loginAction({
+      email: values.email,
+      password: values.password,
+    });
   };
 
   return (
