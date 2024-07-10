@@ -7,7 +7,7 @@ import {
   Length,
 } from 'class-validator';
 
-export class CreateUserDto {
+export default class CreateUserDto {
   @IsString()
   public firstName: string;
 
