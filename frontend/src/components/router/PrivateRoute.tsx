@@ -4,7 +4,7 @@ import useAuth from "@/context/auth/useAuth";
 
 const PrivateRoute: React.FC = () => {
   const auth = useAuth();
-  if (!("token" in auth)) return <Navigate to="/login" />;
+  if (!auth.authenticated) return <Navigate to="/login" />;
   return <Outlet />;
 };
 

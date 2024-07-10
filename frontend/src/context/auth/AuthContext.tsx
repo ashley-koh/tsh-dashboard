@@ -17,7 +17,7 @@ type LogoutFunc = {
 
 type IAuthContext = {
   user: object | null;
-  token: string;
+  authenticated: boolean;
   loginAction: LoginActionFunc;
   logout: LogoutFunc;
 };
@@ -30,9 +30,7 @@ export const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 
 const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(
-    localStorage.getItem("ACCESS_TOKEN") || ""
-  );
+  const [authenticated, setAuthenticatied] = useState(false);
 
   const navigate = useNavigate();
   const client = axiosClient();
@@ -40,24 +38,25 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
   const loginAction: LoginActionFunc = async (data) => {
     console.log("Data sent:", data);
     client
-      .post("/login", data)
+      .post("/login", data, { withCredentials: true })
       .then((response) => {
-        console.log(response.data);
+        setUser(response.data);
+        setAuthenticatied(true);
+        navigate("/");
       })
       .catch((error) => {
-        console.log("Error: ", error);
+        console.log("Error: ", error.response.data);
       });
   };
 
   const logout = () => {
     setUser(null);
-    setToken("");
-    localStorage.removeItem("Authorization");
+    setAuthenticatied(false);
     navigate("/login");
   };
 
   return (
-    <AuthContext.Provider value={{ token, user, loginAction, logout }}>
+    <AuthContext.Provider value={{ authenticated, user, loginAction, logout }}>
       {children}
     </AuthContext.Provider>
   );
