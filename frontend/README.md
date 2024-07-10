@@ -1,30 +1,92 @@
-# React + TypeScript + Vite
+# TSH Dashboard Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## How to Install
 
-Currently, two official plugins are available:
+### Requirements
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+3. Node.js (Preferably v20.15.0)
 
-## Expanding the ESLint configuration
+To configure npm and Node.js versions, use the [Node Version Manager (NVM)](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating):
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Refer to the NVM documentation (above) for details on troubleshooting and platform-dependent support (e.g., `nvm-windows`).
+
+### Installation Procedure
+
+Open Docker on your local machine and leave it open in the background. Then, in a bash terminal, run the following commands in sequence:
+
+```bash
+cd TSH_PROJ_DIR/frontend
+cp .env.development.example .env.development.local
+npm install
+npm run dev
+```
+
+Short explanations on what each command does:
+
+- `cp .env.development.example .env.development.local`: Copy the example environment variables into an actual one.
+- `npm install`: Installs all packages listed in `package.json`
+- `npm run dev`: Run Express App in `development` mode.
+
+## File Structure
+
+Due to React's unopinioinated approach to file structuring, below is an opinionated file structure to help everyone collaborate efficiently while maintaining code modularity, cleanliness and readability.
+
+### Top-level Directory Layout
+
+```
+root
+├── build                   # Compiled files (alternatively `dist`)
+├── docs                    # Documentation files except the main README.md file
+├── src                     # Source files to be built (we will expound more on it below)
+└── README.md
+```
+
+### Source Files `/src`
+
+```
+root
+├── ...
+├── src
+│   ├── assets              # Images and styles used in React components
+│   ├── components          # All simple and reusable components used throughout application
+│   ├── context             # Context files that are used across multiple pages
+│   ├── data                # JSON files that are used (form data, config, global contants)
+│   ├── hooks               # Global hooks
+│   ├── pages               # One folder for each complex component (pages) in application
+│   ├── utils               # Contains pure function like formatters
+│   ├── App.tsx             # Main Component
+└── ...
+```
+
+### Pages Folder `/src/pages`
+
+```
+root/src
+├── ...
+├── pages                   # One folder for each complex component (pages) in application
+│   ├── ComponentOne            # Component name (in UpperCamelCase format)
+│   │   ├── index.ts                # Single root file
+│   │   ├── ComponentOneForm.tsx    # Form component that only ComponentOne uses
+│   │   ├── ComponentOneLayout.tsx  # Layout component that only ComponentOne uses
+│   │   ├── ComponentOne.css        # Styling only for ComponentOne
+│   │   ├── useComponentOne.tsx     # hook that only for ComponentOne uses
+│   │   ├── ...                     # Files pertaining only to ComponentOne (contexts, tests, other components)
+│   ├── ComponentTwo            # Component name (in UpperCamelCase format)
+│   │   ├── index.ts                # Single root file
+│   │   ├── ComponentTwo.tsx        # Form component that only ComponentTne uses
+│   │   ├── ComponentTwo.css        # Styling only for ComponentTne
+│   │   ├── ...                     # Files pertaining only to ComponentTwo (contexts, tests, other components)
+├── ...
+```
+
+_Adapted from [Web Dev Simplified's Intermediate Folder Structure](https://blog.webdevsimplified.com/2022-07/react-folder-structure/)_
+
+## Links
+
+1. [Vite](/docs/vite.md)
+2. [React API](https://react.dev/reference/react)
+3. [AntDesign Components](https://ant.design/components/overview)
