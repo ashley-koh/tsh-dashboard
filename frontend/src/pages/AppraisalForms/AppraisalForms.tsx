@@ -1,6 +1,6 @@
-import React from 'react';
-import AppraisalForm from '../pages/appraisal/AppraisalForm';
-import './AppraisalForms.css';
+import React from "react";
+import AppraisalForm from "./AppraisalForm";
+import "./AppraisalForms.css";
 
 const AppraisalForms: React.FC = () => {
   return (
