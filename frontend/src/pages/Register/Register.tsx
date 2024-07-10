@@ -1,6 +1,7 @@
 import React from "react";
 import { Flex, Button, Checkbox, Form, Input } from "antd";
 import { Link } from "react-router-dom";
+import logoImage from "@/assets/logo.png";
 import "./Register.css";
 
 const RegisterModal: React.FC = () => {
@@ -17,7 +18,7 @@ const RegisterModal: React.FC = () => {
   return (
     <div className="register-modal">
       <Flex vertical gap="middle">
-        <img src="/logo.png" className="logo" />
+        <img src={logoImage} className="logo" />
         <Form name="register" onFinish={onFinish} layout="vertical" form={form}>
           <Form.Item
             name="email"
