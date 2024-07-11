@@ -1,7 +1,7 @@
 import mongoose, { model, Schema, Document } from 'mongoose';
 import { User } from '@interfaces/users.interface';
 
-const appraisalFormSchema: Schema = new Schema({
+const appraisalSchema: Schema = new Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -25,9 +25,6 @@ const appraisalFormSchema: Schema = new Schema({
   },
 });
 
-const appraisalFormModel = model<User & Document>(
-  'AppraisalForm',
-  appraisalFormSchema,
-);
+const appraisalFormModel = model<User & Document>('Appraisal', appraisalSchema);
 
 export default appraisalFormModel;
