@@ -1,13 +1,11 @@
-import { Type } from 'class-transformer';
-import { IsArray, IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
-export class QuestionDto {
+export class CreateQuestionDto {
   @IsNumber()
   public type: number;
 
-  @IsArray()
-  @Type(() => String)
-  public questions: string[];
+  @IsString({ each: true })
+  public options: string[];
 
   @IsString()
   public description: string;

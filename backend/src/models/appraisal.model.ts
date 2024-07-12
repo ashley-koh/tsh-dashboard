@@ -25,6 +25,6 @@ const appraisalSchema: Schema = new Schema({
   },
 });
 
-const appraisalFormModel = model<User & Document>('Appraisal', appraisalSchema);
+const appraisalModel = model<User & Document>('Appraisal', appraisalSchema);
 
-export default appraisalFormModel;
+export default appraisalModel;
