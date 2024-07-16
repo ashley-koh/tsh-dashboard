@@ -1,27 +1,45 @@
-import React from "react";
-import { Flex, Button, Checkbox, Form, Input } from "antd";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Flex, Button, Checkbox, Form, Input, Select, Alert } from "antd";
+import { Link, useNavigate } from "react-router-dom";
+import logoImage from "@/assets/logo.png";
 import "./Register.css";
+import User from "@/types/user.type";
+import axiosClient from "@/lib/axiosInstance";
+import RegisterForm from "./types/form.type";
 
 const RegisterModal: React.FC = () => {
   const [form] = Form.useForm();
+  const client = axiosClient();
+  const navigate = useNavigate();
 
-  const onFinish = (values: {
-    username: string;
-    password: string;
-    remember: boolean;
-  }) => {
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const onFinish = async (values: RegisterForm) => {
     console.log("Received values of form: ", values);
+
+    const data: User = values as User;
+
+    client
+      .post("/signup", data)
+      .then(() => {
+        navigate("/login");
+      })
+      .catch((err) => {
+        setErrorMessage(err.response.data.message);
+      });
   };
 
   return (
     <div className="register-modal">
       <Flex vertical gap="middle">
-        <img src="/logo.png" className="logo" />
+        <img src={logoImage} className="logo" />
+        {errorMessage && (
+          <Alert message={errorMessage} type="warning" showIcon />
+        )}
         <Form name="register" onFinish={onFinish} layout="vertical" form={form}>
           <Form.Item
             name="email"
-            label="E-mail"
+            label="Email"
             rules={[
               { type: "email", message: "The input is not a valid E-mail!" },
               { required: true, message: "Please input your Email!" },
@@ -70,33 +88,49 @@ const RegisterModal: React.FC = () => {
           </Form.Item>
 
           <Form.Item
-            name="firstName"
-            label="First Name"
-            rules={[
-              { required: true, message: "Please input your first name!" },
-            ]}
+            name="name"
+            label="Name"
+            rules={[{ required: true, message: "Please input your name!" }]}
           >
-            <Input placeholder="First Name" />
+            <Input placeholder="Name" />
           </Form.Item>
 
           <Form.Item
-            name="lastName"
-            label="Last Name"
-            rules={[
-              { required: true, message: "Please input your last name!" },
-            ]}
-          >
-            <Input placeholder="Last Name" />
-          </Form.Item>
-
-          <Form.Item
-            name="employeeId"
+            name="employeeID"
             label="Employee ID"
             rules={[
               { required: true, message: "Please input your employee ID!" },
             ]}
           >
             <Input placeholder="Employee ID" />
+          </Form.Item>
+
+          <Form.Item
+            label="Job Level"
+            name="role"
+            rules={[
+              { required: true, message: "Please input your job level!" },
+            ]}
+          >
+            <Select placeholder="Job Level">
+              <Select.Option value="employee">Employee</Select.Option>
+              <Select.Option value="head_of_department">
+                Head of Department
+              </Select.Option>
+              <Select.Option value="business_owner">
+                Business Owner
+              </Select.Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="dept"
+            label="Department"
+            rules={[
+              { required: true, message: "Please input your Department!" },
+            ]}
+          >
+            <Input placeholder="Department" />
           </Form.Item>
 
           <Form.Item
@@ -107,6 +141,24 @@ const RegisterModal: React.FC = () => {
             ]}
           >
             <Input placeholder="Job Title" />
+          </Form.Item>
+
+          <Form.Item
+            label="Employment Status"
+            name="employmentStatus"
+            rules={[
+              {
+                required: true,
+                message: "Please input your employment status!",
+              },
+            ]}
+          >
+            <Select placeholder="Employment Status">
+              <Select.Option value="full_time">Full-Time</Select.Option>
+              <Select.Option value="part_time">Part-Time</Select.Option>
+              <Select.Option value="intern">Intern</Select.Option>
+              <Select.Option value="temp">Temp</Select.Option>
+            </Select>
           </Form.Item>
 
           <Form.Item

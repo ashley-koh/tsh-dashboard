@@ -4,7 +4,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url(bg.png);
+  background-image: url(../../assets/bg.png);
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -16,7 +16,7 @@
   border: 1px;
   border-color: black;
   max-width: 90vw;
-  width: 24rem;
+  width: 26rem;
   background-color: white;
 }
 

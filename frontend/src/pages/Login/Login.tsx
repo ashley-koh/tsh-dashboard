@@ -1,22 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Flex, Button, Checkbox, Form, Input } from "antd";
+import { Flex, Button, Checkbox, Form, Input, Alert } from "antd";
 import { Link } from "react-router-dom";
+import logoImage from "@/assets/logo.png";
 import "./Login.css";
+import useAuth from "@/context/auth/useAuth";
 
 const LoginModal: React.FC = () => {
+  const auth = useAuth();
+
+  const [errorMessage, setErrorMessage] = useState("");
+
   const onFinish = (values: {
-    username: string;
+    email: string;
     password: string;
     remember: boolean;
   }) => {
-    console.log("Received values of form: ", values);
+    auth
+      .loginAction({
+        email: values.email,
+        password: values.password,
+      })
+      .catch((err) => {
+        setErrorMessage(err.response.data.message);
+      });
   };
 
   return (
     <div className="login-modal">
       <Flex vertical gap="middle">
-        <img src="/logo.png" className="logo" />
+        <img src={logoImage} className="logo" />
+        {errorMessage && (
+          <Alert message={errorMessage} type="warning" showIcon />
+        )}
         <Form
           name="normal_login"
           initialValues={{ remember: true }}
