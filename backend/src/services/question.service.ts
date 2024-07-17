@@ -63,7 +63,8 @@ class QuestionService {
     const deleteQuestionData: Question =
       await this.questions.findByIdAndDelete(questionId);
 
-    if (!deleteQuestionData) throw new HttpException(409, "User doesn't exist");
+    if (!deleteQuestionData)
+      throw new HttpException(409, "Question doesn't exist");
 
     return deleteQuestionData;
   }
