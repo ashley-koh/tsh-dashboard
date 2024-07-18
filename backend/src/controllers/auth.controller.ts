@@ -31,6 +31,18 @@ class AuthController {
     }
   };
 
+  public verify = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      res.status(200).json({ data: req.user, message: 'verify' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   public logOut = async (
     req: RequestWithUser,
     res: Response,

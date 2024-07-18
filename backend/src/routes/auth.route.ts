@@ -28,6 +28,11 @@ class AuthRoute implements Routes {
       validationMiddleware(AuthLoginDto, 'body'),
       this.authController.logIn,
     );
+    this.router.get(
+      `${this.path}verify`,
+      authMiddleware,
+      this.authController.verify,
+    );
     this.router.post(
       `${this.path}logout`,
       authMiddleware,
