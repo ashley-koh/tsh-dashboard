@@ -1,12 +1,13 @@
 import { hash, compare } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { SECRET_KEY } from '@config';
-import { CreateUserDto, LoginUserDto } from '@dtos/users';
+import { CreateUserDto } from '@dtos/users';
 import { HttpException } from '@exceptions/HttpException';
 import { DataStoredInToken, TokenData } from '@interfaces/auth.interface';
 import { User } from '@interfaces/users.interface';
 import userModel from '@models/users.model';
 import { isEmpty } from '@utils/util';
+import { AuthLoginDto } from '@dtos/auth';
 
 class AuthService {
   public users = userModel;
@@ -31,7 +32,7 @@ class AuthService {
   }
 
   public async login(
-    userData: LoginUserDto,
+    userData: AuthLoginDto,
   ): Promise<{ cookie: string; findUser: User }> {
     if (isEmpty(userData)) throw new HttpException(400, 'userData is empty');
 
