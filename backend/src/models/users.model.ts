@@ -43,12 +43,7 @@ const userSchema: Schema = new Schema({
     required: true,
   },
 
-  dateCreated: {
-    type: Date,
-    required: true,
-  },
-
-  employeeStatus: {
+  employmentStatus: {
     type: String,
     required: true,
   },

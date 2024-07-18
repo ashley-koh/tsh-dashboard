@@ -1,5 +1,4 @@
 import {
-  IsDate,
   IsEmail,
   IsIn,
   IsString,
@@ -19,10 +18,7 @@ export default class CreateUserDto {
 
   @IsStrongPassword({
     minLength: 10,
-    minLowercase: 1,
-    minUppercase: 1,
     minNumbers: 1,
-    minSymbols: 1,
   })
   public password: string;
 
@@ -32,15 +28,12 @@ export default class CreateUserDto {
   @IsIn(['employee', 'head_of_department', 'business_owner'])
   public role: string;
 
-  @IsIn(['hr_manager', 'marketing_manager', 'chief_executive_officer'])
+  @IsString()
   public jobTitle: string;
 
-  @IsIn(['hr', 'fa', 'mk'])
+  @IsString()
   public dept: string;
 
-  @IsDate()
-  public date: Date;
-
   @IsIn(['full_time', 'part_time', 'intern', 'temp'])
-  public employeeStatus: string;
+  public employmentStatus: string;
 }
