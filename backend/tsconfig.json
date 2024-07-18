@@ -21,6 +21,7 @@
     "baseUrl": "src",
     "paths": {
       "@/*": ["*"],
+      "@app": ["app.ts"],
       "@config": ["config"],
       "@controllers/*": ["controllers/*"],
       "@databases": ["databases"],
@@ -35,5 +36,5 @@
     }
   },
   "include": ["src/**/*.ts", "src/**/*.json", ".env"],
-  "exclude": ["node_modules", "src/http", "src/logs", "src/tests"]
+  "exclude": ["node_modules", "src/http", "src/logs"]
 }
