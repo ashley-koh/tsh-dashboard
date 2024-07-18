@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "@/lib/axiosInstance";
 import getCookie from "@/utils/getCookie";
@@ -36,13 +36,30 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
   const navigate = useNavigate();
   const client = axiosClient();
 
+  const verifyAction = async () => {
+    client
+      .get("/verify", { withCredentials: true })
+      .then((res) => {
+        setUser(res.data.user);
+        setAuthenticatied(true);
+      })
+      .catch((err) => {
+        console.log(err);
+        logout();
+      });
+  };
+
+  useEffect(() => {
+    verifyAction();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const loginAction: LoginActionFunc = async (data) => {
     return client
       .post("/login", data, { withCredentials: true })
       .then((response) => {
         setUser(response.data);
         setAuthenticatied(true);
-        console.log(getCookie("Authorization"));
         navigate("/");
       });
   };
