@@ -1,0 +1,84 @@
+.info-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 10px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  align-items: center;
+  height: 100%;
+  width: 300px;
+  overflow: auto;
+  position: fixed;
+  text-align: center;
+  color: #fff;
+  background-color: #5a81ee;
+}
+
+.para-break {
+  margin-bottom: 10px;
+}
+
+.module-card {
+  background: #f0f4f8;
+  width: 250px;
+  margin: 5px 5px 10px 5px;
+}
+
+.card-title {
+  display: -webkit-box;
+  padding-top: 15px;
+  -webkit-line-clamp: 2; /* Number of lines to show */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+.ant-progress-text {
+  color: white;
+}
+
+.alert-card {
+  margin: 25px 25px 0px 25px;
+  border: 2px solid #ffecb3;
+  background-color: #fff8e1;
+  box-shadow: none;
+}
+
+.alert-content {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+}
+
+.alert-icon {
+  font-size: 24px;
+  color: #faad14;
+  margin-right: 16px;
+}
+
+p.alert-text  {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+  flex-grow: 1;
+}
+
+div.ant-picker-calendar {
+  margin: 25px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+}
+
+h1 {
+  font-size: 30px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+p {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
