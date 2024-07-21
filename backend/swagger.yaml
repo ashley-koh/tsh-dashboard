@@ -439,12 +439,30 @@ paths:
           schema:
             $ref: '#/definitions/users'
       responses:
-        201:
-          description: 'Created'
+        200:
+          description: 'OK'
         400:
           description: 'Bad Request'
         409:
           description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+  /verify:
+    get:
+      tags:
+        - auth
+      summary: Verify User
+      parameters:
+        - name: Auth Token
+          in: Authorization
+          description: Authorization Token
+          required: true
+      responses:
+        200:
+          description: 'OK'
+        401:
+          description: 'Wrong / Missing authentication token'
         500:
           description: 'Server Error'
 
@@ -459,12 +477,10 @@ paths:
           description: Authorization Token
           required: true
       responses:
-        201:
-          description: 'Created'
-        400:
-          description: 'Bad Request'
-        409:
-          description: 'Conflict'
+        200:
+          description: 'OK'
+        401:
+          description: 'Wrong / Missing authentication token'
         500:
           description: 'Server Error'
 

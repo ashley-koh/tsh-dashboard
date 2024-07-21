@@ -66,11 +66,13 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
       });
   };
 
-  const logout = () => {
-    setUser(null);
-    setAuthenticatied(false);
-    setLoading(false);
-    navigate("/login");
+  const logout = async () => {
+    return client.post("/logout", { withCredentials: true }).then(() => {
+      setUser(null);
+      setAuthenticatied(false);
+      setLoading(false);
+      navigate("/login");
+    });
   };
 
   return (
