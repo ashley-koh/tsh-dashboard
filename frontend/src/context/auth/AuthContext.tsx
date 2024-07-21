@@ -1,7 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "@/lib/axiosInstance";
-import getCookie from "@/utils/getCookie";
 
 type LoginData = {
   email: string;
@@ -19,6 +18,7 @@ type LogoutFunc = {
 type IAuthContext = {
   user: object | null;
   authenticated: boolean;
+  loading: boolean;
   loginAction: LoginActionFunc;
   logout: LogoutFunc;
 };
@@ -32,6 +32,7 @@ export const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
   const [user, setUser] = useState(null);
   const [authenticated, setAuthenticatied] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   const client = axiosClient();
@@ -42,9 +43,9 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
       .then((res) => {
         setUser(res.data.user);
         setAuthenticatied(true);
+        setLoading(false);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         logout();
       });
   };
@@ -60,6 +61,7 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
       .then((response) => {
         setUser(response.data);
         setAuthenticatied(true);
+        setLoading(false);
         navigate("/");
       });
   };
@@ -67,11 +69,14 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
   const logout = () => {
     setUser(null);
     setAuthenticatied(false);
+    setLoading(false);
     navigate("/login");
   };
 
   return (
-    <AuthContext.Provider value={{ authenticated, user, loginAction, logout }}>
+    <AuthContext.Provider
+      value={{ authenticated, user, loading, loginAction, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
