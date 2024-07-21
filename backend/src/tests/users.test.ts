@@ -38,7 +38,7 @@ describe('Testing Users', () => {
         },
       ]);
 
-      (mongoose as any).connect = jest.fn();
+      mongoose.connect = jest.fn();
       const app = new App([usersRoute]);
 
       return request(app.getServer()).get(`${usersRoute.path}`).expect(200);
@@ -58,7 +58,7 @@ describe('Testing Users', () => {
         password: await bcrypt.hash('q1w2e3r4!', 10),
       });
 
-      (mongoose as any).connect = jest.fn();
+      mongoose.connect = jest.fn();
       const app = new App([usersRoute]);
       return request(app.getServer())
         .get(`${usersRoute.path}/${userId}`)
@@ -71,6 +71,12 @@ describe('Testing Users', () => {
       const userData: CreateUserDto = {
         email: 'test@email.com',
         password: 'q1w2e3r4',
+        name: 'test',
+        employeeID: '0123456789',
+        employmentStatus: 'full_time',
+        role: 'employee',
+        jobTitle: 'testing example',
+        dept: 'office of testing',
       };
 
       const usersRoute = new UsersRoute();
@@ -81,9 +87,10 @@ describe('Testing Users', () => {
         _id: '60706478aad6c9ad19a31c84',
         email: userData.email,
         password: await bcrypt.hash(userData.password, 10),
+        ...userData,
       });
 
-      (mongoose as any).connect = jest.fn();
+      mongoose.connect = jest.fn();
       const app = new App([usersRoute]);
       return request(app.getServer())
         .post(`${usersRoute.path}`)
@@ -98,6 +105,12 @@ describe('Testing Users', () => {
       const userData: CreateUserDto = {
         email: 'test@email.com',
         password: 'q1w2e3r4',
+        name: 'test',
+        employeeID: '0123456789',
+        employmentStatus: 'full_time',
+        role: 'employee',
+        jobTitle: 'testing example',
+        dept: 'office of testing',
       };
 
       const usersRoute = new UsersRoute();
@@ -108,6 +121,7 @@ describe('Testing Users', () => {
           _id: userId,
           email: userData.email,
           password: await bcrypt.hash(userData.password, 10),
+          ...userData,
         });
       }
 
@@ -115,9 +129,10 @@ describe('Testing Users', () => {
         _id: userId,
         email: userData.email,
         password: await bcrypt.hash(userData.password, 10),
+        ...userData,
       });
 
-      (mongoose as any).connect = jest.fn();
+      mongoose.connect = jest.fn();
       const app = new App([usersRoute]);
       return request(app.getServer())
         .put(`${usersRoute.path}/${userId}`)
@@ -138,7 +153,7 @@ describe('Testing Users', () => {
         password: await bcrypt.hash('q1w2e3r4!', 10),
       });
 
-      (mongoose as any).connect = jest.fn();
+      mongoose.connect = jest.fn();
       const app = new App([usersRoute]);
       return request(app.getServer())
         .delete(`${usersRoute.path}/${userId}`)
