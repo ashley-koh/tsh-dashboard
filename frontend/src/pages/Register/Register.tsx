@@ -15,12 +15,19 @@ const RegisterModal: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const onFinish = async (values: RegisterForm) => {
-    console.log("Received values of form: ", values);
-
-    const data: User = values as User;
+    const user: User = {
+      name: values.name,
+      email: values.email,
+      password: values.password,
+      employeeID: values.employeeID,
+      role: values.role,
+      jobTitle: values.jobTitle,
+      dept: values.dept,
+      employmentStatus: values.employmentStatus,
+    };
 
     client
-      .post("/signup", data)
+      .post("/signup", user)
       .then(() => {
         navigate("/login");
       })
