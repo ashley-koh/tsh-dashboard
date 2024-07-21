@@ -7,7 +7,7 @@
     "start": "tsc && node dist/app.js",
     "dev": "cross-env NODE_ENV=development nodemon",
     "lint": "eslint . --fix --ext ts && prettier --write --config .prettierrc.json .",
-    "test": "jest --forceExit --detectOpenHandles"
+    "test": "cross-env NODE_ENV=development jest --forceExit --detectOpenHandles"
   },
   "keywords": [],
   "author": "",

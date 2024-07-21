@@ -1,13 +1,15 @@
-import { pathsToModuleNameMapper } from 'ts-jest';
-import { compilerOptions } from './tsconfig.json';
+const { pathsToModuleNameMapper } = require('ts-jest');
+const { compilerOptions } = require('./tsconfig.json');
 
-export const preset = 'ts-jest';
-export const testEnvironment = 'node';
-export const roots = ['<rootDir>/src'];
-export const transform = {
-  '^.+\\.tsx?$': 'ts-jest',
+module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  roots: ['<rootDir>/src'],
+  transform: {
+    '^.+\\.tsx?$': 'ts-jest',
+  },
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
+    prefix: '<rootDir>/src',
+  }),
+  maxConcurrency: 4,
 };
-export const moduleNameMapper = pathsToModuleNameMapper(compilerOptions.paths, {
-  prefix: '<rootDir>/src',
-});
-export const maxConcurrency = 4;

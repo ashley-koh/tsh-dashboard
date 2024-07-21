@@ -4,6 +4,7 @@ import request from 'supertest';
 import { CreateUserDto } from '@dtos/users';
 import AuthRoute from '@routes/auth.route';
 import App from '@app';
+import { AuthLoginDto } from '@dtos/auth';
 
 beforeAll(async () => {
   jest.setTimeout(10000);
@@ -20,6 +21,12 @@ describe('Testing Auth', () => {
       const userData: CreateUserDto = {
         email: 'test@email.com',
         password: 'q1w2e3r4!',
+        name: 'test',
+        employeeID: '0123456789',
+        employmentStatus: 'full_time',
+        role: 'employee',
+        jobTitle: 'testing example',
+        dept: 'office of testing',
       };
 
       const authRoute = new AuthRoute();
@@ -28,11 +35,11 @@ describe('Testing Auth', () => {
       users.findOne = jest.fn().mockReturnValue(null);
       users.create = jest.fn().mockReturnValue({
         _id: '60706478aad6c9ad19a31c84',
-        email: userData.email,
         password: await bcrypt.hash(userData.password, 10),
+        ...userData,
       });
 
-      (mongoose as any).connect = jest.fn();
+      mongoose.connect = jest.fn();
       const app = new App([authRoute]);
       return request(app.getServer())
         .post(`${authRoute.path}signup`)
@@ -42,7 +49,7 @@ describe('Testing Auth', () => {
 
   describe('[POST] /login', () => {
     it('response should have the Set-Cookie header with the Authorization token', async () => {
-      const userData: CreateUserDto = {
+      const userData: AuthLoginDto = {
         email: 'test@email.com',
         password: 'q1w2e3r4!',
       };
@@ -56,7 +63,7 @@ describe('Testing Auth', () => {
         password: await bcrypt.hash(userData.password, 10),
       });
 
-      (mongoose as any).connect = jest.fn();
+      mongoose.connect = jest.fn();
       const app = new App([authRoute]);
       return request(app.getServer())
         .post(`${authRoute.path}login`)

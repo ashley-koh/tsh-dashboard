@@ -28,8 +28,6 @@ class AuthService {
       password: hashedPassword,
     });
 
-    console.log(createUserData);
-
     return createUserData;
   }
 
