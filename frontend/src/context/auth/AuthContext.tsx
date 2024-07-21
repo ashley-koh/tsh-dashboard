@@ -46,7 +46,7 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
         setLoading(false);
       })
       .catch(() => {
-        logout();
+        return logout();
       });
   };
 
@@ -66,11 +66,12 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
       });
   };
 
-  const logout = () => {
+  const logout = async () => {
     setUser(null);
     setAuthenticatied(false);
     setLoading(false);
     navigate("/login");
+    return client.post("/logout", { withCredentials: true }).catch(() => {});
   };
 
   return (
