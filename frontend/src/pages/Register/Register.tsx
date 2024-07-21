@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Flex, Button, Checkbox, Form, Input, Select, Alert } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import logoImage from "@/assets/logo.png";
@@ -6,13 +6,22 @@ import "./Register.css";
 import User from "@/types/user.type";
 import axiosClient from "@/lib/axiosInstance";
 import RegisterForm from "./types/form.type";
+import useAuth from "@/context/auth/useAuth";
 
 const RegisterModal: React.FC = () => {
   const [form] = Form.useForm();
   const client = axiosClient();
+  const auth = useAuth();
   const navigate = useNavigate();
 
   const [errorMessage, setErrorMessage] = useState("");
+
+  // If user has auth token and enters register page, redirect to home page
+  useEffect(() => {
+    if (auth.authenticated) {
+      navigate("/");
+    }
+  });
 
   const onFinish = async (values: RegisterForm) => {
     const user: User = {
