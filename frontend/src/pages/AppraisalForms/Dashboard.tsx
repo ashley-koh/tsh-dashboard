@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Avatar,
@@ -20,6 +20,7 @@ import {
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import './Dashboard.css';
+import Scheduler from '../../components/calendar/Scheduler';
 
 const { Sider } = Layout;
 
@@ -40,21 +41,25 @@ const userInfo = {
     { date: dayjs('2024-07-16 15:00:00'), employee: 'Mary Jane', review: true },
     { date: dayjs('2024-07-28 10:00:00'), employee: 'Peter Parker', review: false },
     { date: dayjs('2024-08-01 13:30:00'), employee: 'Austin Lim', review: true }
+  ],
+  meetings:[
+    {date: dayjs('2024-07-21 06:00:00'), employee: 'David'}
   ]
 };
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
+  const [showScheduler, setShowScheduler] = useState(false);
 
   const dateCellRender = (value: Dayjs) => {
     const listData = userInfo.schedule.filter(item => item.date.isSame(value, 'day'));
+    const meetingData = userInfo.meetings.filter(item => item.date.isSame(value, 'day'));
     return (
       <ul className="events">
         {listData.map(item => {
           const key = item.date.toString();
           const time = item.date.isAfter(dayjs()) ? `${item.date.format('HH:mm')} - ` : '';
           const review = !item.review ? 'Review with' : (item.date.isAfter(dayjs()) ? 'To review' : 'Complete review of');
-
           return (
             <li key={key}>
               <Badge
@@ -72,6 +77,20 @@ const Dashboard: React.FC = () => {
             </li>
           );
         })}
+        {
+          meetingData.map(item =>{
+            const key = item.date.toString();
+            const time= item.date.format('HH:mm');
+            console.log(`${time} - Meeting with ${item.employee}`)
+            return(
+              <li key={key}>
+              <Badge status='success'
+                text={`${time} - Meeting with ${item.employee}`}
+              />
+            </li>
+            )
+          })
+        }
       </ul>
     );
   };
@@ -85,6 +104,14 @@ const Dashboard: React.FC = () => {
     if (info.type === 'date') return dateCellRender(current);
     if (info.type === 'month') return monthCellRender(current);
     return info.originNode;
+  };
+
+  useEffect(() => {
+    console.log('showScheduler changed:', showScheduler);
+  }, [showScheduler]);
+
+  const handleCloseScheduler = () => {
+    setShowScheduler(false);
   };
 
   return (
@@ -134,6 +161,7 @@ const Dashboard: React.FC = () => {
           </div>
         </Card>
         <Calendar cellRender={cellRender} />
+        {showScheduler && <Scheduler onClose={handleCloseScheduler} />}
       </Layout>
       {userInfo.department === 'HR' && (
         <FloatButton
@@ -149,7 +177,7 @@ const Dashboard: React.FC = () => {
           icon={<CalendarOutlined />}
           style={{ bottom: userInfo.department === 'HR' ? 100 : 48 }}
           tooltip={<div>Schedule an appraisal review</div>}
-          onClick={() => navigate('/edit')}
+          onClick={() => setShowScheduler(true)}
         />
       )}
     </Layout>
