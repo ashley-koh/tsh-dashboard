@@ -1,9 +1,4 @@
-#root {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem;
-    text-align: center;
-  }
+
   p{
     color:black;
   }
@@ -40,6 +35,7 @@
     padding-top: 40px;
     padding-bottom: 60px;
     border: 2px solid lightgrey;
+    text-align: center;
   }
   .search,.time{
     margin-top: 40px;
