@@ -20,21 +20,12 @@
   background-color: white;
 }
 
-.logo {
-  width: 250px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.login-form-forgot {
-  float: right;
-}
-
 .ant-col-rtl .login-form-forgot {
   float: left;
 }
 
 .login-form-button {
+  margin-top: 10px;
   width: 100%;
 }
 

@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Flex, Button, Checkbox, Form, Input, Select, Alert } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import logoImage from "@/assets/logo.png";
-import "./Register.css";
+import {
+  Alert,
+  Button,
+  Checkbox,
+  Flex,
+  Form,
+  Input,
+  Select
+} from "antd";
+
+import RegisterForm from "./types/form.type";
 import User from "@/types/user.type";
 import axiosClient from "@/lib/axiosInstance";
-import RegisterForm from "./types/form.type";
+import logoImage from "@/assets/logo.png";
 import useAuth from "@/context/auth/useAuth";
+import "./Register.css";
 
 const RegisterModal: React.FC = () => {
   const [form] = Form.useForm();
@@ -194,19 +203,17 @@ const RegisterModal: React.FC = () => {
             </Checkbox>
           </Form.Item>
 
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="login-form-button"
-            >
-              Register
-            </Button>
-            <div className="register-form-login-now">
-              {"Or "}
-              <Link to="/login">login now</Link>
-            </div>
-          </Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="login-form-button"
+          >
+            Register
+          </Button>
+          <div className="register-form-login-now">
+            {"Or "}
+            <Link to="/login">login now</Link>
+          </div>
         </Form>
       </Flex>
     </div>
