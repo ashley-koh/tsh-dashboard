@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "@/lib/axiosInstance";
+import User from "@/types/user.type";
 
 type LoginData = {
   email: string;
@@ -16,7 +17,7 @@ type LogoutFunc = {
 };
 
 type IAuthContext = {
-  user: object | null;
+  user: User | null;
   authenticated: boolean;
   loading: boolean;
   loginAction: LoginActionFunc;
@@ -41,7 +42,7 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
     client
       .get("/verify", { withCredentials: true })
       .then((res) => {
-        setUser(res.data.user);
+        setUser(res.data.data);
         setAuthenticatied(true);
         setLoading(false);
       })
@@ -59,7 +60,7 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
     return client
       .post("/login", data, { withCredentials: true })
       .then((response) => {
-        setUser(response.data);
+        setUser(response.data.data);
         setAuthenticatied(true);
         setLoading(false);
         navigate("/");
