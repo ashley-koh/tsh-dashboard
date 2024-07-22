@@ -2,10 +2,12 @@ import mongoose, { Schema } from 'mongoose';
 import { Answer } from '@/interfaces/answer.interface';
 
 const answerSchema: Schema = new Schema({
-  questionID: {
-    type: String,
+  questions: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Question',
     required: true,
   },
+
   type: {
     type: Number,
     required: true,

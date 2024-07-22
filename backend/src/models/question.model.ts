@@ -6,12 +6,12 @@ const questionSchema: Schema = new Schema({
     type: Number,
     required: true,
   },
-  options: {
-    type: [String],
-    required: true,
-  },
   description: {
     type: String,
+    required: true,
+  },
+  options: {
+    type: [String],
     required: true,
   },
 });
