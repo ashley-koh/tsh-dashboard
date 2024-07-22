@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Flex, Button, Checkbox, Form, Input, Select, Alert } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import logoImage from "@/assets/logo.png";
@@ -6,21 +6,37 @@ import "./Register.css";
 import User from "@/types/user.type";
 import axiosClient from "@/lib/axiosInstance";
 import RegisterForm from "./types/form.type";
+import useAuth from "@/context/auth/useAuth";
 
 const RegisterModal: React.FC = () => {
   const [form] = Form.useForm();
   const client = axiosClient();
+  const auth = useAuth();
   const navigate = useNavigate();
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  const onFinish = async (values: RegisterForm) => {
-    console.log("Received values of form: ", values);
+  // If user has auth token and enters register page, redirect to home page
+  useEffect(() => {
+    if (auth.authenticated) {
+      navigate("/");
+    }
+  });
 
-    const data: User = values as User;
+  const onFinish = async (values: RegisterForm) => {
+    const user: User = {
+      name: values.name,
+      email: values.email,
+      password: values.password,
+      employeeID: values.employeeID,
+      role: values.role,
+      jobTitle: values.jobTitle,
+      dept: values.dept,
+      employmentStatus: values.employmentStatus,
+    };
 
     client
-      .post("/signup", data)
+      .post("/signup", user)
       .then(() => {
         navigate("/login");
       })

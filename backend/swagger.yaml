@@ -2,6 +2,15 @@ tags:
   - name: users
     description: users API
 
+  - name: question
+    description: question API
+
+  - name: answer
+    description: answer API
+
+  - name: form
+    description: form API
+
   - name: auth
     description: auth API
 
@@ -103,6 +112,297 @@ paths:
         500:
           description: 'Server Error'
 
+  # [GET] questions
+  /question:
+    get:
+      tags:
+        - question
+      summary: Find All Questions
+      responses:
+        200:
+          description: 'OK'
+        500:
+          description: 'Server Error'
+
+    # [POST] question
+    post:
+      tags:
+        - question
+      summary: Add Question
+      parameters:
+        - name: body
+          in: body
+          description: question Data
+          required: true
+          schema:
+            $ref: '#/definitions/question'
+      responses:
+        201:
+          description: 'Created'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+  # [GET] question/id
+  /question/{id}:
+    get:
+      tags:
+        - question
+      summary: Find Question By Id
+      parameters:
+        - name: id
+          in: path
+          description: Question Id
+          required: true
+      responses:
+        200:
+          description: 'OK'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+    # [PUT] question/id
+    put:
+      tags:
+        - question
+      summary: Update Question By Id
+      parameters:
+        - name: id
+          in: path
+          description: question Id
+          required: true
+        - name: body
+          in: body
+          description: question Data
+          required: true
+          schema:
+            $ref: '#/definitions/question'
+      responses:
+        200:
+          description: 'OK'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+    # [DELETE] question/id
+    delete:
+      tags:
+        - question
+      summary: Delete Question By Id
+      parameters:
+        - name: id
+          in: path
+          description: question Id
+          required: true
+      responses:
+        200:
+          description: 'OK'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+  # [GET] answers
+  /answer:
+    get:
+      tags:
+        - answer
+      summary: Find All Answers
+      responses:
+        200:
+          description: 'OK'
+        500:
+          description: 'Server Error'
+
+    # [POST] answer
+    post:
+      tags:
+        - answer
+      summary: Add Answer
+      parameters:
+        - name: body
+          in: body
+          description: answer Data
+          required: true
+          schema:
+            $ref: '#/definitions/answer'
+      responses:
+        201:
+          description: 'Created'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+  # [GET] answer/id
+  /answer/{id}:
+    get:
+      tags:
+        - answer
+      summary: Find Answer By Id
+      parameters:
+        - name: id
+          in: path
+          description: Answer Id
+          required: true
+      responses:
+        200:
+          description: 'OK'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+    # [PUT] answer/id
+    put:
+      tags:
+        - answer
+      summary: Update Answer By Id
+      parameters:
+        - name: id
+          in: path
+          description: answer Id
+          required: true
+        - name: body
+          in: body
+          description: answer Data
+          required: true
+          schema:
+            $ref: '#/definitions/answer'
+      responses:
+        200:
+          description: 'OK'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+    # [DELETE] answer/id
+    delete:
+      tags:
+        - answer
+      summary: Delete Answer By Id
+      parameters:
+        - name: id
+          in: path
+          description: answer Id
+          required: true
+      responses:
+        200:
+          description: 'OK'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+  # [GET] forms
+  /form:
+    get:
+      tags:
+        - form
+      summary: Find All Forms
+      responses:
+        200:
+          description: 'OK'
+        500:
+          description: 'Server Error'
+
+    # [POST] form
+    post:
+      tags:
+        - form
+      summary: Add Form
+      parameters:
+        - name: body
+          in: body
+          description: form Data
+          required: true
+          schema:
+            $ref: '#/definitions/form'
+      responses:
+        201:
+          description: 'Created'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+  # [GET] form/id
+  /form/{id}:
+    get:
+      tags:
+        - form
+      summary: Find Form By Id
+      parameters:
+        - name: id
+          in: path
+          description: Form Id
+          required: true
+      responses:
+        200:
+          description: 'OK'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+    # [PUT] form/id
+    put:
+      tags:
+        - form
+      summary: Update Form By Id
+      parameters:
+        - name: id
+          in: path
+          description: form Id
+          required: true
+        - name: body
+          in: body
+          description: form Data
+          required: true
+          schema:
+            $ref: '#/definitions/form'
+      responses:
+        200:
+          description: 'OK'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+    # [DELETE] form/id
+    delete:
+      tags:
+        - form
+      summary: Delete Form By Id
+      parameters:
+        - name: id
+          in: path
+          description: form Id
+          required: true
+      responses:
+        200:
+          description: 'OK'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
   # auth
   /signup:
     post:
@@ -139,12 +439,30 @@ paths:
           schema:
             $ref: '#/definitions/users'
       responses:
-        201:
-          description: 'Created'
+        200:
+          description: 'OK'
         400:
           description: 'Bad Request'
         409:
           description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+  /verify:
+    get:
+      tags:
+        - auth
+      summary: Verify User
+      parameters:
+        - name: Auth Token
+          in: Authorization
+          description: Authorization Token
+          required: true
+      responses:
+        200:
+          description: 'OK'
+        401:
+          description: 'Wrong / Missing authentication token'
         500:
           description: 'Server Error'
 
@@ -159,12 +477,10 @@ paths:
           description: Authorization Token
           required: true
       responses:
-        201:
-          description: 'Created'
-        400:
-          description: 'Bad Request'
-        409:
-          description: 'Conflict'
+        200:
+          description: 'OK'
+        401:
+          description: 'Wrong / Missing authentication token'
         500:
           description: 'Server Error'
 
@@ -173,15 +489,99 @@ definitions:
   users:
     type: object
     required:
+      - _id
       - email
       - password
+      - firstName
+      - lastName
+      - employeeID
+      - role
+      - jobTitle
+      - dept
+      - employmentStatus
     properties:
+      _id:
+        type: string
+        description: user ID
       email:
         type: string
         description: user Email
       password:
         type: string
         description: user Password
+      firstName:
+        type: string
+        description: user First Name
+      lastName:
+        type: string
+        description: user Last Name
+      employeeID:
+        type: string
+        description: user Employee ID
+      role:
+        type: string
+        description: user Role
+      jobTitle:
+        type: string
+        description: user Job Title
+      dept:
+        type: string
+        description: user Department
+      employmentStatus:
+        type: string
+        description: user Employment Status
+
+  question:
+    type: object
+    required:
+      - type
+      - options
+      - description
+    properties:
+      type:
+        type: integer
+        description: Type of the question
+      options:
+        type: array
+        items:
+          type: string
+        description: Options for the question
+      description:
+        type: string
+        description: Description of the question
+
+  answer:
+    type: object
+    required:
+      - questionID
+      - type
+      - openEndedAnswer
+      - closedAnswer
+    properties:
+      questionID:
+        type: string
+        description: ID of the related question
+      type:
+        type: integer
+        description: Type of the answer
+      openEndedAnswer:
+        type: string
+        description: Open-ended answer text
+      closedAnswer:
+        type: integer
+        description: Closed answer value
+
+  form:
+    type: object
+    required:
+      - questions
+    properties:
+      questions:
+        type: array
+        items:
+          type: string
+          description: ID of the question
+        description: Array of question IDs
 
 schemes:
   - https

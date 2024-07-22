@@ -1,8 +1,6 @@
-import { Type } from 'class-transformer';
-import { IsArray } from 'class-validator';
+import { IsString } from 'class-validator';
 
-export class FormDto {
-  @IsArray()
-  @Type(() => String)
+export class CreateFormDto {
+  @IsString({ each: true })
   public questions: string[];
 }
