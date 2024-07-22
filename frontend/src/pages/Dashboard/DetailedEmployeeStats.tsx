@@ -2,11 +2,13 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, Button, Progress, Statistic, Row, Col } from 'antd';
 import { employees, HIGH_KPI_THRESHOLD, AVERAGE_KPI_THRESHOLD } from '../../data/mockData';
+import useAuth from '../../context/auth/useAuth';
 import './DetailedEmployeeStats.css';
 
 const DetailedEmployeeStats: React.FC = () => {
   const { employeeId } = useParams<{ employeeId: string }>();
   const employee = employees.find(emp => emp.id === employeeId);
+  const { user } = useAuth();
 
   const handleDownloadPDF = () => {
     // Logic to generate and download PDF
@@ -38,9 +40,11 @@ const DetailedEmployeeStats: React.FC = () => {
           <Statistic title="Appraisals" value={employee.appraisals.length} />
         </Col>
       </Row>
-      <Button type="primary" onClick={handleDownloadPDF} style={{ marginTop: '16px' }}>
-        Download Report
-      </Button>
+      {user?.role === 'hr' && (
+        <Button type="primary" onClick={handleDownloadPDF} style={{ marginTop: '16px' }}>
+          Download Report
+        </Button>
+      )}
     </Card>
   );
 };
