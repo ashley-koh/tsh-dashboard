@@ -7,7 +7,7 @@ const Navbar: React.FC = () => {
     <header className="header">
       <nav className="nav">
         <div className="logo">
-          <img src="/logo.png" alt="Logo" />
+          <img src="../../assets/logo.png" alt="Logo" />
         </div>
         <ul>
           <li>
