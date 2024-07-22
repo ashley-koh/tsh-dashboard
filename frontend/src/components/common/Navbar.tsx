@@ -1,13 +1,18 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+
+import logo from "@/assets/logo.png";
+import useAuth from "@/context/auth/useAuth";
 import "./Navbar.css";
 
 const Navbar: React.FC = () => {
+  const auth = useAuth();
+
   return (
     <header className="header">
       <nav className="nav">
-        <div className="logo">
-          <img src="/logo.png" alt="Logo" />
+        <div className='logo-container'>
+          <img src={logo} alt="Logo" />
         </div>
         <ul>
           <li>
@@ -28,10 +33,19 @@ const Navbar: React.FC = () => {
           </li>
           <li>
             <NavLink
-              to="/appraisals"
+              to="/dashboard"
               className={({ isActive }) => (isActive ? "active" : "")}
             >
-              Appraisal Forms
+              Appraisals
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/"
+              className='logout'
+              onClick={auth.logout}
+            >
+              Logout
             </NavLink>
           </li>
         </ul>
