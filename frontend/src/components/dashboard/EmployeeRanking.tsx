@@ -1,4 +1,3 @@
-// src/components/dashboard/EmployeeRanking.tsx
 import React, { useEffect } from 'react';
 import { List } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -6,7 +5,11 @@ import useAuth from '@/context/auth/useAuth';
 import { employees, HIGH_KPI_THRESHOLD, AVERAGE_KPI_THRESHOLD } from '../../data/mockData';
 import './EmployeeRanking.css';
 
-const EmployeeRanking: React.FC = () => {
+interface EmployeeRankingProps {
+  department: string;
+}
+
+const EmployeeRanking: React.FC<EmployeeRankingProps> = ({ department }) => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
@@ -22,18 +25,20 @@ const EmployeeRanking: React.FC = () => {
     return <div>No user found</div>;
   }
 
+  const filteredEmployees = employees.filter(emp => emp.department === department);
+
   const handleEmployeeClick = (employeeId: string) => {
     navigate(`/employee/${employeeId}`);
   };
 
-  // if (user.role !== 'manager' && user.role !== 'dep_head' && user.role !== 'hr') {
-  //   return <div>You do not have access to this page.</div>;
-  // }
+  if (user.role !== 'hr' && user.role !== 'head_of_department') {
+    return <div>You do not have access to this page.</div>;
+  }
 
   return (
     <div className="employee-ranking">
       <List
-        dataSource={employees}
+        dataSource={filteredEmployees}
         renderItem={(employee, index) => {
           let className = '';
           if (employee.kpi >= HIGH_KPI_THRESHOLD) {

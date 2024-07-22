@@ -1,4 +1,5 @@
 import React from 'react';
+import { Card } from 'antd';
 import './DashboardFlexBox.css';
 
 interface DashboardFlexBoxProps {
@@ -8,12 +9,11 @@ interface DashboardFlexBoxProps {
 
 const DashboardFlexBox: React.FC<DashboardFlexBoxProps> = ({ title, children }) => {
   return (
-    <div className="dashboard-flex-box">
-      <h3>{title}</h3>
+    <Card title={title} className="dashboard-flex-box">
       <div className="dashboard-flex-box-content">
         {children}
       </div>
-    </div>
+    </Card>
   );
 };
 
