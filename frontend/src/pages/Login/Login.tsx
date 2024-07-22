@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Flex, Button, Checkbox, Form, Input, Alert } from "antd";
 import { Link, useNavigate } from "react-router-dom";
+import { Flex, Button, Checkbox, Form, Input, Alert } from "antd";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+
 import logoImage from "@/assets/logo.png";
-import "./Login.css";
 import useAuth from "@/context/auth/useAuth";
+import "./Login.css";
 
 const LoginModal: React.FC = () => {
   const auth = useAuth();
@@ -29,9 +30,7 @@ const LoginModal: React.FC = () => {
         email: values.email,
         password: values.password,
       })
-      .catch((err) => {
-        setErrorMessage(err.response.data.message);
-      });
+      .catch(() => setErrorMessage('Login failed.'));
   };
 
   return (
@@ -39,7 +38,7 @@ const LoginModal: React.FC = () => {
       <Flex vertical gap="middle">
         <img src={logoImage} className="logo" />
         {errorMessage && (
-          <Alert message={errorMessage} type="warning" showIcon />
+          <Alert message={errorMessage} type="error" showIcon />
         )}
         <Form
           name="normal_login"
@@ -53,7 +52,11 @@ const LoginModal: React.FC = () => {
               { required: true, message: "Please input your Email!" },
             ]}
           >
-            <Input prefix={<UserOutlined />} placeholder="Email" />
+            <Input
+              prefix={<UserOutlined />}
+              placeholder="Email"
+              onChange={() => setErrorMessage('')}
+            />
           </Form.Item>
           <Form.Item
             name="password"
@@ -63,31 +66,25 @@ const LoginModal: React.FC = () => {
               prefix={<LockOutlined />}
               type="password"
               placeholder="Password"
+              onChange={() => setErrorMessage('')}
             />
           </Form.Item>
-          <Form.Item>
-            <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox>Remember me</Checkbox>
-            </Form.Item>
-
-            <Link to="/reset-password" className="login-form-forgot">
-              Forgot password
-            </Link>
+          <Form.Item name="remember" valuePropName="checked" noStyle>
+            <Checkbox>Remember me</Checkbox>
           </Form.Item>
 
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="login-form-button"
-            >
-              Log in
-            </Button>
-            <div className="login-form-register-now">
-              {"Or "}
-              <Link to="/register">register now</Link>
-            </div>
-          </Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="login-form-button"
+          >
+            Log in
+          </Button>
+          <div className="login-form-register-now">
+            <Link to="/reset-password">Forgot password</Link>
+            {" or "}
+            <Link to="/register">Register now</Link>
+          </div>
         </Form>
       </Flex>
     </div>
