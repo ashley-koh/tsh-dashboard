@@ -4,8 +4,10 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./index.css";
 
 import App from "./App";
-import DepartmentStatistics from "./pages/DepartmentStatistics";
 import AppraisalForms from "./pages/AppraisalForms";
+import Dashboard from "./pages/AppraisalForms/Dashboard";
+import DepartmentStatistics from "./pages/DepartmentStatistics";
+import FormEditor from "./pages/AppraisalForms/FormEditor";
 import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
 
@@ -23,7 +25,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<App />}>
               <Route path="statistics" element={<DepartmentStatistics />} />
+              <Route path="dashboard" element={<Dashboard />} />
               <Route path="appraisals" element={<AppraisalForms />} />
+              <Route path="edit" element={<FormEditor />} />
             </Route>
           </Route>
         </Routes>
