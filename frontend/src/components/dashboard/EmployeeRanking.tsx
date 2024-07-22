@@ -31,10 +31,6 @@ const EmployeeRanking: React.FC<EmployeeRankingProps> = ({ department }) => {
     navigate(`/employee/${employeeId}`);
   };
 
-  if (user.role !== 'hr' && user.role !== 'head_of_department') {
-    return <div>You do not have access to this page.</div>;
-  }
-
   return (
     <div className="employee-ranking">
       <List
