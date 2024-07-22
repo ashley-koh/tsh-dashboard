@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Avatar,
   Badge,
   Button,
   Calendar,
@@ -9,34 +8,22 @@ import {
   Card,
   FloatButton,
   Layout,
-  Progress
 } from 'antd';
 import {
   CalendarOutlined,
   EditOutlined,
   InfoCircleOutlined,
-  UserOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
-import './Dashboard.css';
-import Scheduler from '../../components/calendar/Scheduler';
 
-const { Sider } = Layout;
+import Loading from '@/components/common/Loading';
+import Scheduler from '../../components/calendar/Scheduler';
+import useAuth from "@/context/auth/useAuth";
+import './Dashboard.css';
 
 const userInfo = {
-  name: 'John Doe',
-  department: 'Engineer',
-  role: 'Lead Software Engineer (Frontend)',
   manager: true,
-  modules: [
-    { name: 'Elements of Software Construction', progress: 80 },
-    { name: 'Computer Software Engineering', progress: 60 },
-    { name: 'Machine Learning', progress: 90 },
-    { name: 'Foundations of Cybersecurity', progress: 75 },
-    { name: 'Module 5 onwards will not display', progress: 15 },
-  ],
-  overallRating: 85,
   schedule: [
     { date: dayjs('2024-07-16 15:00:00'), employee: 'Mary Jane', review: true },
     { date: dayjs('2024-07-28 10:00:00'), employee: 'Peter Parker', review: false },
@@ -48,6 +35,7 @@ const userInfo = {
 };
 
 const Dashboard: React.FC = () => {
+  const auth = useAuth();
   const navigate = useNavigate();
   const [showScheduler, setShowScheduler] = useState(false);
 
@@ -81,7 +69,6 @@ const Dashboard: React.FC = () => {
           meetingData.map(item =>{
             const key = item.date.toString();
             const time= item.date.format('HH:mm');
-            console.log(`${time} - Meeting with ${item.employee}`)
             return(
               <li key={key}>
               <Badge status='success'
@@ -106,46 +93,18 @@ const Dashboard: React.FC = () => {
     return info.originNode;
   };
 
-  useEffect(() => {
-    console.log('showScheduler changed:', showScheduler);
-  }, [showScheduler]);
-
   const handleCloseScheduler = () => {
     setShowScheduler(false);
   };
 
+  if (auth.user === null) {
+    console.error('User is not logged in, something went wrong.');
+    alert('Something went wrong. Please try again later.');
+    return <Loading />;
+  }
+
   return (
-    <Layout hasSider>
-      <Sider width={300}>
-        <div className='info-panel'>
-          <div className='para-break'>
-            <Avatar size={64} icon={<UserOutlined />} />
-            <h1>{userInfo.name}</h1>
-            <p>{userInfo.department} Department</p>
-            <p>{userInfo.role}</p>
-          </div>
-          <div>
-            {userInfo.modules.slice(0, 4).map((module, index) => (
-              <Card
-                key={index}
-                className='module-card'
-                title={<span className='card-title'>{module.name}</span>}
-              >
-                <Progress
-                  percent={module.progress}
-                  percentPosition={{ align: 'center', type: 'inner' }}
-                  size={[ 200, 20 ]}
-                  strokeColor={{
-                    '0%': '#108ee9',
-                    '100%': '#87d068',
-                  }}
-                />
-              </Card>
-            ))}
-            <p><strong>Overall Rating: {userInfo.overallRating}%</strong></p>
-          </div>
-        </div>
-      </Sider>
+    <div>
       <Layout>
         <Card className='alert-card'>
           <div className='alert-content'>
@@ -163,7 +122,7 @@ const Dashboard: React.FC = () => {
         <Calendar cellRender={cellRender} />
         {showScheduler && <Scheduler onClose={handleCloseScheduler} />}
       </Layout>
-      {userInfo.department === 'HR' && (
+      {auth.user.dept === 'HR' && (
         <FloatButton
           type='primary'
           icon={<EditOutlined />}
@@ -175,12 +134,12 @@ const Dashboard: React.FC = () => {
         <FloatButton
           type='primary'
           icon={<CalendarOutlined />}
-          style={{ bottom: userInfo.department === 'HR' ? 100 : 48 }}
+          style={{ bottom: auth.user.dept === 'HR' ? 100 : 48 }}
           tooltip={<div>Schedule an appraisal review</div>}
           onClick={() => setShowScheduler(true)}
         />
       )}
-    </Layout>
+    </div>
   );
 };
 
