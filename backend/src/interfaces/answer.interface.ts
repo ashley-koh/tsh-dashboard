@@ -1,6 +1,9 @@
+import { Types } from 'mongoose';
+
 export interface Answer {
-  questionID: string;
+  _id: Types.ObjectId;
+  question: Types.ObjectId[];
   type: number;
   openEndedAnswer: string;
-  closedAnswer: number;
+  rating: number;
 }

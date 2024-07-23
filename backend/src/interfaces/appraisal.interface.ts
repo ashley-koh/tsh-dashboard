@@ -1,8 +1,12 @@
 import { Types } from 'mongoose';
 
-export interface AppraisalForm {
-  user: Types.ObjectId;
-  headOfDept: Types.ObjectId;
-  dateCreated: Date;
-  reviewPeriod: string;
+export interface Appraisal {
+  _id: Types.ObjectId;
+  manageeId: Types.ObjectId;
+  managerId: Types.ObjectId;
+  formId: Types.ObjectId;
+  status: string;
+  answers: JSON;
+  reviewId: Types.ObjectId;
+  deadline: Date;
 }

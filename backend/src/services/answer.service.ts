@@ -16,22 +16,29 @@ class AnswerService {
       ...answerData,
     });
 
-    return createAnswerData;
+    const populatedAnswer = await this.answers
+      .findById(createAnswerData._id)
+      .populate('questions')
+      .exec();
+
+    return populatedAnswer;
   }
 
   public async findAnswerById(answerId: string): Promise<Answer> {
     if (isEmpty(answerId)) throw new HttpException(400, 'AnswerId is empty');
 
-    const findAnswer: Answer = await this.answers.findOne({
-      _id: answerId,
-    });
+    const findAnswer: Answer = await this.answers
+      .findOne({
+        _id: answerId,
+      })
+      .populate('questions');
     if (!findAnswer) throw new HttpException(409, "Answer doesn't exist");
 
     return findAnswer;
   }
 
   public async findAllAnswers(): Promise<Answer[]> {
-    const answers: Answer[] = await this.answers.find();
+    const answers: Answer[] = await this.answers.find().populate('questions');
     return answers;
   }
 
@@ -43,10 +50,10 @@ class AnswerService {
       throw new HttpException(400, 'answerData is empty');
     if (isEmpty(answerId)) throw new HttpException(400, 'answerId is empty');
 
-    const updateAnswerData: Answer = await this.answers.findByIdAndUpdate(
-      answerId,
-      answerData,
-    );
+    const updateAnswerData: Answer = await this.answers
+      .findByIdAndUpdate(answerId, answerData)
+      .populate('questions');
+
     if (!updateAnswerData) throw new HttpException(409, "Answer doesn't exist");
     return updateAnswerData;
   }
