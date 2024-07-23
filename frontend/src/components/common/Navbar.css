@@ -1,4 +1,4 @@
-.active {
+.active-nav {
   background-color: #5a81ee;
 }
 
@@ -41,7 +41,7 @@
 
 .nav li {
   margin: 0 0.5rem;
-  font-size: 12px;
+  font-size: 16px;
 }
 
 .nav a {
@@ -51,11 +51,11 @@
   border-radius: 0.5rem;
 }
 
-.nav a:not(.active):not(.logout):hover {
+.nav a:not(.active-nav):not(.logout):hover {
   background-color: #172554;
 }
 
-.logout {
+.logout:hover {
   background-color: red;
 }
 
