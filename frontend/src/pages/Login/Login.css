@@ -1,0 +1,43 @@
+.login-page {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url(../../assets/bg.png);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.login-modal {
+  padding: 32px;
+  border-radius: 15px;
+  border: 1px;
+  border-color: black;
+  max-width: 90vw;
+  width: 24rem;
+  background-color: white;
+}
+
+.logo {
+  width: 250px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.login-form-forgot {
+  float: right;
+}
+
+.ant-col-rtl .login-form-forgot {
+  float: left;
+}
+
+.login-form-button {
+  width: 100%;
+}
+
+.login-form-register-now {
+  margin-top: 10px;
+}

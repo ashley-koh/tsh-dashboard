@@ -1,0 +1,35 @@
+.employee-ranking {
+    max-height: 400px; /* Adjust height as needed */
+    overflow-y: auto;
+    padding: 0.5rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+  }
+  
+  .employee-ranking ul {
+    list-style-type: none;
+    padding: 0;
+    display: inline;
+  }
+  
+  .employee-ranking li {
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    border-radius: 4px;
+  }
+  
+  .high-kpi {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  
+  .average-kpi {
+    background-color: #fff3cd;
+    color: #856404;
+  }
+  
+  .low-kpi {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  

@@ -8,7 +8,17 @@
 2. Docker
 3. Node.js (Preferably v20.15.0)
 
-### Commands
+To configure npm and Node.js versions, use the [Node Version Manager (NVM)](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating):
+
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+```
+
+Refer to the NVM documentation (above) for details on troubleshooting and platform-dependent support (e.g., `nvm-windows`).
+
+### Installation Procedure
+
+Open Docker on your local machine and leave it open in the background. Then, in a bash terminal, run the following commands in sequence:
 
 ```bash
 cd TSH_PROJ_DIR/backend
@@ -18,13 +28,12 @@ docker compose up -d
 npm run dev
 ```
 
-`cp .env.development.example .env.development.local`: Copy the example environment variables into an actual one.
+Short explanations on what each command does:
 
-`npm install`: Installs all packages listed in `package.json`
-
-`docker compose up -d`: Spawns containers specified in `compose.yml` in detached mode.
-
-`npm run dev`: Run Express App in `development` mode.
+- `cp .env.development.example .env.development.local`: Copy the example environment variables into an actual one.
+- `npm install`: Installs all packages listed in `package.json`
+- `docker compose up -d`: Spawns containers specified in `compose.yml` in detached mode.
+- `npm run dev`: Run Express App in `development` mode.
 
 ## API Documentation
 
