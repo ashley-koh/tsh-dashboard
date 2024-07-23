@@ -1,7 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-import logo from "@/assets/logo.png";
 import useAuth from "@/context/auth/useAuth";
 import "./Navbar.css";
 
@@ -11,8 +10,8 @@ const Navbar: React.FC = () => {
   return (
     <header className="header">
       <nav className="nav">
-        <div className='logo-container'>
-          <img src={logo} alt="Logo" />
+        <div className="logo">
+          <img src="../../assets/logo.png" alt="Logo" />
         </div>
         <ul>
           <li>

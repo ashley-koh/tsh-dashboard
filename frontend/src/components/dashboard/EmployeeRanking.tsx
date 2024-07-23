@@ -1,12 +1,41 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { List } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import useAuth from '@/context/auth/useAuth';
 import { employees, HIGH_KPI_THRESHOLD, AVERAGE_KPI_THRESHOLD } from '../../data/mockData';
 import './EmployeeRanking.css';
 
-const EmployeeRanking: React.FC = () => {
+interface EmployeeRankingProps {
+  department: string;
+}
+
+const EmployeeRanking: React.FC<EmployeeRankingProps> = ({ department }) => {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log('EmployeeRanking: user', user);
+  }, [user]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return <div>No user found</div>;
+  }
+
+  const filteredEmployees = employees.filter(emp => emp.department === department);
+
+  const handleEmployeeClick = (employeeId: string) => {
+    navigate(`/employee/${employeeId}`);
+  };
+
   return (
     <div className="employee-ranking">
-      <ul>
-        {employees.map((employee, index) => {
+      <List
+        dataSource={filteredEmployees}
+        renderItem={(employee, index) => {
           let className = '';
           if (employee.kpi >= HIGH_KPI_THRESHOLD) {
             className = 'high-kpi';
@@ -16,12 +45,18 @@ const EmployeeRanking: React.FC = () => {
             className = 'low-kpi';
           }
           return (
-            <li key={index} className={className}>
-              {employee.name} - KPI: {employee.kpi}
-            </li>
+            <List.Item
+              key={index}
+              className={`employee-item ${className}`}
+              onClick={() => handleEmployeeClick(employee.id)}
+            >
+              <div className="employee-info">
+                {employee.name} - KPI: {employee.kpi}
+              </div>
+            </List.Item>
           );
-        })}
-      </ul>
+        }}
+      />
     </div>
   );
 };

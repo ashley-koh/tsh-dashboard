@@ -2,6 +2,7 @@ enum Role {
   Employee = "employee",
   HeadOfDepartment = "head_of_department",
   BusinessOwner = "business_owner",
+  HR = "hr"
 }
 
 enum EmploymentStatus {

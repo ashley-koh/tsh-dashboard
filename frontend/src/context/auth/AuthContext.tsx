@@ -31,8 +31,8 @@ type ProviderProps = {
 export const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 
 const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [authenticated, setAuthenticatied] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
@@ -42,8 +42,8 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
     client
       .get("/verify", { withCredentials: true })
       .then((res) => {
-        setUser(res.data.data);
-        setAuthenticatied(true);
+        setUser(res.data.data); // because user has data and verify
+        setAuthenticated(true);
         setLoading(false);
       })
       .catch(() => {
@@ -61,7 +61,7 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
       .post("/login", data, { withCredentials: true })
       .then((response) => {
         setUser(response.data.data);
-        setAuthenticatied(true);
+        setAuthenticated(true);
         setLoading(false);
         navigate("/");
       });
@@ -69,7 +69,7 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
 
   const logout = async () => {
     setUser(null);
-    setAuthenticatied(false);
+    setAuthenticated(false);
     setLoading(false);
     navigate("/login");
     return client.post("/logout", { withCredentials: true }).catch(() => {});
