@@ -2,5 +2,8 @@ import { Types } from 'mongoose';
 
 export interface Form {
   _id: Types.ObjectId;
-  questions: Types.ObjectId[]; // Array of ObjectIds referencing Question documents
+  name: string;
+  description: string; // optional
+  title: string;
+  questions: Types.ObjectId[];
 }
