@@ -6,19 +6,19 @@ export class CreateAppraisalDto {
   public manageeId: Types.ObjectId;
 
   @IsMongoId()
-  managerId: Types.ObjectId;
+  public managerId: Types.ObjectId;
 
   @IsMongoId()
-  formId: Types.ObjectId;
+  public ormId: Types.ObjectId;
 
   @IsString()
-  status: string;
+  public status: string;
 
   @IsJSON()
-  answers: JSON;
+  public answers: JSON;
 
   @IsMongoId()
-  reviewId: Types.ObjectId;
+  public reviewId: Types.ObjectId;
 
   @IsString()
   public deadline: Date;

@@ -1,5 +1,5 @@
-import mongoose, { model, Schema, Document } from 'mongoose';
-import { User } from '@interfaces/users.interface';
+import mongoose, { model, Schema } from 'mongoose';
+import { Appraisal } from '@interfaces/appraisal.interface';
 
 const appraisalSchema: Schema = new Schema({
   manageeId: {
@@ -42,6 +42,6 @@ const appraisalSchema: Schema = new Schema({
   },
 });
 
-const appraisalModel = model<User & Document>('Appraisal', appraisalSchema);
+const appraisalModel = model<Appraisal>('Appraisal', appraisalSchema);
 
 export default appraisalModel;
