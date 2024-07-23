@@ -3,7 +3,7 @@ const getRoleLabel = (
 ) => {
   const roleMapping = {
     employee: "Employee",
-    head_of_department: "Head of Department",
+    head_of_department: "Head of Department (HOD)",
     business_owner: "Business Owner",
   };
 
