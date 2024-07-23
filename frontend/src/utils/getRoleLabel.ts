@@ -1,6 +1,6 @@
-const getRoleLabel = (
-  role: "employee" | "head_of_department" | "business_owner"
-) => {
+import { RoleOptions } from "@/types/user.type";
+
+const getRoleLabel = (role: RoleOptions) => {
   const roleMapping = {
     employee: "Employee",
     head_of_department: "Head of Department (HOD)",

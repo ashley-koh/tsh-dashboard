@@ -1,4 +1,6 @@
-const getDeptLabel = (dept: "hr" | "others") => {
+import { DepartmentOptions } from "@/types/user.type";
+
+const getDeptLabel = (dept: DepartmentOptions) => {
   const deptMapping = {
     hr: "Human Resources (HR)",
     others: "Others",

@@ -1,6 +1,6 @@
-const getEmploymentLabel = (
-  role: "full_time" | "part_time" | "intern" | "temp"
-) => {
+import { EmploymentStatusOptions } from "@/types/user.type";
+
+const getEmploymentLabel = (employment: EmploymentStatusOptions) => {
   const mapping = {
     full_time: "Full time",
     part_time: "Part time",
@@ -8,7 +8,7 @@ const getEmploymentLabel = (
     temp: "Temporary",
   };
 
-  return mapping[role];
+  return mapping[employment];
 };
 
 export default getEmploymentLabel;
