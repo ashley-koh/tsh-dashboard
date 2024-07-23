@@ -6,7 +6,7 @@ import FormService from '@services/form.service';
 class FormController {
   public formService = new FormService();
 
-  public createQuestion = async (
+  public createForm = async (
     req: Request,
     res: Response,
     next: NextFunction,
