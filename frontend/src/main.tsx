@@ -25,7 +25,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<App />}>
-              <Route path="/" element={<InfoHome />} />
+              <Route path="/home" element={<InfoHome />} />
               <Route path="/statistics" element={<DepartmentStatistics />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/appraisals" element={<AppraisalForm />} />

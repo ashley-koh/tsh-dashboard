@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import {
   Alert,
   Button,
@@ -28,7 +28,7 @@ const RegisterModal: React.FC = () => {
   // If user has auth token and enters register page, redirect to home page
   useEffect(() => {
     if (auth.authenticated) {
-      navigate("/");
+      redirect("/home");
     }
   });
 
