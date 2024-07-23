@@ -4,18 +4,19 @@
 
 .nav {
   display: flex;
+  flex-shrink: 0;
   justify-content: space-between;
   align-items: center;
   background-color: #0f172a;
   color: white;
   position: sticky;
   top: 0;
-  padding: 1rem;
+  padding: 1rem 2rem;
   width: 100%;
   z-index: 1000; /* Ensure it stays on top */
 }
 
-.logo {
+.logo-container {
   display: flex;
   align-items: center;
   background-color: white; /* Add white background */
@@ -23,7 +24,7 @@
   border-radius: 8px; /* Optional: Add rounded corners */
 }
 
-.logo img {
+.logo-container img {
   max-height: 50px; /* Adjust the maximum height as needed */
   max-width: 120px; /* Adjust the maximum width as needed */
   width: auto; /* Ensure the aspect ratio is maintained */
@@ -40,6 +41,7 @@
 
 .nav li {
   margin: 0 0.5rem;
+  font-size: 12px;
 }
 
 .nav a {
@@ -49,8 +51,12 @@
   border-radius: 0.5rem;
 }
 
-.nav a:not(.active):hover {
+.nav a:not(.active):not(.logout):hover {
   background-color: #172554;
+}
+
+.logout {
+  background-color: red;
 }
 
 @media (max-width: 480px) {

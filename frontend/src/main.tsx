@@ -6,6 +6,10 @@ import "./index.css";
 import App from "./App";
 import DepartmentStatistics from "./pages/Dashboard/DepartmentStatistics";
 import AppraisalForms from "./pages/AppraisalForms";
+import AppraisalForm from "./pages/AppraisalForms/AppraisalForm";
+import Dashboard from "./pages/AppraisalForms/Dashboard";
+import FormEditor from "./pages/AppraisalForms/FormEditor";
+import InfoHome from "./pages/InfoHome";
 import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
 import DetailedEmployeeStats from "./pages/Dashboard/DetailedEmployeeStats";
@@ -29,6 +33,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                 <Route path="employee/:employeeId" element={<DetailedEmployeeStats />} />
               </Route>
               <Route path="appraisals" element={<AppraisalForms />} />
+              <Route path="/" element={<InfoHome />} />
+              <Route path="/statistics" element={<DepartmentStatistics />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/appraisals" element={<AppraisalForm />} />
+              <Route path="/edit" element={<FormEditor />} />
             </Route>
           </Route>
         </Routes>
