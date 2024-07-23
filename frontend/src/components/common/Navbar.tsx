@@ -1,5 +1,12 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import {
+  HomeOutlined,
+  PieChartOutlined,
+  FormOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
+import { Space } from "antd";
 
 import useAuth from "@/context/auth/useAuth";
 import "./Navbar.css";
@@ -22,7 +29,10 @@ const Navbar: React.FC = () => {
               to="/"
               className={({ isActive }) => (isActive ? "active-nav" : "")}
             >
-              Home
+              <Space>
+                <HomeOutlined />
+                Home
+              </Space>
             </NavLink>
           </li>
           {auth.user && roles.includes(auth.user.role) && (
@@ -31,7 +41,10 @@ const Navbar: React.FC = () => {
                 to="/statistics"
                 className={({ isActive }) => (isActive ? "active-nav" : "")}
               >
-                Department Statistics
+                <Space>
+                  <PieChartOutlined />
+                  Department Statistics
+                </Space>
               </NavLink>
             </li>
           )}
@@ -40,12 +53,18 @@ const Navbar: React.FC = () => {
               to="/dashboard"
               className={({ isActive }) => (isActive ? "active-nav" : "")}
             >
-              Appraisals
+              <Space>
+                <FormOutlined />
+                Appraisals
+              </Space>
             </NavLink>
           </li>
           <li>
             <NavLink to="/" className="logout" onClick={auth.logout}>
-              Logout
+              <Space>
+                <LogoutOutlined />
+                Logout
+              </Space>
             </NavLink>
           </li>
         </ul>

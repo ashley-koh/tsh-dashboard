@@ -1,27 +1,20 @@
-.active-nav {
-  background-color: #5a81ee;
-}
-
 .nav {
   display: flex;
   flex-shrink: 0;
   justify-content: space-between;
   align-items: center;
-  background-color: #0f172a;
-  color: white;
   position: sticky;
   top: 0;
-  padding: 1rem 2rem;
   width: 100%;
   z-index: 1000; /* Ensure it stays on top */
+  border-bottom: 1px solid #0505050f;
 }
 
 .logo-container {
   display: flex;
   align-items: center;
   background-color: white; /* Add white background */
-  padding: 0.5rem; /* Optional: Add some padding for better appearance */
-  border-radius: 8px; /* Optional: Add rounded corners */
+  padding: 10px 2rem; /* Optional: Add some padding for better appearance */
 }
 
 .logo-container img {
@@ -35,28 +28,35 @@
 .nav ul {
   display: flex;
   list-style: none;
-  margin: 0;
   padding: 0;
+  margin-right: 2rem;
 }
 
 .nav li {
   margin: 0 0.5rem;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .nav a {
   text-decoration: none;
-  color: white;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
+  color: black;
+  padding: 10px;
+  padding-bottom: 1rem;
+}
+
+.active-nav {
+  color: #4096ff !important;
+  border-bottom: 1px solid #4096ff;
+  text-decoration: none;
 }
 
 .nav a:not(.active-nav):not(.logout):hover {
-  background-color: #172554;
+  border-bottom: 1px solid #4096ff;
 }
 
 .logout:hover {
-  background-color: red;
+  color: #ff4d4f;
+  border-bottom: 1px solid #ff4d4f;
 }
 
 @media (max-width: 480px) {
