@@ -5,7 +5,6 @@ import "./index.css";
 
 import App from "./App";
 import DepartmentStatistics from "./pages/Dashboard/DepartmentStatistics";
-import AppraisalForms from "./pages/AppraisalForms";
 import AppraisalForm from "./pages/AppraisalForms/AppraisalForm";
 import Dashboard from "./pages/AppraisalForms/Dashboard";
 import FormEditor from "./pages/AppraisalForms/FormEditor";
@@ -25,16 +24,23 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          
+
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<App />}>
-              <Route element={<RoleBasedRoute roles={['hr', 'head_of_department']} />}>
+              <Route
+                element={
+                  <RoleBasedRoute
+                    roles={["business_owner", "head_of_department"]}
+                  />
+                }
+              >
                 <Route path="statistics" element={<DepartmentStatistics />} />
-                <Route path="employee/:employeeId" element={<DetailedEmployeeStats />} />
+                <Route
+                  path="employee/:employeeId"
+                  element={<DetailedEmployeeStats />}
+                />
               </Route>
-              <Route path="appraisals" element={<AppraisalForms />} />
               <Route path="/" element={<InfoHome />} />
-              <Route path="/statistics" element={<DepartmentStatistics />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/appraisals" element={<AppraisalForm />} />
               <Route path="/edit" element={<FormEditor />} />

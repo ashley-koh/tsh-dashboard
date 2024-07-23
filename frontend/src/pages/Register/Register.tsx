@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Alert,
-  Button,
-  Checkbox,
-  Flex,
-  Form,
-  Input,
-  Select
-} from "antd";
+import { Alert, Button, Checkbox, Flex, Form, Input, Select } from "antd";
 
 import RegisterForm from "./types/form.type";
 import User from "@/types/user.type";
@@ -33,6 +25,7 @@ const RegisterModal: React.FC = () => {
   });
 
   const onFinish = async (values: RegisterForm) => {
+    console.log(values);
     const user: User = {
       name: values.name,
       email: values.email,
@@ -155,7 +148,10 @@ const RegisterModal: React.FC = () => {
               { required: true, message: "Please input your Department!" },
             ]}
           >
-            <Input placeholder="Department" />
+            <Select placeholder="Department" showSearch>
+              <Select.Option value="hr">Human Resources (HR)</Select.Option>
+              <Select.Option value="other">Other</Select.Option>
+            </Select>
           </Form.Item>
 
           <Form.Item
