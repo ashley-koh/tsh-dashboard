@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Location, useLocation, useNavigate } from 'react-router-dom';
 import {
   CheckOutlined,
   CloseOutlined,
@@ -6,32 +7,115 @@ import {
   MessageOutlined,
   MinusCircleOutlined,
   PlusOutlined,
+  QuestionCircleOutlined,
   StarOutlined
 } from '@ant-design/icons';
-import { Button, Form, Input, Space, Switch } from 'antd';
+import {
+  Button,
+  Form,
+  FormInstance,
+  Input,
+  Popconfirm,
+  Space,
+  Switch
+} from 'antd';
+import { AxiosResponse } from 'axios';
+
+import FormType from '@/types/form.type';
+import IAppraisalForm from './types/form.type';
+import Question, { QuestionType } from '@/types/question.type';
+import axiosClient from "@/lib/axiosInstance";
 import './FormEditor.css';
 
 const { TextArea } = Input;
 
 const FormEditor: React.FC = () => {
-  const [form] = Form.useForm();
+  const client = axiosClient();
+  const location: Location<FormType | null> = useLocation();
+  const navigate = useNavigate();
+
+  const [form]: [FormInstance<IAppraisalForm>] = Form.useForm();
   const [fieldsCount, setFieldsCount] = useState<number[]>([]);
 
-  const handleCancel = () => {
-    alert('Resetting forms.');
-    form.resetFields();
-    setFieldsCount([]);
-  };
+  /* Run this useEffect on first form load */
+  useEffect(() => {
+    const fieldCount: number[] = [];
+    form.setFieldsValue({
+      formTitle: location.state === null ? '' : location.state.name,
+      sections: location.state === null ? [] : location.state.sections.map(section => {
+        fieldCount.push(section.questions.length);
+        return {
+          sectionTitle: section.title,
+          sectionDescription: section.description,
+          questions: section.questions.map(question => {
+            return {
+              _id: question._id,
+              question: question.description,
+              type: question.type === QuestionType.RATING,
+              required: question.required,
+            };
+          }),
+        };
+      }),
+    });
+    setFieldsCount(fieldCount);
+  }, [form, location.state]);
 
-  const handleSubmit = (values: object) => {
-    alert('Form successfully edited!');
-    console.log('Form Values:', values);
+  const handleSubmit = async (values: IAppraisalForm) => {
+    const appraisalForm: FormType = {
+      _id: location.state?._id,
+      name: values.formTitle,
+      sections: values.sections.map(section => {
+        const questions: Question[] = [];
+
+        section.questions.map(question => {
+          const newQuestion: Question = {
+            _id: question._id,
+            description: question.question,
+            type: question.type ? QuestionType.RATING : QuestionType.OPEN_ENDED,
+            required: question.required,
+          };
+          questions.push(newQuestion);
+
+          const questionPromise: Promise<AxiosResponse> = newQuestion._id === undefined ?
+            client.post('/question', newQuestion) :
+            client.put(`'/question/${newQuestion._id}`);
+          questionPromise.catch((err) => console.error(`Error in question edit submission: ${err}`));
+        });
+
+        return {
+          title: section.sectionTitle,
+          description: section.sectionDescription,
+          questions: questions
+        };
+      }),
+    };
+
+    const formPromise: Promise<AxiosResponse> = location.state?._id === undefined ?
+      client.post('/form', appraisalForm) :
+      client.put(`/form/${location.state?._id}`);
+    formPromise
+      .then(() => {
+        alert(`Form successfully ${location.state?._id === undefined ? 'created' : 'edited'}!`);
+        navigate('/dashboard');
+      })
+      .catch((err) => {
+        alert('Something went wrong. Please try again later.');
+        console.error(`Error in form edit submission: ${err}`);
+      });
   };
 
   const handleSectionAdd = () => {
     setFieldsCount([...fieldsCount, 0]);
     form.setFieldsValue({
-      sections: [...form.getFieldValue('sections'), { sectionTitle: '', sectionDescription: '', questions: [] }]
+      sections: [
+        ...form.getFieldValue('sections'),
+        {
+          sectionTitle: '',
+          sectionDescription: '',
+          questions: []
+        }
+      ]
     });
   };
 
@@ -49,16 +133,16 @@ const FormEditor: React.FC = () => {
     add();
   };
 
-  const handleQuestionRemove = (sectionIndex: number, questionIndex: number, remove: (name: number) => void) => {
+  const handleQuestionRemove = (
+      sectionIndex: number,
+      questionIndex: number,
+      remove: (name: number) => void
+  ) => {
     const newFieldsCount = fieldsCount.slice();
     newFieldsCount[sectionIndex]--;
     setFieldsCount(newFieldsCount);
     remove(questionIndex);
   };
-
-  useEffect(() => {
-    form.setFieldsValue({ sections: [] });
-  }, [form]);
 
   return (
     <Form
@@ -67,6 +151,16 @@ const FormEditor: React.FC = () => {
       onFinish={handleSubmit}
       layout='vertical'
     >
+      <Form.Item
+        name='formTitle'
+        hasFeedback
+        label='Title of Form:'
+        layout='horizontal'
+        rules={[{ required: true, message: 'Form title is required' }]}
+      >
+        <Input placeholder='Form title' />
+      </Form.Item>
+
       <Form.List name='sections'>
         {(sectionFields, { remove: removeSection }) => (
           <>
@@ -169,20 +263,28 @@ const FormEditor: React.FC = () => {
         )}
       </Form.List>
       <Form.Item className='submit-container'>
-        <Button
-          type='default'
-          htmlType='reset'
-          className='reset'
-          onClick={handleCancel}
+        <Popconfirm
+          title={`Cancel ${location.state?._id === undefined ? 'Create' : 'Edit'} Form`}
+          description='Are you sure you want to cancel?'
+          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+          onConfirm={() => navigate('/dashboard')}
+          okText='Yes'
+          cancelText='No'
         >
-          Cancel
-        </Button>
+          <Button
+            type='default'
+            htmlType='reset'
+            className='reset'
+          >
+            Cancel
+          </Button>
+        </Popconfirm>
         <Button
           type='primary'
           htmlType='submit'
           className='submit'
         >
-          Submit
+          Save
         </Button>
       </Form.Item>
     </Form>

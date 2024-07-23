@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Alert, Button, Checkbox, Flex, Form, Input, Select } from "antd";
+import { Link, redirect, useNavigate } from "react-router-dom";
+import {
+  Alert,
+  Button,
+  Checkbox,
+  Flex,
+  Form,
+  Input,
+  Select
+} from "antd";
 
 import RegisterForm from "./types/form.type";
 import User from "@/types/user.type";
@@ -20,7 +28,7 @@ const RegisterModal: React.FC = () => {
   // If user has auth token and enters register page, redirect to home page
   useEffect(() => {
     if (auth.authenticated) {
-      navigate("/");
+      redirect("/home");
     }
   });
 
