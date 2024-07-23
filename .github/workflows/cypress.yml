@@ -1,0 +1,62 @@
+name: Cypress Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    container:
+      image: cypress/browsers:node-20.14.0-chrome-126.0.6478.114-1-ff-127.0.1-edge-126.0.2592.61-1
+      options: --user 1001
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # Backend setup, build, and start
+    - name: Set up Node.js for backend
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install dependencies for backend
+      working-directory: ./backend
+      run: |
+        cp .env.development.example .env.development.local
+        npm install
+
+    - name: Build backend
+      working-directory: ./backend
+      run: npm run build
+
+    - name: Start backend
+      working-directory: ./backend
+      run: npm run start &
+
+    # Frontend setup, build, and test
+    - name: Set up Node.js for frontend
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install dependencies for frontend
+      working-directory: ./frontend
+      run: |
+        cp cypress.env.json.example cypress.env.json
+        npm install
+
+    - name: Build frontend
+      working-directory: ./frontend
+      run: npm run build
+
+    - name: Run Cypress tests
+      uses: cypress-io/github-action@v6
+      with:
+        working-directory: ./frontend
+        browser: chrome

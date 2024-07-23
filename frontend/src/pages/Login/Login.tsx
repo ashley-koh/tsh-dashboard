@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import { Flex, Button, Checkbox, Form, Input, Alert } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 
@@ -16,7 +16,7 @@ const LoginModal: React.FC = () => {
   // If user has auth token and enters login page, redirect to home page
   useEffect(() => {
     if (auth.authenticated) {
-      navigate("/");
+      redirect("/home");
     }
   });
 
@@ -30,6 +30,7 @@ const LoginModal: React.FC = () => {
         email: values.email,
         password: values.password,
       })
+      .then(() => navigate('/home'))
       .catch(() => setErrorMessage('Login failed.'));
   };
 
@@ -38,7 +39,12 @@ const LoginModal: React.FC = () => {
       <Flex vertical gap="middle">
         <img src={logoImage} className="logo" />
         {errorMessage && (
-          <Alert message={errorMessage} type="error" showIcon />
+          <Alert
+            showIcon
+            type='error'
+            data-cy='invalid-alert'
+            message={errorMessage}
+          />
         )}
         <Form
           name="normal_login"
@@ -47,6 +53,7 @@ const LoginModal: React.FC = () => {
         >
           <Form.Item
             name="email"
+            data-cy='email-validate'
             rules={[
               { type: "email", message: "The input is not a valid E-mail!" },
               { required: true, message: "Please input your Email!" },
@@ -55,17 +62,20 @@ const LoginModal: React.FC = () => {
             <Input
               prefix={<UserOutlined />}
               placeholder="Email"
+              data-cy='email-input'
               onChange={() => setErrorMessage('')}
             />
           </Form.Item>
           <Form.Item
             name="password"
+            data-cy='password-validate'
             rules={[{ required: true, message: "Please input your Password!" }]}
           >
             <Input
               prefix={<LockOutlined />}
               type="password"
               placeholder="Password"
+              data-cy='password-input'
               onChange={() => setErrorMessage('')}
             />
           </Form.Item>
@@ -77,6 +87,7 @@ const LoginModal: React.FC = () => {
             type="primary"
             htmlType="submit"
             className="login-form-button"
+            data-cy='login-form-button'
           >
             Log in
           </Button>

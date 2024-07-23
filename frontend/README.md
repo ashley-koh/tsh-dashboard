@@ -20,14 +20,22 @@ Open Docker on your local machine and leave it open in the background. Then, in 
 
 ```bash
 cd TSH_PROJ_DIR/frontend
-cp .env.development.example .env.development.local
 npm install
 npm run dev
 ```
 
+> [!NOTE]
+> Additional: Testing Setup
+>
+> 1. In the `TSH_PROJ_DIR/frontend` folder, run the command
+> ```bash
+> cp cypress.env.json.example cypress.env.json
+> ```
+> 2. Navigate to the `frontend/cypress.env.json` file and replace the `email` and `password` fields with a valid account email and password.
+
 Short explanations on what each command does:
 
-- `cp .env.development.example .env.development.local`: Copy the example environment variables into an actual one.
+- `cp cypress.env.json.example cypress.env.json`: Copy the example Cypress environment variables into a local copy for actual usage.
 - `npm install`: Installs all packages listed in `package.json`
 - `npm run dev`: Run Express App in `development` mode.
 

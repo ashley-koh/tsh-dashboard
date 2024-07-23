@@ -19,7 +19,7 @@ class FormRoutes implements Routes {
     this.router.post(
       `${this.path}/createForm`,
       validationMiddleware(CreateFormDto, 'body'),
-      this.formController.createQuestion,
+      this.formController.createForm,
     );
 
     this.router.get(`${this.path}/:id`, this.formController.getFormById);

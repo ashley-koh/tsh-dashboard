@@ -2,7 +2,7 @@ import { IsNumber, IsString, Max, Min, ValidateIf } from 'class-validator';
 
 export class CreateAnswerDto {
   @IsString()
-  public questionID: string;
+  public question: string;
 
   @IsNumber()
   @Min(0)
@@ -16,5 +16,7 @@ export class CreateAnswerDto {
 
   @ValidateIf((o) => o.type === 1)
   @IsNumber()
-  public closedAnswer: number;
+  @Min(1)
+  @Max(5)
+  public rating: number;
 }

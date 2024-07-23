@@ -40,7 +40,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                   element={<DetailedEmployeeStats />}
                 />
               </Route>
-              <Route path="/" element={<InfoHome />} />
+              <Route path="/home" element={<InfoHome />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/appraisals" element={<AppraisalForm />} />
               <Route path="/edit" element={<FormEditor />} />

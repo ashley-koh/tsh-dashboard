@@ -1,0 +1,30 @@
+name: Jest Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js for backend
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install dependencies for backend
+      working-directory: ./backend
+      run: npm install
+
+    - name: Run backend tests
+      working-directory: ./backend
+      run: npm run test
