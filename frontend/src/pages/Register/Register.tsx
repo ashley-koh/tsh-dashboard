@@ -33,6 +33,7 @@ const RegisterModal: React.FC = () => {
   });
 
   const onFinish = async (values: RegisterForm) => {
+    console.log(values);
     const user: User = {
       name: values.name,
       email: values.email,
@@ -155,7 +156,10 @@ const RegisterModal: React.FC = () => {
               { required: true, message: "Please input your Department!" },
             ]}
           >
-            <Input placeholder="Department" />
+            <Select placeholder="Department" showSearch>
+              <Select.Option value="hr">Human Resources (HR)</Select.Option>
+              <Select.Option value="other">Other</Select.Option>
+            </Select>
           </Form.Item>
 
           <Form.Item
