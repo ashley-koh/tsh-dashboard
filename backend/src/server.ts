@@ -6,6 +6,7 @@ import QuestionRoute from '@routes/question.route';
 import FormRoute from '@routes/form.route';
 import AnswerRoutes from './routes/answer.route';
 import EmailRoutes from './routes/email.route';
+import AppraisalRoutes from './routes/appraisal.route';
 import App from './app';
 
 validateEnv();
@@ -18,6 +19,7 @@ const app = new App([
   new FormRoute(),
   new AnswerRoutes(),
   new EmailRoutes(),
+  new AppraisalRoutes(),
 ]);
 
 app.listen();

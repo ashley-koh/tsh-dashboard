@@ -1,10 +1,4 @@
-import {
-  IsEmail,
-  IsIn,
-  IsString,
-  IsStrongPassword,
-  Length,
-} from 'class-validator';
+import { IsEmail, IsIn, IsString, IsStrongPassword } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
@@ -22,8 +16,8 @@ export class CreateUserDto {
   })
   public password: string;
 
-  @Length(10, 10)
-  public employeeID: string;
+  @IsString()
+  public employeeId: string;
 
   @IsIn(['employee', 'head_of_department', 'business_owner'])
   public role: string;

@@ -2,25 +2,42 @@ import mongoose, { model, Schema, Document } from 'mongoose';
 import { User } from '@interfaces/users.interface';
 
 const appraisalSchema: Schema = new Schema({
-  user: {
+  manageeId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },
 
-  headOfDept: {
+  managerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },
 
-  dateCreated: {
-    type: Date,
+  formId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Form',
     required: true,
   },
 
-  reviewPeriod: {
+  status: {
     type: String,
+    required: true,
+  },
+
+  answers: {
+    type: JSON,
+    required: true,
+  },
+
+  reviewId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Form',
+    required: true,
+  },
+
+  deadline: {
+    type: Date,
     required: true,
   },
 });
