@@ -31,7 +31,7 @@ const Navbar: React.FC = () => {
                   {auth.user.name}
                 </Tag>
                 <Tag color="geekblue">{getRoleLabel(auth.user.role)}</Tag>
-                <Tag color="volcano">{auth.user.employeeID}</Tag>
+                <Tag color="volcano">{auth.user.employeeId}</Tag>
               </>
             )}
           </div>

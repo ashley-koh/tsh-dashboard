@@ -17,7 +17,8 @@ import {
   Input,
   Popconfirm,
   Space,
-  Switch
+  Switch,
+  message,
 } from 'antd';
 import { AxiosResponse } from 'axios';
 
@@ -61,7 +62,7 @@ const FormEditor: React.FC = () => {
     setFieldsCount(fieldCount);
   }, [form, location.state]);
 
-  const handleSubmit = async (values: IAppraisalForm) => {
+  const handleSubmit = (values: IAppraisalForm) => {
     const appraisalForm: FormType = {
       _id: location.state?._id,
       name: values.formTitle,
@@ -69,17 +70,20 @@ const FormEditor: React.FC = () => {
         const questions: Question[] = [];
 
         section.questions.map(question => {
-          const newQuestion: Question = {
-            _id: question._id,
+          let newQuestion: Question = {
             description: question.question,
             type: question.type ? QuestionType.RATING : QuestionType.OPEN_ENDED,
             required: question.required,
           };
+          if (question._id !== undefined) {
+            newQuestion = { ...newQuestion, _id: question._id };
+          }
+          console.log(newQuestion);
           questions.push(newQuestion);
 
-          const questionPromise: Promise<AxiosResponse> = newQuestion._id === undefined ?
-            client.post('/question', newQuestion) :
-            client.put(`'/question/${newQuestion._id}`);
+          const questionPromise: Promise<AxiosResponse> = newQuestion?._id === undefined ?
+            client.post('/question/createQuestion', newQuestion) :
+            client.put(`/question/${newQuestion._id}`, newQuestion);
           questionPromise.catch((err) => console.error(`Error in question edit submission: ${err}`));
         });
 
@@ -92,15 +96,15 @@ const FormEditor: React.FC = () => {
     };
 
     const formPromise: Promise<AxiosResponse> = location.state?._id === undefined ?
-      client.post('/form', appraisalForm) :
-      client.put(`/form/${location.state?._id}`);
+      client.post('/form/createForm', appraisalForm) :
+      client.put(`/form/${location.state?._id}`, appraisalForm);
     formPromise
       .then(() => {
-        alert(`Form successfully ${location.state?._id === undefined ? 'created' : 'edited'}!`);
+        message.success(`Form successfully ${location.state?._id === undefined ? 'created' : 'edited'}!`);
         navigate('/dashboard');
       })
       .catch((err) => {
-        alert('Something went wrong. Please try again later.');
+        message.error('Something went wrong. Please try again later.');
         console.error(`Error in form edit submission: ${err}`);
       });
   };

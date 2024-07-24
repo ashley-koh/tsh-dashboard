@@ -1,9 +1,9 @@
 type User = {
-  _id?: string,
+  _id?: string;
   name: string;
   email: string;
   password: string;
-  employeeID: string;
+  employeeId: string;
   role: RoleOptions;
   jobTitle: string;
   dept: DepartmentOptions;

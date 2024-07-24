@@ -19,7 +19,7 @@ const RoleBasedRoute: React.FC<RoleBasedRouteProps> = ({ roles }) => {
   }
 
   if (!cur_user || !roles.includes(cur_user.role)) {
-    return <Navigate to="/" />;
+    return <Navigate to="/login" />;
   }
 
   return <Outlet />;

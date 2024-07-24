@@ -3,7 +3,7 @@ export interface User {
   email: string;
   password: string;
   name: string;
-  employeeID: string;
+  employeeId: string;
   role: string;
   jobTitle: string;
   dept: string;

@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import "./index.css";
 
 import App from "./App";
@@ -27,6 +27,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<App />}>
+              <Route index element={<Navigate to="/home" replace={true} />} />
+              <Route path="/home" element={<InfoHome />} />
               <Route
                 element={
                   <RoleBasedRoute
@@ -40,7 +42,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                   element={<DetailedEmployeeStats />}
                 />
               </Route>
-              <Route path="/home" element={<InfoHome />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/appraisals" element={<AppraisalForm />} />
               <Route path="/edit" element={<FormEditor />} />
