@@ -1,6 +1,13 @@
-import React from "react";
-import { Button, Collapse, Form, Input, Rate } from "antd";
-import "./AppraisalForm.css";
+import React from 'react';
+import {
+  Button,
+  Collapse,
+  Form,
+  Input,
+  Rate,
+  message,
+} from 'antd';
+import './AppraisalForm.css';
 
 const { TextArea } = Input;
 const { Panel } = Collapse;
@@ -185,7 +192,7 @@ const AppraisalForm: React.FC = () => {
   const [form] = Form.useForm();
 
   const handleSubmit = (values: object) => {
-    alert("Form successfully submitted!");
+    message.success("Form successfully submitted!");
     console.log("Form Values:", values); // TODO debug
   };
 

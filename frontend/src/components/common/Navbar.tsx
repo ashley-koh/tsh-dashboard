@@ -6,7 +6,7 @@ import {
   FormOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
-import { Space, Tag } from "antd";
+import { Popconfirm, Space, Tag } from "antd";
 
 import useAuth from "@/context/auth/useAuth";
 import "./Navbar.css";
@@ -31,7 +31,7 @@ const Navbar: React.FC = () => {
                   {auth.user.name}
                 </Tag>
                 <Tag color="geekblue">{getRoleLabel(auth.user.role)}</Tag>
-                <Tag color="volcano">{auth.user.employeeID}</Tag>
+                <Tag color="volcano">{auth.user.employeeId}</Tag>
               </>
             )}
           </div>
@@ -74,12 +74,21 @@ const Navbar: React.FC = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/" className="logout" onClick={auth.logout}>
-                <Space>
-                  <LogoutOutlined />
-                  Logout
-                </Space>
-              </NavLink>
+              <Popconfirm
+                title="Logout"
+                description="Are you sure you want to Logout?"
+                onConfirm={auth.logout}
+                placement="bottomRight"
+                okText="Yes"
+                cancelText="No"
+              >
+                <NavLink to="/" className="logout">
+                  <Space>
+                    <LogoutOutlined />
+                    Logout
+                  </Space>
+                </NavLink>
+              </Popconfirm>
             </li>
           </ul>
         </nav>

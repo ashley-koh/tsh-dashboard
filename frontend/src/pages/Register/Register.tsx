@@ -12,7 +12,7 @@ import {
 
 import RegisterForm from "./types/form.type";
 import User from "@/types/user.type";
-import axiosClient from "@/lib/axiosInstance";
+import axiosClient from '@/lib/axiosInstance';
 import logoImage from "@/assets/logo.png";
 import useAuth from "@/context/auth/useAuth";
 import "./Register.css";
@@ -38,7 +38,7 @@ const RegisterModal: React.FC = () => {
       name: values.name,
       email: values.email,
       password: values.password,
-      employeeID: values.employeeID,
+      employeeId: values.employeeId,
       role: values.role,
       jobTitle: values.jobTitle,
       dept: values.dept,
@@ -52,6 +52,7 @@ const RegisterModal: React.FC = () => {
       })
       .catch((err) => {
         setErrorMessage(err.response.data.message);
+        console.error(err);
       });
   };
 
@@ -122,7 +123,7 @@ const RegisterModal: React.FC = () => {
           </Form.Item>
 
           <Form.Item
-            name="employeeID"
+            name="employeeId"
             label="Employee ID"
             rules={[
               { required: true, message: "Please input your employee ID!" },

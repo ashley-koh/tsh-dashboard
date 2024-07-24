@@ -1,13 +1,13 @@
 import Question from "./question.type";
 
 type FormType = {
-  _id?: string,
-  name: string,
+  _id?: string;
+  name: string;
   sections: {
-    title: string,
-    description: string,
-    questions: Question[],
-  }[],
+    title: string;
+    description: string;
+    questions: Question[];
+  }[];
 };
 
 export default FormType;

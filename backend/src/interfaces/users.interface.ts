@@ -1,6 +1,5 @@
 export interface User {
   _id: string;
-  employeeID: string;
   appraisals: string[];
   name: string;
   dept: string;
@@ -8,4 +7,7 @@ export interface User {
   mobileNo: string;
   email: string;
   password: string;
+  employeeId: string;
+  jobTitle: string;
+  employmentStatus: string;
 }

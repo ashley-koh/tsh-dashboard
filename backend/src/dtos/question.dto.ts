@@ -10,7 +10,7 @@ import {
 export class CreateQuestionDto {
   @IsString()
   @IsNotEmpty()
-  description: string;
+  public description: string;
 
   @IsNumber()
   @Min(0)

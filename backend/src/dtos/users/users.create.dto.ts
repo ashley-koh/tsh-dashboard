@@ -1,9 +1,6 @@
 import { IsEmail, IsIn, IsString, MinLength } from 'class-validator';
 
 export default class CreateUserDto {
-  @IsString()
-  public employeeID: string;
-
   @IsString({ each: true })
   public appraisals: string[];
 
@@ -25,4 +22,13 @@ export default class CreateUserDto {
   @IsString()
   @MinLength(8)
   public password: string;
+
+  @IsString()
+  public employeeId: string;
+
+  @IsString()
+  public jobTitle: string;
+
+  @IsIn(['full_time', 'part_time', 'intern', 'temp'])
+  public employmentStatus: string;
 }
