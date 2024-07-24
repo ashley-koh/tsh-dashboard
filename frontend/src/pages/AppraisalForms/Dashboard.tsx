@@ -17,12 +17,13 @@ import {
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 
+import FormSelect from './FormSelect';
+import Scheduler from './Scheduler';
 import Appraisal from '@/types/appraisal.type';
 import Loading from '@/components/common/Loading';
-import Scheduler from './Scheduler';
 import User from '@/types/user.type';
-import axiosClient from "@/lib/axiosInstance";
-import useAuth from "@/context/auth/useAuth";
+import axiosClient from '@/lib/axiosInstance';
+import useAuth from '@/context/auth/useAuth';
 import './Dashboard.css';
 
 const Dashboard: React.FC = () => {
@@ -166,10 +167,6 @@ const Dashboard: React.FC = () => {
     return info.originNode;
   };
 
-  const handleCloseScheduler = () => {
-    setShowScheduler(false);
-  };
-
   return (
     <div>
       <Layout>
@@ -191,7 +188,8 @@ const Dashboard: React.FC = () => {
           </Card>
         )}
         <Calendar cellRender={cellRender} />
-        {showScheduler && <Scheduler onClose={handleCloseScheduler} />}
+        {showEdit && <FormSelect onClose={() => setShowEdit(false)} />}
+        {showScheduler && <Scheduler onClose={() => setShowScheduler(false)} />}
       </Layout>
       {auth.user.role !== 'employee' && (
         <FloatButton
@@ -207,7 +205,7 @@ const Dashboard: React.FC = () => {
           icon={<EditOutlined />}
           style={{ bottom: auth.user.role !== 'employee' ? 100 : 48 }}
           tooltip={<div>Create / Edit a form template</div>}
-          onClick={() => navigate('/edit')} // FIXME add proper state
+          onClick={() => setShowEdit(true)}
         />
       )}
     </div>

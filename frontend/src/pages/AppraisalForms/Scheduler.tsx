@@ -32,6 +32,8 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
   const [selectedEmployee, setSelectedEmployee] = useState<User | null>(null);
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const [selectedAppraisalForm, setSelectedAppraisalForm] = useState<FormType | null>(null);
+  const [selectedReviewForm, setSelectedReviewForm] = useState<FormType | null>(null);
+
 
   if (auth.user === null) {
     console.error('User is not logged in, something went wrong.');
@@ -88,6 +90,16 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
     loadData();
   }, []);
 
+  const onChangeForm = (value: string | null, appraisal: boolean) => {
+    const newSelectedForm = forms.find(form => form._id === value);
+    if (appraisal) {
+      setSelectedAppraisalForm(newSelectedForm === undefined ? null : newSelectedForm);
+    }
+    else {
+      setSelectedReviewForm(newSelectedForm === undefined ? null : newSelectedForm);
+    }
+  }
+
   const onChangeUser = (value: string | null) => {
     const newSelectedEmployee = employees.find(employee => employee._id === value);
     setSelectedEmployee(newSelectedEmployee === undefined ? null : newSelectedEmployee);
@@ -102,6 +114,11 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
     else if (selectedDate === null) {
       console.error('Date is not selected, something went wrong.');
       alert('Cannot find selected date. Please try again.');
+      return;
+    }
+    else if (selectedAppraisalForm?._id === undefined || selectedReviewForm?._id === undefined) {
+      console.error('Form is not selected, something went wrong.');
+      alert('Cannot find selected form(s). Please try again.');
       return;
     }
 
@@ -131,10 +148,10 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
       const newAppraisal: Appraisal = {
         manageeId: auth.user._id,
         managerId: selectedEmployee._id,
-        formId: auth.user._id, // TODO
+        formId: selectedAppraisalForm._id,
         status: 'in review',
         answers: '{}',
-        reviewId: auth.user._id, // TODO
+        reviewId: selectedReviewForm._id,
         deadline: selectedDate.toDate(),
       }
       client.post<Appraisal>('/appraisal/createAppraisal', newAppraisal);
@@ -206,6 +223,46 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
           <DatePicker minDate={dayjs()}
             showTime={{ format: 'HH:mm' }}
             onOk={setSelectedDate}
+          />
+        </Form.Item>
+        <Form.Item
+          name='pick-appraisal'
+          label='Appraisal Form:'
+          rules={[
+            { required: true, message: 'Please select a form.' },
+          ]}
+        >
+          <Select
+            showSearch
+            placeholder='Select a form'
+            optionFilterProp='label'
+            onChange={(value: string | null) => onChangeForm(value, true)}
+            options={
+              forms.map(form => ({
+                value: form._id,
+                label: form.name,
+              }))
+            }
+          />
+        </Form.Item>
+        <Form.Item
+          name='pick-review'
+          label='Review Form:'
+          rules={[
+            { required: true, message: 'Please select a form.' },
+          ]}
+        >
+          <Select
+            showSearch
+            placeholder='Select a form'
+            optionFilterProp='label'
+            onChange={(value: string | null) => onChangeForm(value, false)}
+            options={
+              forms.map(form => ({
+                value: form._id,
+                label: form.name,
+              }))
+            }
           />
         </Form.Item>
       </Form>
