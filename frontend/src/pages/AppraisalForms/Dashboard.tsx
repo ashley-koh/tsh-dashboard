@@ -8,6 +8,7 @@ import {
   Card,
   FloatButton,
   Layout,
+  message,
 } from 'antd';
 import {
   CalendarOutlined,
@@ -38,7 +39,7 @@ const Dashboard: React.FC = () => {
 
   if (auth.user === null) {
     console.error('User is not logged in, something went wrong.');
-    alert('Something went wrong. Please try again later.');
+    message.error('Something went wrong. Please try again later.');
     return <Loading />;
   }
 
@@ -48,7 +49,7 @@ const Dashboard: React.FC = () => {
       return response.data.data;
     }
     catch (err) {
-      alert('Something went wrong. Please try again later.');
+      message.error('Something went wrong. Please try again later.');
       console.error(err);
       return [];
     };
@@ -60,7 +61,7 @@ const Dashboard: React.FC = () => {
       return response.data.data;
     }
     catch (err) {
-      alert('Something went wrong. Please try again later.');
+      message.error('Something went wrong. Please try again later.');
       console.error(err);
       return {
         name: 'name',
@@ -108,7 +109,7 @@ const Dashboard: React.FC = () => {
         });
       }
       catch (err) {
-        alert('Something went wrong. Please try again later.');
+        message.error('Something went wrong. Please try again later.');
         console.error(err);
       }
       finally {

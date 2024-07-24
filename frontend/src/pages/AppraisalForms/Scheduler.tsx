@@ -37,7 +37,7 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
 
   if (auth.user === null) {
     console.error('User is not logged in, something went wrong.');
-    alert('Something went wrong. Please try again later.');
+    message.error('Something went wrong. Please try again later.');
     return <Loading />;
   }
 
@@ -47,7 +47,7 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
       return response.data.data;
     }
     catch (err) {
-      alert('Something went wrong. Please try again later.');
+      message.error('Something went wrong. Please try again later.');
       console.error(err);
       return [];
     };
@@ -59,7 +59,7 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
       return response.data.data;
     }
     catch (err) {
-      alert('Something went wrong. Please try again later.');
+      message.error('Something went wrong. Please try again later.');
       console.error(err);
       return [];
     };
@@ -82,7 +82,7 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
         setForms(allForms);
       }
       catch (err) {
-        alert('Something went wrong. Please try again later.');
+        message.error('Something went wrong. Please try again later.');
         console.error(err);
       }
     };
@@ -108,17 +108,17 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
   const handleSubmit = async () => {
     if (auth.user?._id === undefined || selectedEmployee?._id === undefined) {
       console.error('User is not logged in, something went wrong.');
-      alert('Something went wrong. Please try again later.');
+      message.error('Something went wrong. Please try again later.');
       return;
     }
     else if (selectedDate === null) {
       console.error('Date is not selected, something went wrong.');
-      alert('Cannot find selected date. Please try again.');
+      message.error('Cannot find selected date. Please try again.');
       return;
     }
     else if (selectedAppraisalForm?._id === undefined || selectedReviewForm?._id === undefined) {
       console.error('Form is not selected, something went wrong.');
-      alert('Cannot find selected form(s). Please try again.');
+      message.error('Cannot find selected form(s). Please try again.');
       return;
     }
 
@@ -162,7 +162,7 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
     }
     catch (err) {
       console.error('User is not logged in, something went wrong.');
-      alert('Something went wrong. Please try again later.');
+      message.error('Something went wrong. Please try again later.');
     }
   }
 

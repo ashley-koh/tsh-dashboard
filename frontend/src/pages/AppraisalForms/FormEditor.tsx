@@ -17,7 +17,8 @@ import {
   Input,
   Popconfirm,
   Space,
-  Switch
+  Switch,
+  message,
 } from 'antd';
 import { AxiosResponse } from 'axios';
 
@@ -96,11 +97,11 @@ const FormEditor: React.FC = () => {
       client.put(`/form/${location.state?._id}`);
     formPromise
       .then(() => {
-        alert(`Form successfully ${location.state?._id === undefined ? 'created' : 'edited'}!`);
+        message.success(`Form successfully ${location.state?._id === undefined ? 'created' : 'edited'}!`);
         navigate('/dashboard');
       })
       .catch((err) => {
-        alert('Something went wrong. Please try again later.');
+        message.error('Something went wrong. Please try again later.');
         console.error(`Error in form edit submission: ${err}`);
       });
   };

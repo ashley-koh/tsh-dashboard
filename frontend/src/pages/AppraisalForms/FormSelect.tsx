@@ -5,6 +5,7 @@ import {
   Form,
   Modal,
   Select,
+  message,
 } from 'antd';
 
 import FormType from '@/types/form.type';
@@ -27,7 +28,7 @@ const FormSelect: React.FC<FormSelectProps> = ({ onClose }) => {
 
   if (auth.user === null) {
     console.error('User is not logged in, something went wrong.');
-    alert('Something went wrong. Please try again later.');
+    message.error('Something went wrong. Please try again later.');
     return <Loading />;
   }
 
@@ -37,7 +38,7 @@ const FormSelect: React.FC<FormSelectProps> = ({ onClose }) => {
       return response.data.data;
     }
     catch (err) {
-      alert('Something went wrong. Please try again later.');
+      message.error('Something went wrong. Please try again later.');
       console.error(err);
       return [];
     };
@@ -53,7 +54,7 @@ const FormSelect: React.FC<FormSelectProps> = ({ onClose }) => {
         setForms(allForms);
       }
       catch (err) {
-        alert('Something went wrong. Please try again later.');
+        message.error('Something went wrong. Please try again later.');
         console.error(err);
       }
     };
