@@ -7,7 +7,7 @@ import path from 'path';
 import { promisify } from 'util';
 import appraisalModel from '@/models/appraisal.model';
 
-class EmployeeReport {
+class ReportService {
   public users = userModel;
 
   public appraisals = appraisalModel;
@@ -79,4 +79,4 @@ class EmployeeReport {
   }
 }
 
-export default EmployeeReport;
+export default ReportService;

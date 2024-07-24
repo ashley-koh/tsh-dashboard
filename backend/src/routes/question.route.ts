@@ -17,7 +17,7 @@ class QuestionRoutes implements Routes {
 
   private initializeRoutes() {
     this.router.post(
-      `${this.path}/createQuestion`,
+      `${this.path}/`,
       validationMiddleware(CreateQuestionDto, 'body'),
       this.questionController.createQuestion,
     );
