@@ -1,6 +1,5 @@
 import React from "react";
-import { Avatar, Card, Row, Col, Progress, Flex } from "antd";
-import type { ProgressProps } from "antd";
+import { Row, Col } from "antd";
 import AccountDetails from "./components/AccountDetails";
 import OverallRating from "./components/OverallRating";
 import ModuleProgress from "./components/ModuleProgress";
@@ -23,11 +22,6 @@ const lms = {
 const InfoHome: React.FC = () => {
   const auth = useAuth();
 
-  const twoColors: ProgressProps["strokeColor"] = {
-    "0%": "#eb2a27",
-    "100%": "#108ee9",
-  };
-
   if (auth.user === null) {
     console.error("User is not logged in, something went wrong.");
     alert("Something went wrong. Please try again later.");
@@ -44,7 +38,7 @@ const InfoHome: React.FC = () => {
           <ModuleProgress modules={lms.modules} />
         </Col>
         <Col span={5}>
-          <OverallRating rating={lms.overallRating} stroke={twoColors} />
+          <OverallRating rating={lms.overallRating} />
         </Col>
       </Row>
       {/* <div className="container">
