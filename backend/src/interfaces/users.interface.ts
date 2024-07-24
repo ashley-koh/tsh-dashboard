@@ -1,4 +1,5 @@
 export interface User {
+  _id: string;
   employeeID: string;
   appraisals: string[];
   name: string;
@@ -6,5 +7,5 @@ export interface User {
   role: string;
   mobileNo: string;
   email: string;
-  hashedPassword: string;
+  password: string;
 }

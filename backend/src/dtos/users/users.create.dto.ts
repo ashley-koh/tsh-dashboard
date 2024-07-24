@@ -24,5 +24,5 @@ export default class CreateUserDto {
 
   @IsString()
   @MinLength(8)
-  public hashedPassword: string;
+  public password: string;
 }
