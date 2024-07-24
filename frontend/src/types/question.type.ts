@@ -4,10 +4,10 @@ enum QuestionType {
 }
 
 type Question = {
-  _id?: string,
-  description: string,
-  type: number,
-  required: boolean,
+  _id?: string;
+  description: string;
+  type: number;
+  required: boolean;
 };
 
 export default Question;
