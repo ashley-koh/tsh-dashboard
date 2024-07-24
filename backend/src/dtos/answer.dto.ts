@@ -1,8 +1,9 @@
-import { IsNumber, IsString, Max, Min, ValidateIf } from 'class-validator';
+import { IsMongoId, IsNumber, IsString, Max, Min, ValidateIf } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class CreateAnswerDto {
-  @IsString()
-  public question: string;
+  @IsMongoId()
+  public question: Types.ObjectId;
 
   @IsNumber()
   @Min(0)

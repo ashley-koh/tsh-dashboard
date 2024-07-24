@@ -9,7 +9,7 @@ export class CreateAppraisalDto {
   public managerId: Types.ObjectId;
 
   @IsMongoId()
-  public ormId: Types.ObjectId;
+  public formId: Types.ObjectId;
 
   @IsString()
   public status: string;

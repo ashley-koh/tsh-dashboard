@@ -1,6 +1,6 @@
 type Answer = {
   _id?: string,
-  description: string,
+  question: string,
   type: number,
   openEndedAnswer: string,
   rating: number,

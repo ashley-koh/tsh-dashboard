@@ -3,7 +3,7 @@ type User = {
   name: string;
   email: string;
   password: string;
-  employeeID: string;
+  employeeId: string;
   role: "employee" | "head_of_department" | "business_owner";
   jobTitle: string;
   dept: string;
