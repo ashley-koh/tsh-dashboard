@@ -1,11 +1,13 @@
 export interface User {
   _id: string;
+  appraisals: string[];
+  name: string;
+  dept: string;
+  role: string;
+  mobileNo: string;
   email: string;
   password: string;
-  name: string;
   employeeId: string;
-  role: string;
   jobTitle: string;
-  dept: string;
   employmentStatus: string;
 }

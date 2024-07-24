@@ -4,11 +4,17 @@ export class CreateEmailDto {
   @IsEnum(['reminder', 'confirmation'])
   public type: string;
 
-  @IsEmail()
-  public sender: string;
+  @IsString()
+  public senderName: string;
 
-  @IsEmail({}, { each: true })
-  public recipients: string[];
+  @IsEmail()
+  public senderEmail: string;
+
+  @IsString()
+  public recipientName: string;
+
+  @IsEmail()
+  public recipientEmail: string;
 
   @IsString()
   public subject: string;
@@ -16,6 +22,6 @@ export class CreateEmailDto {
   @IsString()
   public body: string;
 
-  @IsEnum(['sent', 'pending', 'failed'])
-  public status: string;
+  @IsString()
+  public date: string;
 }

@@ -17,7 +17,7 @@ class AnswerRoutes implements Routes {
 
   private initializeRoutes() {
     this.router.post(
-      `${this.path}/createAnswer`,
+      `${this.path}/`,
       validationMiddleware(CreateAnswerDto, 'body'),
       this.answerController.createAnswer,
     );

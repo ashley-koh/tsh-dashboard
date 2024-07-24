@@ -17,7 +17,7 @@ class FormService {
 
     const populatedForm = await this.forms
       .findById(createFormData._id)
-      .populate('questions')
+      // .populate('sections.questions')
       .exec();
 
     return populatedForm;

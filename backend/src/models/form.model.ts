@@ -12,18 +12,20 @@ const formSchema: Schema = new Schema({
     required: false,
   },
 
-  title: {
-    type: String,
-    required: true,
-  },
-
-  questions: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Question',
+  section: {
+    title: {
+      type: String,
       required: true,
     },
-  ],
+
+    questions: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Question',
+        required: true,
+      },
+    ],
+  },
 });
 
 const formModel = mongoose.model<Form>('Form', formSchema);

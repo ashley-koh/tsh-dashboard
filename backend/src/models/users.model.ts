@@ -1,34 +1,22 @@
-import { model, Schema, Document } from 'mongoose';
+import mongoose, { model, Schema, Document } from 'mongoose';
 import { User } from '@interfaces/users.interface';
 
 const userSchema: Schema = new Schema({
+  employeeID: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+
+  appraisals: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Appraisal',
+      required: true,
+    },
+  ],
+
   name: {
-    type: String,
-    required: true,
-  },
-
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-
-  employeeId: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-
-  role: {
-    type: String,
-    required: true,
-  },
-
-  jobTitle: {
     type: String,
     required: true,
   },
@@ -38,7 +26,23 @@ const userSchema: Schema = new Schema({
     required: true,
   },
 
-  employmentStatus: {
+  role: {
+    type: String,
+    required: true,
+  },
+
+  mobileNo: {
+    type: String,
+    required: true,
+  },
+
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+
+  password: {
     type: String,
     required: true,
   },

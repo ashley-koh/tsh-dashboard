@@ -3,13 +3,13 @@ import { Appraisal } from '@interfaces/appraisal.interface';
 
 const appraisalSchema: Schema = new Schema({
   manageeId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'User',
     required: true,
   },
 
   managerId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'User',
     required: true,
   },

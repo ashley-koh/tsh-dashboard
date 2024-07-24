@@ -17,7 +17,7 @@ class AppraisalRoutes implements Routes {
 
   private initializeRoutes() {
     this.router.post(
-      `${this.path}/createAppraisal`,
+      `${this.path}/`,
       validationMiddleware(CreateAppraisalDto, 'body'),
       this.appraisalController.createAppraisal,
     );

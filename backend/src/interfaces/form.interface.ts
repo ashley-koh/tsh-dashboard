@@ -4,6 +4,8 @@ export interface Form {
   _id: Types.ObjectId;
   name: string;
   description: string; // optional
-  title: string;
-  questions: Types.ObjectId[];
+  section: {
+    title: string;
+    questions: Types.ObjectId[];
+  };
 }

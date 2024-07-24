@@ -8,21 +8,21 @@ class ConfirmationTemplate {
   }
 
   async sendConfirmationEmail(
-    employeeName: string,
-    confirmationDate: string,
-    employeeEmail: string,
+    recipientName: string,
+    recipientEmail: string,
+    date: string,
   ): Promise<string> {
     const subject = 'Appraisal Confirmation';
     const body = `
-      <p>Dear ${employeeName},</p>
-      <p>We are pleased to confirm that your appraisal was successfully completed on ${confirmationDate}.</p>
+      <p>Dear ${recipientName},</p>
+      <p>We are pleased to confirm that your appraisal was successfully completed on ${date}.</p>
       <p>Thank you for your participation.</p>
       <p>Best regards,<br>Your Company</p>
     `;
 
     try {
       const result = await this.emailService.sendEmail(
-        [employeeEmail],
+        recipientEmail,
         subject,
         body,
       );
