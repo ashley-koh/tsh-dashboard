@@ -4,10 +4,20 @@ type User = {
   email: string;
   password: string;
   employeeId: string;
-  role: "employee" | "head_of_department" | "business_owner";
+  role: RoleOptions;
   jobTitle: string;
-  dept: string;
-  employmentStatus: "full_time" | "part_time" | "intern" | "temp";
+  dept: DepartmentOptions;
+  employmentStatus: EmploymentStatusOptions;
 };
+
+export type DepartmentOptions = "hr" | "others";
+
+export type RoleOptions = "employee" | "head_of_department" | "business_owner";
+
+export type EmploymentStatusOptions =
+  | "full_time"
+  | "part_time"
+  | "intern"
+  | "temp";
 
 export default User;
