@@ -1,5 +1,6 @@
-import { IsMongoId, IsString } from 'class-validator';
-import { Types } from 'mongoose';
+import { IsString, Validate } from 'class-validator';
+import {} from 'mongoose';
+import { FormSectionDto } from './formSection.dto';
 
 export class CreateFormDto {
   @IsString()
@@ -8,9 +9,6 @@ export class CreateFormDto {
   @IsString()
   public description: string;
 
-  @IsString()
-  public title: string;
-
-  @IsMongoId({ each: true })
-  public questions: Types.ObjectId[];
+  @Validate(FormSectionDto)
+  public section: FormSectionDto;
 }

@@ -1,18 +1,13 @@
 import {
   IsBoolean,
-  IsMongoId,
   IsNotEmpty,
   IsNumber,
   IsString,
   Max,
   Min,
 } from 'class-validator';
-import { Types } from 'mongoose';
 
 export class CreateQuestionDto {
-  @IsMongoId()
-  public _id: Types.ObjectId;
-
   @IsString()
   @IsNotEmpty()
   description: string;
