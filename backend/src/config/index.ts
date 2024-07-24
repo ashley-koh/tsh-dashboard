@@ -13,4 +13,9 @@ export const {
   DB_PASSWORD,
   SECRET_KEY,
   ORIGIN,
+
+  SES_SECRET_KEY,
+  SES_ACCESS_KEY,
+  SES_REGION,
+  SES_SENDER,
 } = process.env;

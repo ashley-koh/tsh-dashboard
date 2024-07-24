@@ -1,3 +1,5 @@
+import { SES_ACCESS_KEY, SES_REGION, SES_SECRET_KEY } from '../config/index';
+
 // eslint-disable-next-line import/no-extraneous-dependencies, @typescript-eslint/no-var-requires
 const AWS = require('aws-sdk');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -5,9 +7,9 @@ require('dotenv').config({ path: './.env.development.local' });
 
 class EmailService {
   SES_CONFIG = {
-    accessKeyId: process.env.ACCESS_KEY, // ACCESS_KEY from .env.development
-    secretAccessKey: process.env.SECRET_KEY, // SECRET_KEY from .env.development
-    region: process.env.SES_REGION, // SES_REGION from .env.development
+    accessKeyId: SES_ACCESS_KEY, // ACCESS_KEY from .env.development
+    secretAccessKey: SES_SECRET_KEY, // SECRET_KEY from .env.development
+    region: SES_REGION, // SES_REGION from .env.development
   };
 
   ses = new AWS.SES(this.SES_CONFIG);
