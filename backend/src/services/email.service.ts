@@ -1,47 +1,64 @@
-import { SES_ACCESS_KEY, SES_REGION, SES_SECRET_KEY } from '../config/index';
-
-// eslint-disable-next-line import/no-extraneous-dependencies, @typescript-eslint/no-var-requires
-const AWS = require('aws-sdk');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config({ path: './.env.development.local' });
+import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses'; // ES Modules import
+import {
+  SES_ACCESS_KEY,
+  SES_REGION,
+  SES_SECRET_KEY,
+  SES_SENDER,
+} from '../config/index';
 
 class EmailService {
   SES_CONFIG = {
-    accessKeyId: SES_ACCESS_KEY, // ACCESS_KEY from .env.development
-    secretAccessKey: SES_SECRET_KEY, // SECRET_KEY from .env.development
+    credentials: {
+      accessKeyId: SES_ACCESS_KEY, // ACCESS_KEY from .env.development
+      secretAccessKey: SES_SECRET_KEY, // SECRET_KEY from .env.development
+    },
     region: SES_REGION, // SES_REGION from .env.development
   };
 
-  ses = new AWS.SES(this.SES_CONFIG);
+  client = new SESClient(this.SES_CONFIG);
 
   sendEmail = async (
-    recipients: string[],
+    recipientEmail: string,
     subject: string,
     body: string,
   ): Promise<string> => {
-    const params = {
-      Source: process.env.SES_SENDER,
+    const input = {
+      // SendEmailRequest
+      Source: SES_SENDER, // required
       Destination: {
-        ToAddresses: [recipients],
+        // Destination
+        ToAddresses: [
+          // AddressList
+          SES_SENDER,
+        ],
+        // CcAddresses: ['STRING_VALUE'],
+        // BccAddresses: ['STRING_VALUE'],
       },
-      ReplyToAddresses: [],
       Message: {
-        Body: {
-          Html: {
-            Charset: 'UTF-8',
-            Data: body,
-          },
-        },
+        // Message
         Subject: {
+          // Content
+          Data: subject, // required
           Charset: 'UTF-8',
-          Data: subject,
+        },
+        Body: {
+          // Body
+          Text: {
+            Data: body, // required
+            Charset: 'UTF-8',
+          },
+          Html: {
+            Data: body, // required
+            Charset: 'UTF-8',
+          },
         },
       },
     };
 
     try {
-      const data = await this.ses.sendEmail(params).promise();
-      const info = `Email sent successfully with MessageId: ${data.MessageId} to ${recipients}`;
+      const command = new SendEmailCommand(input);
+      const response = await this.client.send(command);
+      const info = `Email sent successfully with MessageId: ${response.MessageId} to ${recipientEmail}`;
       return info;
     } catch (err) {
       const errorInfo = `Error sending email: ${err.message}`;
