@@ -1,0 +1,7 @@
+circle.ant-progress-circle-path, circle.ant-progress-circle-trail {
+    stroke-linecap: round;
+  }
+
+  svg.ant-progress-circle foreignObject div div {
+    background: conic-gradient(from 180deg, rgb(235, 42, 39) 0%, rgb(16, 142, 233) 100%) !important;
+  }
