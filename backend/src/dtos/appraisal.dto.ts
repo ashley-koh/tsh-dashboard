@@ -2,14 +2,14 @@ import { IsJSON, IsMongoId, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 
 export class CreateAppraisalDto {
-  @IsMongoId()
-  public manageeId: Types.ObjectId;
+  @IsString()
+  public manageeId: string;
+
+  @IsString()
+  public managerId: string;
 
   @IsMongoId()
-  public managerId: Types.ObjectId;
-
-  @IsMongoId()
-  public ormId: Types.ObjectId;
+  public formId: Types.ObjectId;
 
   @IsString()
   public status: string;

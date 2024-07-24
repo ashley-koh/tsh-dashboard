@@ -2,8 +2,8 @@ import { Types } from 'mongoose';
 
 export interface Appraisal {
   _id: Types.ObjectId;
-  manageeId: Types.ObjectId;
-  managerId: Types.ObjectId;
+  manageeId: string;
+  managerId: string;
   formId: Types.ObjectId;
   status: string;
   answers: JSON;

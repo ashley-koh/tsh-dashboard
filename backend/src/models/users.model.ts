@@ -1,17 +1,20 @@
-import { model, Schema, Document } from 'mongoose';
+import mongoose, { model, Schema, Document } from 'mongoose';
 import { User } from '@interfaces/users.interface';
 
 const userSchema: Schema = new Schema({
-  employeeId: {
+  employeeID: {
     type: String,
     required: true,
     unique: true,
   },
 
-  appraisals: {
-    type: [String],
-    required: true,
-  },
+  appraisals: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Appraisal',
+      required: true,
+    },
+  ],
 
   name: {
     type: String,
