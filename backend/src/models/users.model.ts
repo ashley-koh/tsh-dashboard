@@ -2,33 +2,18 @@ import { model, Schema, Document } from 'mongoose';
 import { User } from '@interfaces/users.interface';
 
 const userSchema: Schema = new Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-
   employeeId: {
     type: String,
     required: true,
     unique: true,
   },
 
-  role: {
-    type: String,
+  appraisals: {
+    type: [String],
     required: true,
   },
 
-  jobTitle: {
+  name: {
     type: String,
     required: true,
   },
@@ -38,7 +23,23 @@ const userSchema: Schema = new Schema({
     required: true,
   },
 
-  employmentStatus: {
+  role: {
+    type: String,
+    required: true,
+  },
+
+  mobileNo: {
+    type: String,
+    required: true,
+  },
+
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+
+  hashedPassword: {
     type: String,
     required: true,
   },

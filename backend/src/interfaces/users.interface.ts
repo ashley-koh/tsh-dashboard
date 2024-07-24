@@ -1,11 +1,10 @@
 export interface User {
-  _id: string;
-  email: string;
-  password: string;
-  name: string;
   employeeID: string;
-  role: string;
-  jobTitle: string;
+  appraisals: string[];
+  name: string;
   dept: string;
-  employmentStatus: string;
+  role: string;
+  mobileNo: string;
+  email: string;
+  hashedPassword: string;
 }
