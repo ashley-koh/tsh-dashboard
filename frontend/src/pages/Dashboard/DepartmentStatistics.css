@@ -1,0 +1,74 @@
+.department-statistics {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 24px;
+}
+
+.stats-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .stats-container {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.chart-container,
+.ranking-container {
+  flex: 1;
+}
+
+.department-select {
+  margin-bottom: 24px;
+}
+
+.department-statistics {
+  padding: 24px;
+}
+
+.stats-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.chart-container,
+.ranking-container {
+  flex: 1;
+}
+
+.department-select {
+  margin-bottom: 24px;
+}
+
+.department-select-card {
+  padding: 24px;
+  margin-bottom: 24px;
+  max-width: 400px; /* Limit the width of the card */
+}
+
+.department-statistics {
+  padding: 24px;
+}
+
+.stats-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.chart-container,
+.ranking-container {
+  flex: 1;
+}
+
+.department-select {
+  margin-left: auto;
+}

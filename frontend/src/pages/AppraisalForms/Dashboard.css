@@ -1,0 +1,30 @@
+.alert-card {
+  border: 2px solid #ffecb3;
+  background-color: #fff8e1;
+  box-shadow: none;
+  margin-bottom: 1rem;
+}
+
+.alert-content {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+}
+
+.alert-icon {
+  font-size: 24px;
+  color: #faad14;
+  margin-right: 16px;
+}
+
+p.alert-text  {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+  flex-grow: 1;
+}
+
+div.ant-picker-calendar {
+  border: 2px solid #ddd;
+  border-radius: 5px;
+}

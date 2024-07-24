@@ -1,11 +1,20 @@
 import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 import { employees, HIGH_KPI_THRESHOLD, AVERAGE_KPI_THRESHOLD } from '../../data/mockData';
+import './PieChartComponent.css';
 
-const PieChartComponent: React.FC = () => {
-  const highKPI = employees.filter(emp => emp.kpi >= HIGH_KPI_THRESHOLD).length;
-  const averageKPI = employees.filter(emp => emp.kpi >= AVERAGE_KPI_THRESHOLD && emp.kpi < HIGH_KPI_THRESHOLD).length;
-  const lowKPI = employees.filter(emp => emp.kpi < AVERAGE_KPI_THRESHOLD).length;
+interface PieChartComponentProps {
+  department: string;
+}
+
+const COLORS = ['#66CDAA', '#FFD700', '#FF7F7F']; // Lighter colors
+
+const PieChartComponent: React.FC<PieChartComponentProps> = ({ department }) => {
+  const departmentEmployees = employees.filter(emp => emp.department === department);
+
+  const highKPI = departmentEmployees.filter(emp => emp.kpi >= HIGH_KPI_THRESHOLD).length;
+  const averageKPI = departmentEmployees.filter(emp => emp.kpi >= AVERAGE_KPI_THRESHOLD && emp.kpi < HIGH_KPI_THRESHOLD).length;
+  const lowKPI = departmentEmployees.filter(emp => emp.kpi < AVERAGE_KPI_THRESHOLD).length;
 
   const data = [
     { name: 'High KPI', value: highKPI },
@@ -13,20 +22,19 @@ const PieChartComponent: React.FC = () => {
     { name: 'Low KPI', value: lowKPI },
   ];
 
-  const COLORS = ['#00C49F', '#FFBB28', '#D70040']; // Green, Orange, Red
-
   return (
-    <div style={{ width: '100%', height: '100%' }}>
-      <PieChart width={400} height={400}>
+    <div className="pie-chart-component">
+      <PieChart width={500} height={500}>
         <Pie
           data={data}
           cx="50%"
           cy="50%"
-          labelLine={false}
-          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-          outerRadius={150}
+          innerRadius={100}
+          outerRadius={190}
           fill="#8884d8"
+          paddingAngle={5}
           dataKey="value"
+          label
         >
           {data.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

@@ -1,0 +1,17 @@
+.detailed-employee-stats {
+    padding: 24px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .detailed-employee-stats .ant-card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .detailed-employee-stats .ant-statistic {
+    margin-bottom: 16px;
+  }
+  

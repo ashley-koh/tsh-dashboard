@@ -1,0 +1,54 @@
+.form-container {
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+.section-container {
+  margin-bottom: 24px;
+  border: 1px solid #ddd;
+  padding: 16px;
+}
+
+.section-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.question-controls {
+  display: flex;
+}
+
+label {
+  text-align: center;
+}
+
+.question-container {
+  display: grid;
+  grid-template-columns: 1fr auto auto 10px;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.ant-switch.ant-switch-checked {
+  background: #5a81ee;
+}
+
+.ant-switch.ant-switch-checked:hover:not(.ant-switch-disabled) {
+  background: #5a81ee;
+}
+
+.submit-container {
+  justify-content: right;
+  margin-top: 10px;
+}
+
+button.remove {
+  background-color: #eb2a27;
+}
+
+button.reset {
+  margin-right: 6px;
+}
