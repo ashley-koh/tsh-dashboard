@@ -1,5 +1,4 @@
 import { IsString, IsNotEmpty, IsArray, IsMongoId } from 'class-validator';
-import { Types } from 'mongoose';
 
 export class FormSectionDto {
   @IsString()
@@ -8,5 +7,5 @@ export class FormSectionDto {
 
   @IsArray()
   @IsMongoId({ each: true })
-  public questions: Types.ObjectId[];
+  public questions: string[];
 }

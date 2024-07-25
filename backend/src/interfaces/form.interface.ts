@@ -6,6 +6,6 @@ export interface Form {
   description: string; // optional
   section: {
     title: string;
-    questions: Types.ObjectId[];
+    questions: string[];
   };
 }

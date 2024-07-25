@@ -2,12 +2,6 @@ import mongoose, { model, Schema, Document } from 'mongoose';
 import { User } from '@interfaces/users.interface';
 
 const userSchema: Schema = new Schema({
-  employeeID: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-
   appraisals: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -43,6 +37,22 @@ const userSchema: Schema = new Schema({
   },
 
   password: {
+    type: String,
+    required: true,
+  },
+
+  employeeId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+
+  jobTitle: {
+    type: String,
+    required: true,
+  },
+
+  employmentStatus: {
     type: String,
     required: true,
   },

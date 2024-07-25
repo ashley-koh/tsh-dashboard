@@ -1,5 +1,4 @@
-import { IsJSON, IsMongoId, IsString } from 'class-validator';
-import { Types } from 'mongoose';
+import { IsIn, IsMongoId, IsString } from 'class-validator';
 
 export class CreateAppraisalDto {
   @IsString()
@@ -9,16 +8,13 @@ export class CreateAppraisalDto {
   public managerId: string;
 
   @IsMongoId()
-  public formId: Types.ObjectId;
+  public formId: string;
 
-  @IsString()
+  @IsIn(['in review', 'post review', 'completed'])
   public status: string;
 
-  @IsJSON()
-  public answers: JSON;
-
   @IsMongoId()
-  public reviewId: Types.ObjectId;
+  public reviewId: string;
 
   @IsString()
   public deadline: Date;

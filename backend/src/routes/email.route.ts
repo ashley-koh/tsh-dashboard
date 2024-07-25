@@ -17,7 +17,7 @@ class EmailRoutes implements Routes {
 
   private initializeRoutes() {
     this.router.post(
-      `${this.path}/sendEmail`,
+      `${this.path}`,
       validationMiddleware(CreateEmailDto, 'body'),
       this.emailController.sendEmail,
     );

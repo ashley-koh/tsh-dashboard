@@ -1,12 +1,7 @@
-import mongoose, { Schema, Types } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { Question } from '@/interfaces/question.interface';
 
 const questionSchema: Schema = new Schema({
-  _id: {
-    type: Types.ObjectId,
-    required: true,
-  },
-
   description: {
     type: String,
     required: true,
@@ -19,6 +14,12 @@ const questionSchema: Schema = new Schema({
 
   required: {
     type: Boolean,
+    required: true,
+  },
+
+  answerId: {
+    type: String,
+    ref: 'Answer',
     required: true,
   },
 });

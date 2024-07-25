@@ -403,6 +403,47 @@ paths:
         500:
           description: 'Server Error'
 
+  # [POST] email/id
+  /email:
+    post:
+      tags:
+        - email
+      summary: Send Reminder/Confirmation Email to Recipient
+      parameters:
+        - name: body
+          in: body
+          description: email Data
+          required: true
+          schema:
+            $ref: '#/definitions/email'
+      responses:
+        200:
+          description: 'OK'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+  # [GET] report/id
+  /report:
+    post:
+      tags:
+        - report
+      summary: Generate PDF of Employee Report
+      parameters:
+        - name: id
+          in: id
+          description: Employee ID
+          required: true
+
+      responses:
+        200:
+          description: 'OK'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
   # auth
   /signup:
     post:
@@ -489,76 +530,87 @@ definitions:
   users:
     type: object
     required:
-      - _id
+      - appraisals
+      - name
+      - dept
+      - role
+      - mobileNo
       - email
       - password
-      - firstName
-      - lastName
-      - employeeID
-      - role
+      - employeeId
       - jobTitle
-      - dept
       - employmentStatus
+
     properties:
-      _id:
+      appraisals:
+        type: string[]
+        description: List of IDs of all appraisals tagged to the user
+
+      name:
         type: string
-        description: user ID
-      email:
-        type: string
-        description: user Email
-      password:
-        type: string
-        description: user Password
-      firstName:
-        type: string
-        description: user First Name
-      lastName:
-        type: string
-        description: user Last Name
-      employeeID:
-        type: string
-        description: user Employee ID
-      role:
-        type: string
-        description: user Role
-      jobTitle:
-        type: string
-        description: user Job Title
+        description: Name of User
+
       dept:
         type: string
-        description: user Department
+        description: User Department
+
+      role:
+        type: string
+        description: User Role
+
+      mobileNo:
+        type: string
+        description: User Mobile Number
+
+      email:
+        type: string
+        description: User Email
+
+      password:
+        type: string
+        description: User Password
+
+      employeeId:
+        type: string
+        description: User Employee ID
+
+      jobTitle:
+        type: string
+        description: User Job Title
+
       employmentStatus:
         type: string
-        description: user Employment Status
+        description: User Employment Status
 
   question:
     type: object
     required:
-      - type
-      - options
       - description
+      - type
+      - required
+
     properties:
-      type:
-        type: integer
-        description: Type of the question
-      options:
-        type: array
-        items:
-          type: string
-        description: Options for the question
       description:
         type: string
         description: Description of the question
 
+      type:
+        type: integer
+        description: Type of the question (open ended or rating)
+
+      required:
+        type: boolean
+        description: Whether the question can be skipped
+
   answer:
     type: object
     required:
-      - questionID
+      - question
       - type
       - openEndedAnswer
-      - closedAnswer
+      - rating
     properties:
-      questionID:
+      question:
         type: string
         description: ID of the related question
       type:
@@ -566,22 +618,111 @@ definitions:
         description: Type of the answer
       openEndedAnswer:
         type: string
-        description: Open-ended answer text
-      closedAnswer:
+        description: Open-ended answer
+      rating:
         type: integer
-        description: Closed answer value
+        description: Rating
 
   form:
     type: object
     required:
-      - questions
+      - name
+      - section
     properties:
-      questions:
-        type: array
-        items:
+      name:
+        type: string
+        description: Name of form
+
+      description:
+        type: string
+        description: Description of form
+
+      section:
+        title:
           type: string
-          description: ID of the question
-        description: Array of question IDs
+          description: Title of form
+        questions:
+          type: string
+          description: List of IDs of questions in form
+
+    appraisal:
+      type: object
+      required:
+        - manageeId
+        - managerId
+        - formId
+        - status
+        - reviewId
+        - deadline
+
+      properties:
+        manageeId:
+          type: string
+          description: ID of person getting appraised
+
+        manangerId:
+          type: string
+          description: ID of person appraising
+
+        formId:
+          type: string
+          description: ID of form done by the managee
+
+        status:
+          type: string
+          description: Status of Appraisal
+
+        reviewId:
+          type: string
+          description: ID of Appraisal Form
+
+        deadline:
+          type: date
+          description: Deadline of Appraisal
+
+  email:
+    type: object
+    required:
+      - type
+      - senderName
+      - senderEmail
+      - recipientName
+      - recipientEmail
+      - subject
+      - body
+
+    properties:
+      type:
+        type: string
+        description: Type of email (Confirmation/Reminder)
+
+      senderName:
+        type: string
+        description: Name of Sender
+
+      senderEmail:
+        type: string
+        description: Email of Sender
+
+      recipientName:
+        type: string
+        items: Name of Recipient
+
+      recipientEmail:
+        type: string
+        items: Email of Recipient
+
+      subject:
+        type: string
+        description: Subject of Email
+
+      body:
+        type: string
+        description: Body of Email
+
+      deadline:
+        type: string
+        description: Deadline of Appraisal
 
 schemes:
   - https

@@ -15,13 +15,13 @@ class EmailController {
   ) => {
     try {
       const emailData: CreateEmailDto = req.body;
-      const { type, recipientName, recipientEmail, date } = emailData;
+      const { type, recipientName, recipientEmail, deadline } = emailData;
       if (type === 'reminder') {
         const sendEmailData: string =
           await this.reminderTemplate.sendAppraisalReminder(
             recipientName,
             recipientEmail,
-            date,
+            deadline,
           );
         res.status(201).json({ data: sendEmailData, message: 'email sent' });
       } else {
@@ -29,7 +29,7 @@ class EmailController {
           await this.confirmationTemplate.sendConfirmationEmail(
             recipientName,
             recipientEmail,
-            date,
+            deadline,
           );
         res.status(201).json({ data: sendEmailData, message: 'email sent' });
       }

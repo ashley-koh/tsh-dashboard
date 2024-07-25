@@ -23,5 +23,5 @@ export class CreateEmailDto {
   public body: string;
 
   @IsString()
-  public date: string;
+  public deadline: string;
 }
