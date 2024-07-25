@@ -19,10 +19,12 @@ describe('Testing Auth', () => {
   describe('[POST] /signup', () => {
     it('response should have the Create userData', async () => {
       const userData: CreateUserDto = {
+        appraisals: ['test1', 'test2'],
+        mobileNo: '100000',
         email: 'test@email.com',
         password: 'q1w2e3r4!',
         name: 'test',
-        employeeID: '0123456789',
+        employeeId: '0123456789',
         employmentStatus: 'full_time',
         role: 'employee',
         jobTitle: 'testing example',

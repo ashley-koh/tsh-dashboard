@@ -58,7 +58,7 @@ class ReportService {
       doc.moveDown();
       doc.fontSize(14).text(`Appraisal ${index + 1}`);
       doc.fontSize(12).text(`Deadline: ${appraisal.deadline}`);
-      doc.text(`Comments: ${appraisal.answers}`);
+      doc.text(`Comments: ${appraisal}`); // supposed to be answers here
     });
 
     // Finalize the PDF and end the stream

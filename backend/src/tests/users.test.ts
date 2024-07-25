@@ -69,10 +69,12 @@ describe('Testing Users', () => {
   describe('[POST] /users', () => {
     it('response Create User', async () => {
       const userData: CreateUserDto = {
+        appraisals: ['test1', 'test2'],
+        mobileNo: '100000',
         email: 'test@email.com',
         password: 'q1w2e3r4',
         name: 'test',
-        employeeID: '0123456789',
+        employeeId: '0123456789',
         employmentStatus: 'full_time',
         role: 'employee',
         jobTitle: 'testing example',
@@ -103,10 +105,12 @@ describe('Testing Users', () => {
     it('response Update User', async () => {
       const userId = '60706478aad6c9ad19a31c84';
       const userData: CreateUserDto = {
+        appraisals: ['test1', 'test2'],
+        mobileNo: '100000',
         email: 'test@email.com',
         password: 'q1w2e3r4',
         name: 'test',
-        employeeID: '0123456789',
+        employeeId: '0123456789',
         employmentStatus: 'full_time',
         role: 'employee',
         jobTitle: 'testing example',

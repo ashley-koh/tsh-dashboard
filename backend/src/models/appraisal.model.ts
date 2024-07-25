@@ -25,11 +25,6 @@ const appraisalSchema: Schema = new Schema({
     required: true,
   },
 
-  answers: {
-    type: JSON,
-    required: true,
-  },
-
   reviewId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Form',

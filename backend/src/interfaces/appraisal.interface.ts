@@ -6,7 +6,6 @@ export interface Appraisal {
   managerId: string;
   formId: Types.ObjectId;
   status: string;
-  answers: JSON;
   reviewId: Types.ObjectId;
   deadline: Date;
 }
