@@ -16,6 +16,12 @@ const questionSchema: Schema = new Schema({
     type: Boolean,
     required: true,
   },
+
+  answerId: {
+    type: String,
+    ref: 'Answer',
+    required: true,
+  },
 });
 
 const questionModel = mongoose.model<Question>('Question', questionSchema);

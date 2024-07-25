@@ -20,7 +20,7 @@ const formSchema: Schema = new Schema({
 
     questions: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'Question',
         required: true,
       },

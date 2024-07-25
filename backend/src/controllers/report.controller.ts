@@ -11,7 +11,7 @@ class ReportController {
   ) => {
     try {
       const employeeId: string = req.params.id;
-      const createReportData: string =
+      const createReportData =
         await this.reportService.generateEmployeeReport(employeeId);
 
       res

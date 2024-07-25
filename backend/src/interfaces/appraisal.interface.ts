@@ -4,8 +4,8 @@ export interface Appraisal {
   _id: Types.ObjectId;
   manageeId: string;
   managerId: string;
-  formId: Types.ObjectId;
+  formId: string;
   status: string;
-  reviewId: Types.ObjectId;
+  reviewId: string;
   deadline: Date;
 }

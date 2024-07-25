@@ -5,7 +5,7 @@ import { Appraisal } from '@interfaces/appraisal.interface';
 import appraisalModel from '@models/appraisal.model';
 import { isEmpty } from '@utils/util';
 
-class AppraisalSerivce {
+class AppraisalService {
   public appraisal = appraisalModel;
 
   public async createAppraisal(
@@ -68,4 +68,4 @@ class AppraisalSerivce {
     return deleteAppraisalData;
   }
 }
-export default AppraisalSerivce;
+export default AppraisalService;

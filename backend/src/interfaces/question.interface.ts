@@ -1,8 +1,7 @@
-import { Types } from 'mongoose';
-
 export interface Question {
-  _id: Types.ObjectId;
+  _id: string;
   description: string;
   type: number;
   required: boolean;
+  answerId: string;
 }
