@@ -1,12 +1,7 @@
-import mongoose, { Schema, Types } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { Question } from '@/interfaces/question.interface';
 
 const questionSchema: Schema = new Schema({
-  _id: {
-    type: Types.ObjectId,
-    required: true,
-  },
-
   description: {
     type: String,
     required: true,

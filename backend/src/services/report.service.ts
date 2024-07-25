@@ -12,16 +12,16 @@ class ReportService {
 
   public appraisals = appraisalModel;
 
-  public async generateEmployeeReport(employeeID: string): Promise<string> {
-    if (isEmpty(employeeID)) throw new HttpException(400, 'UserId is empty');
+  public async generateEmployeeReport(employeeId: string): Promise<string> {
+    if (isEmpty(employeeId)) throw new HttpException(400, 'UserId is empty');
 
     // Find the user
-    const findUser = await this.users.findOne({ employeeID });
+    const findUser = await this.users.findOne({ employeeId });
     if (!findUser) throw new HttpException(409, "User doesn't exist");
 
     // Find Appraisals
     const findAppraisals = await this.appraisals.find({
-      manageeId: employeeID,
+      manageeId: employeeId,
     });
     if (!findAppraisals || findAppraisals.length === 0)
       throw new HttpException(409, 'User does not have appraisals');
@@ -32,7 +32,7 @@ class ReportService {
     await mkdir(dir);
 
     // Define the path to save the PDF file
-    const filePath = path.join(dir, `employee_report_${employeeID}.pdf`);
+    const filePath = path.join(dir, `employee_report_${employeeId}.pdf`);
 
     // Create a new PDF document
     const doc = new PDFDocument();
@@ -49,7 +49,7 @@ class ReportService {
       });
     doc.moveDown();
 
-    doc.fontSize(14).text(`Employee ID: ${findUser.employeeID}`);
+    doc.fontSize(14).text(`Employee ID: ${findUser.employeeId}`);
     doc.moveDown();
 
     doc.fontSize(16).text('Appraisals:', { underline: true });
