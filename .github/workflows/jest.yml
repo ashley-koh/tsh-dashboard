@@ -33,10 +33,12 @@ jobs:
 
     # https://github.com/marketplace/actions/docker-compose-action
     - name: Docker Compose Action
-      uses: hoverkraft-tech/compose-action@v2.0.1
-      with:
-        compose-file: "./backend/compose.yml"
-        up-flags: "-d"
+    # uses: hoverkraft-tech/compose-action@v2.0.1
+    # with:
+    #   compose-file: "./backend/compose.yml"
+    #   up-flags: "-d"
+      working-directory: ./backend
+      run: docker compose up -d
 
     - name: Run backend tests
       working-directory: ./backend
