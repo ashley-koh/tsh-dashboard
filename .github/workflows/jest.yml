@@ -44,7 +44,7 @@ jobs:
       run: npm install
 
     - name: Load environment file
-      run: cp .env.development.example .env.test.local
+      run: cp .env.development.example .env.development.local
 
     - name: Run tests
       run: npm test
