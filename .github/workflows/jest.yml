@@ -23,6 +23,7 @@ jobs:
         node-version: '20'
 
     - name: Load environment variables
+      working-directory: ./backend
       run: |
         cp .env.development.example .env.test.local
         set -a
