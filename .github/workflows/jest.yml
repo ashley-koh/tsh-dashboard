@@ -10,74 +10,47 @@ on:
       - main
 
 jobs:
-  test:
+  backend-tests:
     runs-on: ubuntu-latest
 
     defaults:
       run:
         working-directory: ./backend
 
-    services:
-      mongodb:
-        image: mongo
-        ports:
-          - "27017:27017"
-        volumes:
-          - data:/data
-        options: >-
-          --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
-      mongo-express:
-        image: mongo-express
-        ports:
-          - "8081:8081"
-        env:
-          ME_CONFIG_MONGODB_ADMINUSERNAME: rootuser
-          ME_CONFIG_MONGODB_ADMINPASSWORD: rootpass
-          ME_CONFIG_MONGODB_SERVER: mongodb
-          ME_CONFIG_BASICAUTH_USERNAME: root
-          ME_CONFIG_BASICAUTH_PASSWORD: pass
-        options: >-
-          --link mongodb:mongodb
+    # strategy:
+    #   matrix:
+    #     node-version: [20, 21, 22]
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+    - name: Set up Node.js for backend
+      uses: actions/setup-node@v4
+      with:
+    #     node-version: ${{ matrix.node-version }}
+        node-version: '20'
 
-      - name: Install dependencies
-        run: npm install
+    - name: Load environment file
+      run: cp .env.development.example .env.test.local
 
-      - name: Run Docker Compose
-        run: docker-compose -f compose.yml up -d
+    - name: Install dependencies
+      run: npm install
 
-      - name: Wait for MongoDB to be ready
-        run: |
-          echo "Waiting for MongoDB to be ready..."
-          while ! docker-compose exec mongodb mongo --eval 'db.runCommand({ ping: 1 })' &>/dev/null; do
-            sleep 1
-          done
-        shell: bash
+    - name: Set up Docker Compose
+      run: docker-compose -f compose.yml up -d
 
-      - name: Run Jest tests
-        env:
-          DB_HOST: localhost
-          DB_PORT: 27017
-          DB_DATABASE: dev
-          DB_USERNAME: rootuser
-          DB_PASSWORD: rootpass
-          SECRET_KEY: semaphore
-          ORIGIN: http://localhost:5173
-          CREDENTIALS: true
-        run: npm test
+    - name: Wait for MongoDB to be ready
+      run: |
+        echo "Waiting for MongoDB to be ready..."
+        while ! docker exec mongodb mongo --eval 'db.runCommand({ ping: 1 })' &>/dev/null; do
+          sleep 1
+        done
+      shell: bash
 
-      - name: Stop Docker Compose
-        if: always()
-        run: docker-compose -f compose.yml down
+    - name: Run Jest tests
+      run: npx dotenv -e .env.test.local npm test
+
+    - name: Stop Docker Compose
+      if: always()
+      run: docker-compose -f compose.yml down
