@@ -43,7 +43,7 @@ jobs:
     - name: Wait for MongoDB to be ready
       run: |
         echo "Waiting for MongoDB to be ready..."
-        while ! docker exec mongodb mongo --eval 'db.runCommand({ ping: 1 })' &>/dev/null; do
+        while ! docker-compose logs mongodb | grep -q "waiting for connections"; do
           sleep 1
         done
       shell: bash
