@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - test
   pull_request:
     branches:
       - main
@@ -24,6 +25,13 @@ jobs:
     - name: Install dependencies for backend
       working-directory: ./backend
       run: npm install
+
+    # https://github.com/marketplace/actions/docker-compose-action
+    - name: Docker Compose Action
+      uses: hoverkraft-tech/compose-action@v2.0.1
+      with:
+        compose-file: "./backend/compose.yml"
+        up-flags: "-d"
 
     - name: Run backend tests
       working-directory: ./backend
