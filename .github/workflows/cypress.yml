@@ -42,10 +42,6 @@ jobs:
         cp .env.development.example .env.development.local
         npm install
 
-    - name: Build backend
-      working-directory: ./backend
-      run: npm run build
-
     - name: Start backend
       working-directory: ./backend
       run: npm run start &
