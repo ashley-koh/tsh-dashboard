@@ -20,7 +20,7 @@ jobs:
     strategy:
       matrix:
         node-version: ['20']
-        mongodb-version: ['8.0']
+        mongodb-version: ['latest']
 
     steps:
     - name: Git checkout
@@ -37,6 +37,7 @@ jobs:
         mongodb-version: ${{ matrix.mongodb-version }}
         mongodb-username: rootuser
         mongodb-password: rootpass
+        mongodb-port: 27017
         mongodb-container-name: mongodb
 
     - name: Install dependencies
