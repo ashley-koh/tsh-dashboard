@@ -22,24 +22,35 @@ jobs:
       with:
         node-version: '20'
 
-    # https://stackoverflow.com/questions/60176044
-    - name: Create .env file
-      working-directory: ./backend
-      run: cp .env.development.example .env.test.local
+    - name: Load environment variables
+      run: |
+        cp .env.development.example .env.test.local
+        set -a
+        source .env.test.local
+        set +a
+      shell: bash
 
     - name: Install dependencies for backend
       working-directory: ./backend
       run: npm install
 
-    # https://github.com/marketplace/actions/docker-compose-action
-    - name: Docker Compose Action
-    # uses: hoverkraft-tech/compose-action@v2.0.1
-    # with:
-    #   compose-file: "./backend/compose.yml"
-    #   up-flags: "-d"
+    - name: Set up Docker Compose
       working-directory: ./backend
-      run: docker compose up -d
+      run: docker-compose -f compose.yml up -d
+
+    - name: Wait for MongoDB to be ready
+      working-directory: ./backend
+      run: |
+        echo "Waiting for MongoDB to be ready..."
+        while ! docker exec mongodb mongo --eval 'db.runCommand({ ping: 1 })' &>/dev/null; do
+          sleep 1
+        done
+      shell: bash
 
     - name: Run backend tests
       working-directory: ./backend
       run: npm run test
+
+    - name: Stop Docker Compose
+      if: always()
+      run: docker-compose -f compose.yml down
