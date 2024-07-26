@@ -4,26 +4,37 @@ on:
   push:
     branches:
       - main
+      - test
   pull_request:
     branches:
       - main
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
-    container:
-      image: cypress/browsers:node-20.14.0-chrome-126.0.6478.114-1-ff-127.0.1-edge-126.0.2592.61-1
-      options: --user 1001
+
+    strategy:
+      matrix:
+        node-version: ['20']
+        mongodb-version: ['latest']
 
     steps:
-    - name: Checkout repository
+    - name: Git checkout
       uses: actions/checkout@v4
 
-    # Backend setup, build, and start
-    - name: Set up Node.js for backend
+    - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: ${{ matrix.node-version }}
+
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.11.0
+      with:
+        mongodb-version: ${{ matrix.mongodb-version }}
+        mongodb-username: rootuser
+        mongodb-password: rootpass
+        mongodb-port: 27017
+        mongodb-container-name: mongodb
 
     - name: Install dependencies for backend
       working-directory: ./backend
@@ -43,7 +54,7 @@ jobs:
     - name: Set up Node.js for frontend
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: ${{ matrix.node-version }}
 
     - name: Install dependencies for frontend
       working-directory: ./frontend
