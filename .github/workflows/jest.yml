@@ -22,6 +22,11 @@ jobs:
       with:
         node-version: '20'
 
+    # https://stackoverflow.com/questions/60176044
+    - name: Create .env file
+      working-directory: ./backend
+      run: cp .env.development.example .env.test.local
+
     - name: Install dependencies for backend
       working-directory: ./backend
       run: npm install
