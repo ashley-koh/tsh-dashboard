@@ -13,6 +13,14 @@ jobs:
   backend-tests:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ./backend
+
+    strategy:
+      matrix:
+        node-version: [20, 21, 22]
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -20,27 +28,18 @@ jobs:
     - name: Set up Node.js for backend
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: ${{ matrix.node-version }}
 
-    - name: Load environment variables
-      working-directory: ./backend
-      run: |
-        cp .env.development.example .env.test.local
-        set -a
-        source .env.test.local
-        set +a
-      shell: bash
+    - name: Load environment file
+      run: cp .env.development.example .env.test.local
 
-    - name: Install dependencies for backend
-      working-directory: ./backend
+    - name: Install dependencies
       run: npm install
 
     - name: Set up Docker Compose
-      working-directory: ./backend
       run: docker-compose -f compose.yml up -d
 
     - name: Wait for MongoDB to be ready
-      working-directory: ./backend
       run: |
         echo "Waiting for MongoDB to be ready..."
         while ! docker exec mongodb mongo --eval 'db.runCommand({ ping: 1 })' &>/dev/null; do
@@ -48,9 +47,8 @@ jobs:
         done
       shell: bash
 
-    - name: Run backend tests
-      working-directory: ./backend
-      run: npm run test
+    - name: Run Jest tests
+      run: npx dotenv -e .env.test.local npm test
 
     - name: Stop Docker Compose
       if: always()
