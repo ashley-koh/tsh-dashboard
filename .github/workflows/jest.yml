@@ -10,47 +10,42 @@ on:
       - main
 
 jobs:
-  backend-tests:
+  build:
     runs-on: ubuntu-latest
 
     defaults:
       run:
         working-directory: ./backend
 
-    # strategy:
-    #   matrix:
-    #     node-version: [20, 21, 22]
+    strategy:
+      matrix:
+        node-version: ['20']
+        mongodb-version: ['8.0']
 
     steps:
-    - name: Checkout repository
+    - name: Git checkout
       uses: actions/checkout@v4
 
-    - name: Set up Node.js for backend
+    - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
-    #     node-version: ${{ matrix.node-version }}
-        node-version: '20'
+        node-version: ${{ matrix.node-version }}
 
-    - name: Load environment file
-      run: cp .env.development.example .env.test.local
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.11.0
+      with:
+        mongodb-version: ${{ matrix.mongodb-version }}
+        mongodb-username: rootuser
+        mongodb-password: rootpass
+        mongodb-container-name: mongodb
 
     - name: Install dependencies
       run: npm install
 
-    - name: Set up Docker Compose
-      run: docker-compose -f compose.yml up -d
+    - name: Load environment file
+      run: cp .env.development.example .env.test.local
 
-    - name: Wait for MongoDB to be ready
-      run: |
-        echo "Waiting for MongoDB to be ready..."
-        while ! docker-compose logs mongodb | grep -q "waiting for connections"; do
-          sleep 1
-        done
-      shell: bash
-
-    - name: Run Jest tests
-      run: npx dotenv -e .env.test.local npm test
-
-    - name: Stop Docker Compose
-      if: always()
-      run: docker-compose -f compose.yml down
+    - name: Run tests
+      run: npm test
+      env:
+        CI: true
