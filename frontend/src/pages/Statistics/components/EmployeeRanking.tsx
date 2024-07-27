@@ -1,8 +1,13 @@
-import React, { useEffect } from 'react';
-import { List } from 'antd';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { List } from 'antd';
+
+import {
+  AVERAGE_KPI_THRESHOLD,
+  HIGH_KPI_THRESHOLD,
+  employees
+} from '@/data/mockData';
 import useAuth from '@/context/auth/useAuth';
-import { employees, HIGH_KPI_THRESHOLD, AVERAGE_KPI_THRESHOLD } from '../../data/mockData';
 import './EmployeeRanking.css';
 
 interface EmployeeRankingProps {
@@ -12,10 +17,6 @@ interface EmployeeRankingProps {
 const EmployeeRanking: React.FC<EmployeeRankingProps> = ({ department }) => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    console.log('EmployeeRanking: user', user);
-  }, [user]);
 
   if (loading) {
     return <div>Loading...</div>;

@@ -18,12 +18,13 @@ import {
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 
+import AppraisalObj, { AppraisalStatus } from '@/types/appraisal.type';
 import FormSelect from './FormSelect';
-import Scheduler from './Scheduler';
-import Appraisal from '@/types/appraisal.type';
 import Loading from '@/components/common/Loading';
-import User from '@/types/user.type';
+import Scheduler from './Scheduler';
+import { DepartmentOptions, RoleOptions } from '@/types/user.type';
 import axiosClient from '@/lib/axiosInstance';
+import { fetchAppraisals } from '@/utils/fetchData';
 import useAuth from '@/context/auth/useAuth';
 import './Dashboard.css';
 
@@ -34,8 +35,8 @@ const Dashboard: React.FC = () => {
 
   const [showEdit, setShowEdit] = useState(false);
   const [showScheduler, setShowScheduler] = useState(false);
-  const [nextReview, setNextReview] = useState<Appraisal | null>(null);
-  const [scheduledReviews, setScheduledReviews] = useState<{ appraisal: Appraisal, with: User }[]>([]);
+  const [nextReview, setNextReview] = useState<AppraisalObj | null>(null);
+  const [scheduledReviews, setScheduledReviews] = useState<AppraisalObj[]>([]);
 
   if (auth.user === null) {
     console.error('User is not logged in, something went wrong.');
@@ -43,66 +44,30 @@ const Dashboard: React.FC = () => {
     return <Loading />;
   }
 
-  const fetchAppraisals: () => Promise<Appraisal[]> = async () => {
-    try {
-      const response = await client.get<{ data: Appraisal[], message: string }>('/appraisal');
-      return response.data.data;
-    }
-    catch (err) {
-      message.error('Something went wrong. Please try again later.');
-      console.error(err);
-      return [];
-    };
-  };
-
-  const fetchEmployee: (id: string) => Promise<User> = async (id: string) => {
-    try {
-      const response = await client.get<{ data: User, message: string }>(`/user/${id}`);
-      return response.data.data;
-    }
-    catch (err) {
-      message.error('Something went wrong. Please try again later.');
-      console.error(err);
-      return {
-        name: 'name',
-        email: 'email',
-        password: 'password',
-        employeeId: 'XXXXXXXXXX',
-        role: 'employee',
-        jobTitle: 'job',
-        dept: 'dept',
-        employmentStatus: 'full_time'
-      };
-    };
-  }
-
   /* Run this useEffect on first dashboard load */
   useEffect(() => {
     const loadData = async () => {
-      const reviews: { appraisal: Appraisal, with: User }[] = [];
-      let currReview: Appraisal | null = null;
+      const reviews: AppraisalObj[] = [];
+      let currReview: AppraisalObj | null = null;
 
       try {
-        // Fetch relevant appraisals
-        const appraisals = await fetchAppraisals();
-        appraisals.forEach(async (appraisal) => {
-          const isManager = appraisal.managerId === auth.user?._id;
-          const isManagee = appraisal.manageeId === auth.user?._id;
-          if (!isManager && !isManagee) {
+        const appraisals: AppraisalObj[] = await fetchAppraisals(client);
+        appraisals.forEach(appraisal => {
+          // Fetch relevant appraisals
+          if (
+            appraisal.manager._id !== auth.user?._id &&
+            appraisal.managee._id !== auth.user?._id
+          ) {
             return;
           }
+          reviews.push(appraisal);
 
-          // Fetch user details related to appraisal
-          const userId = isManager ? appraisal.manageeId : appraisal.managerId;
-          const user = await fetchEmployee(userId);
-          reviews.push({ appraisal: appraisal, with: user });
-
-          // Determine if this is the next review
+          // Determine if this is the next appraisal review
           const reviewDate = dayjs(appraisal.deadline);
           if (currReview === null || (
             reviewDate.isAfter(dayjs(), 'minute') &&
             reviewDate.isAfter(dayjs(currReview.deadline), 'minute') &&
-            appraisal.status === 'in review'
+            appraisal.status === AppraisalStatus.REVIEW
           )) {
             currReview = appraisal;
           }
@@ -122,28 +87,30 @@ const Dashboard: React.FC = () => {
   }, []);
 
   const dateCellRender = (value: Dayjs) => {
-    const listData = scheduledReviews.filter(review => dayjs(review.appraisal.deadline).isSame(value, 'day'));
+    const listData = scheduledReviews.filter(review => dayjs(review.deadline).isSame(value, 'day'));
 
     return (
       <ul className='events'>
         {listData.map(review => {
-          const reviewDate = dayjs(review.appraisal.deadline);
+          const reviewDate = dayjs(review.deadline);
           const key = reviewDate.toString();
           const time = reviewDate.isAfter(dayjs()) ? `${reviewDate.format('HH:mm')} - ` : '';
 
-          const isManager = review.appraisal.managerId === auth.user?._id;
-          const desc = isManager ? (reviewDate.isAfter(dayjs()) ? 'To review' : 'Complete review of') : 'Review with';
+          const isManager = review.manager._id === auth.user?._id;
+          const desc = isManager ?
+            (reviewDate.isAfter(dayjs()) ? 'To review' : 'Complete review of') :
+            'Review with';
 
           return (
             <li key={key}>
               <Badge
                 status={reviewDate.isAfter(dayjs()) ? 'error' : 'processing'}
-                text={`${time}${desc} ${review.with.name}`}
+                text={`${time}${desc} ${isManager ? review.managee.name : review.manager.name}`}
               />
               {isManager && reviewDate.isBefore(dayjs()) && (
                 <Button
                   type='link'
-                  onClick={() => navigate('/appraisals', { state: review.appraisal.reviewId })}
+                  onClick={() => navigate('/appraisals', /* { state: review.reviewId } */)} // TODO add form link
                 >
                   Complete Review
                 </Button>
@@ -157,7 +124,7 @@ const Dashboard: React.FC = () => {
 
   const monthCellRender = (value: Dayjs) => {
     const count = scheduledReviews.filter(
-      review => dayjs(review.appraisal.deadline).isSame(value, 'month')
+      review => dayjs(review.deadline).isSame(value, 'month')
     ).length;
     return count > 0 ? <div>{count} events</div> : null;
   };
@@ -181,7 +148,7 @@ const Dashboard: React.FC = () => {
               <Button
                 type='dashed'
                 className='alert-text'
-                onClick={() => navigate('/appraisals', { state: nextReview.formId } )}
+                onClick={() => navigate('/appraisals', { state: nextReview.form._id } )}
               >
                 Complete Appraisal Form
               </Button>
@@ -192,7 +159,7 @@ const Dashboard: React.FC = () => {
         {showEdit && <FormSelect onClose={() => setShowEdit(false)} />}
         {showScheduler && <Scheduler onClose={() => setShowScheduler(false)} />}
       </Layout>
-      {auth.user.role !== 'employee' && (
+      {auth.user.role !== RoleOptions.EMPLOYEE && (
         <FloatButton
           type='primary'
           icon={<CalendarOutlined />}
@@ -200,11 +167,11 @@ const Dashboard: React.FC = () => {
           onClick={() => setShowScheduler(true)}
         />
       )}
-      {auth.user.dept === 'hr' && (
+      {auth.user.dept === DepartmentOptions.HR && (
         <FloatButton
           type='primary'
           icon={<EditOutlined />}
-          style={{ bottom: auth.user.role !== 'employee' ? 100 : 48 }}
+          style={{ bottom: auth.user.role !== RoleOptions.EMPLOYEE ? 100 : 48 }}
           tooltip={<div>Create / Edit a form template</div>}
           onClick={() => setShowEdit(true)}
         />

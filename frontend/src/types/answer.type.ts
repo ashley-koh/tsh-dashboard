@@ -1,9 +1,20 @@
-type Answer = {
+import QuestionObj, { defaultQuestion } from "./question.type";
+
+export type AnswerType = {
   _id?: string;
-  question: string;
+  answerId: string;
   type: number;
   openEndedAnswer: string;
   rating: number;
 };
 
-export default Answer;
+type AnswerObj = {
+  _id?: string;
+  question: QuestionObj;
+};
+
+export const defaultAnswer: AnswerObj = {
+  question: defaultQuestion,
+};
+
+export default AnswerObj;

@@ -20,19 +20,20 @@ import {
   Switch,
   message,
 } from 'antd';
-import { AxiosResponse } from 'axios';
 
-import FormType from '@/types/form.type';
-import IAppraisalForm from './types/form.type';
-import Question, { QuestionType } from '@/types/question.type';
+import FormObj, { FormType } from '@/types/form.type';
+import IAppraisalForm, { FormQuestion, FormSection } from './types/form.type';
+import QuestionObj, { QuestionType } from '@/types/question.type';
+import SectionObj, { SectionType } from '@/types/section.type';
 import axiosClient from "@/lib/axiosInstance";
+import { fetchForm, formObjToType, sectionObjToType } from '@/utils/fetchData';
 import './FormEditor.css';
 
 const { TextArea } = Input;
 
 const FormEditor: React.FC = () => {
   const client = axiosClient();
-  const location: Location<FormType | null> = useLocation();
+  const location: Location<string | null> = useLocation();
   const navigate = useNavigate();
 
   const [form]: [FormInstance<IAppraisalForm>] = Form.useForm();
@@ -40,73 +41,147 @@ const FormEditor: React.FC = () => {
 
   /* Run this useEffect on first form load */
   useEffect(() => {
-    const fieldCount: number[] = [];
-    form.setFieldsValue({
-      formTitle: location.state === null ? '' : location.state.name,
-      sections: location.state === null ? [] : location.state.sections.map(section => {
-        fieldCount.push(section.questions.length);
-        return {
-          sectionTitle: section.title,
-          sectionDescription: section.description,
-          questions: section.questions.map(question => {
-            return {
-              _id: question._id,
-              question: question.description,
-              type: question.type === QuestionType.RATING,
-              required: question.required,
-            };
-          }),
-        };
-      }),
-    });
-    setFieldsCount(fieldCount);
-  }, [form, location.state]);
+    const loadData = async () => {
+      const fieldCount: number[] = [];
+      const editForm: FormObj | null =
+        location.state === null ? null : await fetchForm(client, location.state);
 
-  const handleSubmit = (values: IAppraisalForm) => {
-    const appraisalForm: FormType = {
-      _id: location.state?._id,
-      name: values.formTitle,
-      sections: values.sections.map(section => {
-        const questions: Question[] = [];
-
-        section.questions.map(question => {
-          let newQuestion: Question = {
-            description: question.question,
-            type: question.type ? QuestionType.RATING : QuestionType.OPEN_ENDED,
-            required: question.required,
+      form.setFieldsValue({
+        formTitle: editForm === null ? '' : editForm.name,
+        sections: editForm === null ? [] : editForm.sections.map(section => {
+          fieldCount.push(section.questions.length);
+          return {
+            sectionTitle: section.title,
+            sectionDescription: section.description,
+            questions: section.questions.map(question => {
+              return {
+                ...question,
+                type: question.type === QuestionType.RATING,
+              };
+            }),
           };
-          if (question._id !== undefined) {
-            newQuestion = { ...newQuestion, _id: question._id };
-          }
-          console.log(newQuestion);
-          questions.push(newQuestion);
+        }),
+      });
 
-          const questionPromise: Promise<AxiosResponse> = newQuestion?._id === undefined ?
-            client.post('/question/createQuestion', newQuestion) :
-            client.put(`/question/${newQuestion._id}`, newQuestion);
-          questionPromise.catch((err) => console.error(`Error in question edit submission: ${err}`));
-        });
-
-        return {
-          title: section.sectionTitle,
-          description: section.sectionDescription,
-          questions: questions
-        };
-      }),
+      setFieldsCount(fieldCount);
     };
 
-    const formPromise: Promise<AxiosResponse> = location.state?._id === undefined ?
-      client.post('/form/createForm', appraisalForm) :
-      client.put(`/form/${location.state?._id}`, appraisalForm);
-    formPromise
-      .then(() => {
-        message.success(`Form successfully ${location.state?._id === undefined ? 'created' : 'edited'}!`);
-        navigate('/dashboard');
-      })
-      .catch((err) => {
-        message.error('Something went wrong. Please try again later.');
-        console.error(`Error in form edit submission: ${err}`);
-      });
+    loadData();
+  }, [form, location.state]);
+
+  /**
+   * Handles the submission of a (new) question.
+   *
+   * @param question The form question to submit.
+   *
+   * @returns The submitted question object.
+   */
+  async function handleQuestionSubmit(question: FormQuestion) {
+    let newQuestion: QuestionObj = {
+      description: question.question,
+      type: question.type ? QuestionType.RATING : QuestionType.OPEN_ENDED,
+      required: question.required,
+    };
+    if (question._id !== undefined) {
+      newQuestion = { ...newQuestion, _id: question._id };
+    }
+    console.log(`Question: ${newQuestion}`); // TODO debug
+
+    try {
+      const response = await (newQuestion?._id === undefined ?
+        client.post<string>('/question/', newQuestion) :
+        client.put<string>(`/question/${newQuestion._id}`, newQuestion)
+      );
+      if (newQuestion?._id === undefined) {
+        newQuestion = { ...newQuestion, _id: response.data };
+      }
+    }
+    catch (err) {
+      message.error('Something went wrong. Please try again later.');
+      console.error(`Error in question edit submission: ${err}`);
+    }
+    finally {
+      return newQuestion;
+    }
+  };
+
+  /**
+   * Handles the submission of a (new) section.
+   *
+   * @param section The form section to submit.
+   *
+   * @returns The submitted section object.
+   */
+  async function handleSectionSubmit(section: FormSection) {
+    let newSection: SectionObj = {
+      title: section.sectionTitle,
+      description: section.sectionDescription,
+      questions: [],
+    };
+    section.questions.forEach(async formQuestion => {
+      const question: QuestionObj = await handleQuestionSubmit(formQuestion);
+      newSection.questions.push(question);
+    });
+    if (section._id !== undefined) {
+      newSection = { ...newSection, _id: section._id };
+    }
+    const newSectionType: SectionType = sectionObjToType(newSection);
+    console.log(`Section: ${newSectionType}`); // TODO debug
+
+    try {
+      const response = await (newSectionType?._id === undefined ?
+        client.post<string>('/formSection/', newSectionType) :
+        client.put<string>(`/formSection/${newSectionType._id}`, newSectionType)
+      );
+      if (newSectionType?._id === undefined) {
+        newSection = { ...newSection, _id: response.data };
+      }
+    }
+    catch (err) {
+      message.error('Something went wrong. Please try again later.');
+      console.error(`Error in section edit submission: ${err}`);
+    }
+    finally {
+      return newSection;
+    }
+  }
+
+  /**
+   * Handles the submission of a (new) form.
+   *
+   * @param form The form to submit.
+   */
+  async function handleSubmit(form: IAppraisalForm) {
+    let newForm: FormObj = {
+      name: form.formTitle,
+      sections: [],
+    };
+    form.sections.forEach(async formSection => {
+      const section: SectionObj = await handleSectionSubmit(formSection);
+      newForm.sections.push(section);
+    });
+    if (form._id !== undefined) {
+      newForm = { ...newForm, _id: form._id };
+    }
+    const newFormType: FormType = formObjToType(newForm);
+    console.log(`Form: ${newFormType}`); // TODO debug
+
+    try {
+      const response = await (newFormType?._id === undefined ?
+        client.post<string>('/form/', newFormType) :
+        client.put<string>(`/form/${newFormType._id}`, newFormType)
+      );
+      if (newFormType?._id === undefined) {
+        newForm = { ...newForm, _id: response.data };
+      }
+
+      message.success(`Form successfully ${location.state === undefined ? 'created' : 'edited'}!`);
+      navigate('/dashboard');
+    }
+    catch (err) {
+      message.error('Something went wrong. Please try again later.');
+      console.error(`Error in form edit submission: ${err}`);
+    }
   };
 
   const handleSectionAdd = () => {
@@ -268,7 +343,7 @@ const FormEditor: React.FC = () => {
       </Form.List>
       <Form.Item className='submit-container'>
         <Popconfirm
-          title={`Cancel ${location.state?._id === undefined ? 'Create' : 'Edit'} Form`}
+          title={`Cancel ${location.state === undefined ? 'Create' : 'Edit'} Form`}
           description='Are you sure you want to cancel?'
           icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
           onConfirm={() => navigate('/dashboard')}
