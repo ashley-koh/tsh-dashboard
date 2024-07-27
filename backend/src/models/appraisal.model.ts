@@ -31,13 +31,13 @@ const appraisalSchema: Schema = new Schema({
   },
 
   answers: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Answer',
     required: true,
   },
 
   comments: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Answer',
+    type: String,
     required: true,
   },
 });

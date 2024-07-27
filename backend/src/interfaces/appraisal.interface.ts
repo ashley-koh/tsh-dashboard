@@ -7,6 +7,6 @@ export interface Appraisal {
   formId: string;
   status: string;
   deadline: Date;
-  answers: string;
+  answers: string[];
   comments: string;
 }

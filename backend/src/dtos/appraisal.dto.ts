@@ -16,8 +16,8 @@ export class CreateAppraisalDto {
   @IsString()
   public deadline: Date;
 
-  @IsMongoId()
-  public answers: string;
+  @IsMongoId({ each: true })
+  public answers: string[];
 
   @IsString()
   public comments: string;
