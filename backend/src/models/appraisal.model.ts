@@ -25,14 +25,19 @@ const appraisalSchema: Schema = new Schema({
     required: true,
   },
 
-  reviewId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Form',
+  deadline: {
+    type: Date,
     required: true,
   },
 
-  deadline: {
-    type: Date,
+  answers: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Answer',
+    required: true,
+  },
+
+  comments: {
+    type: String,
     required: true,
   },
 });

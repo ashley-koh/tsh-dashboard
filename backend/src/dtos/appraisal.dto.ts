@@ -13,9 +13,12 @@ export class CreateAppraisalDto {
   @IsIn(['in review', 'post review', 'completed'])
   public status: string;
 
-  @IsMongoId()
-  public reviewId: string;
-
   @IsString()
   public deadline: Date;
+
+  @IsMongoId({ each: true })
+  public answers: string[];
+
+  @IsString()
+  public comments: string;
 }

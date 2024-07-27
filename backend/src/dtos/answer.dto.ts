@@ -1,13 +1,18 @@
-import { IsMongoId, IsNumber, IsString, Max, Min, ValidateIf } from 'class-validator';
-import { Types } from 'mongoose';
+import {
+  IsIn,
+  IsMongoId,
+  IsNumber,
+  IsString,
+  Max,
+  Min,
+  ValidateIf,
+} from 'class-validator';
 
 export class CreateAnswerDto {
   @IsMongoId()
-  public question: Types.ObjectId;
+  public answerId: string;
 
-  @IsNumber()
-  @Min(0)
-  @Max(1)
+  @IsIn(['0', '1'])
   public type: number;
 
   // Validate response depending on type of question

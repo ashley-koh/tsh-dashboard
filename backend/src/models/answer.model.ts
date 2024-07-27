@@ -2,7 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import { Answer } from '@/interfaces/answer.interface';
 
 const answerSchema: Schema = new Schema({
-  question: {
+  answerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Question',
     required: true,
@@ -21,6 +21,7 @@ const answerSchema: Schema = new Schema({
       },
     },
   },
+
   rating: {
     type: Number,
     validate: {

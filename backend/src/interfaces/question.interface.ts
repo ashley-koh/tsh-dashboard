@@ -3,5 +3,4 @@ export interface Question {
   description: string;
   type: number;
   required: boolean;
-  answerId: string;
 }
