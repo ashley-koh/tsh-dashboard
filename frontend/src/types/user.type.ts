@@ -1,12 +1,18 @@
 /** List of all department options as stored in backend. */
 export enum DepartmentOptions {
+  BOX_BUILD = "box_build",
   HR = "hr",
+  HQ = "hq",
+  MACHINING = "machining",
   OTHER = "others",
 };
 
 /** List of all department options as rendered in frontend. */
 export const DepartmentLabels = {
+  [DepartmentOptions.BOX_BUILD]: "Box Build",
   [DepartmentOptions.HR]: "Human Resources (HR)",
+  [DepartmentOptions.HQ]: "HQ",
+  [DepartmentOptions.MACHINING]: "Machining",
   [DepartmentOptions.OTHER]: "Others",
 };
 

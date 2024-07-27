@@ -4,12 +4,9 @@ import { Select } from "antd";
 import DashboardFlexBox from "./components/DashboardFlexBox";
 import EmployeeRanking from "./components/EmployeeRanking";
 import PieChartComponent from "./components/PieChartComponent";
-import { DepartmentOptions, RoleOptions } from "@/types/user.type";
+import { DepartmentLabels, DepartmentOptions, RoleOptions } from "@/types/user.type";
 import useAuth from "@/context/auth/useAuth";
-import { departments } from "../../data/mockData";
 import "./DepartmentStatistics.css";
-
-const { Option } = Select;
 
 const DepartmentStatistics: React.FC = () => {
   const { user } = useAuth();
@@ -24,13 +21,9 @@ const DepartmentStatistics: React.FC = () => {
             defaultValue={selectedDepartment}
             onChange={setSelectedDepartment}
             style={{ width: 200 }}
-          >
-            {departments.map((department) => (
-              <Option key={department} value={department}>
-                {department}
-              </Option>
-            ))}
-          </Select>
+            options={Object.entries(DepartmentLabels)
+              .map(([key, value]: [string, string]) => ({ value: key, label: value }))}
+          />
         </div>
       )}
       <div className="stats-container">
