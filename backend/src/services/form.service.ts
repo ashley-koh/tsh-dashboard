@@ -15,7 +15,15 @@ class FormService {
       ...formData,
     });
 
-    const populatedForm = await this.forms.findById(createFormData._id).exec();
+    const populatedForm = await this.forms
+      .findById(createFormData._id)
+      .populate({
+        path: 'sections',
+        populate: {
+          path: 'questions',
+        },
+      })
+      .exec();
 
     return populatedForm;
   }
@@ -23,20 +31,31 @@ class FormService {
   public async findFormById(formId: string): Promise<Form> {
     if (isEmpty(formId)) throw new HttpException(400, 'formId is empty');
 
-    const findForm: Form = await this.forms.findOne({
-      _id: formId,
-    });
+    const findFormData: Form = await this.forms
+      .findOne({
+        _id: formId,
+      })
+      .populate({
+        path: 'sections',
+        populate: {
+          path: 'questions',
+        },
+      });
 
-    if (!findForm) throw new HttpException(409, "Form doesn't exist");
+    if (!findFormData) throw new HttpException(409, "Form doesn't exist");
 
-    return findForm;
+    return findFormData;
   }
 
   public async findAllForms(): Promise<Form[]> {
-    const forms: Form[] = await this.forms.find();
-    // .select('section')
-    // .populate('questions');
-    return forms;
+    const findAllFormsData: Form[] = await this.forms.find().populate({
+      path: 'sections',
+      populate: {
+        path: 'questions',
+      },
+    });
+
+    return findAllFormsData;
   }
 
   public async updateForm(
@@ -46,10 +65,14 @@ class FormService {
     if (isEmpty(formData)) throw new HttpException(400, 'formData is empty');
     if (isEmpty(formId)) throw new HttpException(400, 'formId is empty');
 
-    const updateFormData: Form = await this.forms.findByIdAndUpdate(
-      formId,
-      formData,
-    );
+    const updateFormData: Form = await this.forms
+      .findByIdAndUpdate(formId, formData)
+      .populate({
+        path: 'sections',
+        populate: {
+          path: 'questions',
+        },
+      });
     if (!updateFormData) throw new HttpException(409, "Question doesn't exist");
     return updateFormData;
   }
@@ -57,7 +80,14 @@ class FormService {
   public async deleteForm(formId: string): Promise<Form> {
     if (isEmpty(formId)) throw new HttpException(400, 'formId is empty');
 
-    const deleteFormData: Form = await this.forms.findByIdAndDelete(formId);
+    const deleteFormData: Form = await this.forms
+      .findByIdAndDelete(formId)
+      .populate({
+        path: 'sections',
+        populate: {
+          path: 'questions',
+        },
+      });
 
     if (!deleteFormData) throw new HttpException(409, "Form doesn't exist");
 

@@ -4,12 +4,8 @@ import userModel from '@models/users.model';
 import { isEmpty } from '@utils/util';
 import fs from 'fs';
 import path from 'path';
+import { promisify } from 'util';
 import appraisalModel from '@/models/appraisal.model';
-import questionModel from '@/models/question.model';
-import answerModel from '@/models/answer.model';
-import formModel from '@/models/form.model';
-import FormService from './form.service';
-import QuestionService from './question.service';
 import AnswerService from './answer.service';
 
 class ReportService {
@@ -17,74 +13,29 @@ class ReportService {
 
   public appraisals = appraisalModel;
 
-  public questions = questionModel;
-
-  public answers = answerModel;
-
-  public forms = formModel;
-
-  public formService = new FormService();
-
-  public questionService = new QuestionService();
-
   public answerService = new AnswerService();
 
-  public async generateEmployeeReport(employeeId: string): Promise<string> {
-    if (isEmpty(employeeId)) throw new HttpException(400, 'UserId is empty');
+  public async generateEmployeeReport(employeeID: string): Promise<string> {
+    if (isEmpty(employeeID)) throw new HttpException(400, 'UserId is empty');
 
-    // Find User Data
-    const findUser = await this.users.findOne({ employeeId });
+    // Find the user
+    const findUser = await this.users.findOne({ employeeId: employeeID });
     if (!findUser) throw new HttpException(409, "User doesn't exist");
 
-    // Find Appraisal Data
+    // Find Appraisals
     const findAppraisals = await this.appraisals.find({
-      manageeId: employeeId,
+      manageeId: employeeID,
     });
-
-    if (!findAppraisals || findAppraisals.length === 0) {
+    if (!findAppraisals || findAppraisals.length === 0)
       throw new HttpException(409, 'User does not have appraisals');
-    }
-
-    // Collect all necessary data
-    const appraisalDataList = await Promise.all(
-      findAppraisals.map(async (appraisal) => {
-        const { formId } = appraisal;
-        const findFormData = await this.formService.findFormById(formId);
-        const { title, questions } = findFormData.section;
-
-        const questionDataList = await Promise.all(
-          questions.map(async (question) => {
-            const findQuestionData =
-              await this.questionService.findQuestionById(question);
-            const { description: questionText, answerId } = findQuestionData;
-            const getAnswerData =
-              await this.answerService.findAnswerById(answerId);
-            const { rating } = getAnswerData;
-
-            return {
-              questionText,
-              rating,
-            };
-          }),
-        );
-
-        return {
-          index: findAppraisals.indexOf(appraisal) + 1,
-          deadline: appraisal.deadline,
-          title,
-          questions: questionDataList,
-        };
-      }),
-    );
 
     // Create directory if it doesn't exist
     const dir = 'src/temp';
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir);
-    }
+    const mkdir = promisify(fs.mkdir);
+    await mkdir(dir);
 
     // Define the path to save the PDF file
-    const filePath = path.join(dir, `employee_report_${employeeId}.pdf`);
+    const filePath = path.join(dir, `employee_report_${employeeID}.pdf`);
 
     // Create a new PDF document
     const doc = new PDFDocument();
@@ -94,34 +45,31 @@ class ReportService {
     doc.pipe(writeStream);
 
     // Add content to the PDF document
-    const { name, employeeId: userId } = findUser;
-
-    doc.fontSize(20).text(`Employee Report for ${this.capitalizeWords(name)}`, {
-      align: 'center',
-    });
+    doc
+      .fontSize(20)
+      .text(`Employee Report for ${this.capitalizeWords(findUser.name)}`, {
+        align: 'center',
+      });
     doc.moveDown();
 
-    doc.fontSize(14).text(`Employee ID: ${userId}`);
+    doc.fontSize(14).text(`Employee ID: ${findUser.employeeId}`);
     doc.moveDown();
 
     doc.fontSize(16).text('Appraisals:', { underline: true });
 
-    appraisalDataList.forEach((appraisal) => {
-      const { index, deadline, title, questions } = appraisal;
-
+    findAppraisals.forEach(async (appraisal, index) => {
       doc.moveDown();
-      doc.fontSize(14).text(`Appraisal ${index}`);
-      doc.fontSize(12).text(`Deadline: ${new Date(deadline).toDateString()}`);
-      doc.moveDown();
-      doc.fontSize(14).text(`Section: ${title}`, { underline: true });
+      doc.fontSize(14).text(`Appraisal ${index + 1}`);
+      doc.fontSize(12).text(`Deadline: ${appraisal.deadline}`);
 
-      questions.forEach((question, qIndex) => {
-        const { questionText, rating } = question;
+      console.log(appraisal.answers);
 
-        doc.moveDown();
-        doc.fontSize(12).text(`Question ${qIndex + 1}: ${questionText}`);
-        doc.fontSize(12).text(`Answer: ${rating}`);
-      });
+      const findOneAnswerData = await this.answerService.findAnswerById(
+        appraisal.answers[0],
+      );
+
+      doc.text(`Answers: ${findOneAnswerData.openEndedAnswer}`);
+      doc.text(`Comments: ${appraisal.comments}`);
     });
 
     // Finalize the PDF and end the stream
@@ -137,7 +85,7 @@ class ReportService {
     return filePath;
   }
 
-  public capitalizeWords(str: string): string {
+  public capitalizeWords(str) {
     return str.replace(/\b\w/g, (char) => char.toUpperCase());
   }
 }
