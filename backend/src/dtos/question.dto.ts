@@ -19,7 +19,4 @@ export class CreateQuestionDto {
 
   @IsBoolean()
   public required: boolean;
-
-  @IsString()
-  public answerId: string;
 }

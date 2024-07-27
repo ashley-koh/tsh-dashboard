@@ -7,25 +7,13 @@ const formSchema: Schema = new Schema({
     required: true,
   },
 
-  description: {
-    type: String,
-    required: false,
-  },
-
-  section: {
-    title: {
-      type: String,
+  sections: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'FormSection',
       required: true,
     },
-
-    questions: [
-      {
-        type: String,
-        ref: 'Question',
-        required: true,
-      },
-    ],
-  },
+  ],
 });
 
 const formModel = mongoose.model<Form>('Form', formSchema);
