@@ -1,9 +1,22 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Card, Button, Progress, Statistic, Row, Col } from 'antd';
-import { employees, HIGH_KPI_THRESHOLD, AVERAGE_KPI_THRESHOLD } from '../../data/mockData';
-import useAuth from '../../context/auth/useAuth';
+import {
+  Button,
+  Card,
+  Col,
+  Progress,
+  Statistic,
+  Row
+} from 'antd';
+
+import {
+  AVERAGE_KPI_THRESHOLD,
+  HIGH_KPI_THRESHOLD,
+  employees
+} from '@/data/mockData';
+import useAuth from '@/context/auth/useAuth';
 import './DetailedEmployeeStats.css';
+import { DepartmentOptions } from '@/types/user.type';
 
 const DetailedEmployeeStats: React.FC = () => {
   const { employeeId } = useParams<{ employeeId: string }>();
@@ -40,7 +53,7 @@ const DetailedEmployeeStats: React.FC = () => {
           <Statistic title="Appraisals" value={employee.appraisals.length} />
         </Col>
       </Row>
-      {user?.role === 'hr' && (
+      {user?.dept === DepartmentOptions.HR && (
         <Button type="primary" onClick={handleDownloadPDF} style={{ marginTop: '16px' }}>
           Download Report
         </Button>

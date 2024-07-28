@@ -1,14 +1,19 @@
-enum QuestionType {
+export enum QuestionType {
   OPEN_ENDED = 0,
   RATING = 1,
-}
+};
 
-type Question = {
+type QuestionObj = {
   _id?: string;
   description: string;
-  type: number;
+  type: QuestionType;
   required: boolean;
 };
 
-export default Question;
-export { QuestionType };
+export const defaultQuestion: QuestionObj = {
+  description: '',
+  type: QuestionType.OPEN_ENDED,
+  required: false,
+};
+
+export default QuestionObj;

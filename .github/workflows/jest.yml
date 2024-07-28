@@ -4,27 +4,49 @@ on:
   push:
     branches:
       - main
+      - test
   pull_request:
     branches:
       - main
 
 jobs:
-  backend-tests:
+  build:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ./backend
+
+    strategy:
+      matrix:
+        node-version: ['20']
+        mongodb-version: ['latest']
+
     steps:
-    - name: Checkout repository
+    - name: Git checkout
       uses: actions/checkout@v4
 
-    - name: Set up Node.js for backend
+    - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: ${{ matrix.node-version }}
 
-    - name: Install dependencies for backend
-      working-directory: ./backend
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.11.0
+      with:
+        mongodb-version: ${{ matrix.mongodb-version }}
+        mongodb-username: rootuser
+        mongodb-password: rootpass
+        mongodb-port: 27017
+        mongodb-container-name: mongodb
+
+    - name: Install dependencies
       run: npm install
 
-    - name: Run backend tests
-      working-directory: ./backend
-      run: npm run test
+    - name: Load environment file
+      run: cp .env.development.example .env.development.local
+
+    - name: Run tests
+      run: npm test
+      env:
+        CI: true

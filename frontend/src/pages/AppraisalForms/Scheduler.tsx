@@ -10,12 +10,18 @@ import {
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 
-import Appraisal from '@/types/appraisal.type';
-import FormType from '@/types/form.type';
+import AppraisalObj, { AppraisalStatus, AppraisalType } from '@/types/appraisal.type';
+import FormObj from '@/types/form.type';
 import Loading from '@/components/common/Loading';
-import User from '@/types/user.type';
+import User, { RoleOptions } from '@/types/user.type';
 import axiosClient from '@/lib/axiosInstance';
 import useAuth from '@/context/auth/useAuth';
+import {
+  appraisalObjToType,
+  fetchAppraisals,
+  fetchForms,
+  fetchUsers
+} from '@/utils/fetchData';
 
 interface SchedulerProps {
   onClose: () => void;
@@ -27,12 +33,11 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
 
   const [form] = Form.useForm();
   const [employees, setEmployees] = useState<User[]>([]);
-  const [forms, setForms] = useState<FormType[]>([]);
+  const [forms, setForms] = useState<FormObj[]>([]);
 
   const [selectedEmployee, setSelectedEmployee] = useState<User | null>(null);
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
-  const [selectedAppraisalForm, setSelectedAppraisalForm] = useState<FormType | null>(null);
-  const [selectedReviewForm, setSelectedReviewForm] = useState<FormType | null>(null);
+  const [selectedForm, setSelectedForm] = useState<FormObj | null>(null);
 
 
   if (auth.user === null) {
@@ -41,63 +46,28 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
     return <Loading />;
   }
 
-  const fetchForms: () => Promise<FormType[]> = async () => {
-    try {
-      const response = await client.get<{ data: FormType[], message: string }>('/form');
-      return response.data.data;
-    }
-    catch (err) {
-      message.error('Something went wrong. Please try again later.');
-      console.error(err);
-      return [];
-    };
-  };
-
-  const fetchUsers: () => Promise<User[]> = async () => {
-    try {
-      const response = await client.get<{ data: User[], message: string }>('/user');
-      return response.data.data;
-    }
-    catch (err) {
-      message.error('Something went wrong. Please try again later.');
-      console.error(err);
-      return [];
-    };
-  };
-
   /* Run this useEffect on first scheduler load */
   useEffect(() => {
     const loadData = async () => {
-      try {
-        // Get relevant employees
-        const users = await fetchUsers();
-        setEmployees(users.filter(user => auth.user?.dept === user.dept && (
-          (auth.user.role === 'business_owner' && user.role !== 'business_owner') ||
-          (auth.user.role === 'head_of_department' && user.role === 'employee')
-        )));
+      // Get relevant employees
+      const users = await fetchUsers(client);
+      setEmployees(users.filter(user => auth.user?.dept === user.dept && (
+        (auth.user.role === RoleOptions.OWNER && user.role !== RoleOptions.OWNER) ||
+        (auth.user.role === RoleOptions.HOD && user.role === RoleOptions.EMPLOYEE)
+      )));
 
-        // Get relevant forms
-        const allForms = await fetchForms();
-        // Do some filtering here...
-        setForms(allForms);
-      }
-      catch (err) {
-        message.error('Something went wrong. Please try again later.');
-        console.error(err);
-      }
+      // Get relevant forms
+      const allForms = await fetchForms(client);
+      // Do some filtering here...
+      setForms(allForms);
     };
 
     loadData();
   }, []);
 
-  const onChangeForm = (value: string | null, appraisal: boolean) => {
+  const onChangeForm = (value: string | null) => {
     const newSelectedForm = forms.find(form => form._id === value);
-    if (appraisal) {
-      setSelectedAppraisalForm(newSelectedForm === undefined ? null : newSelectedForm);
-    }
-    else {
-      setSelectedReviewForm(newSelectedForm === undefined ? null : newSelectedForm);
-    }
+    setSelectedForm(newSelectedForm === undefined ? null : newSelectedForm);
   }
 
   const onChangeUser = (value: string | null) => {
@@ -116,54 +86,57 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
       message.error('Cannot find selected date. Please try again.');
       return;
     }
-    else if (selectedAppraisalForm?._id === undefined || selectedReviewForm?._id === undefined) {
+    else if (selectedForm?._id === undefined) {
       console.error('Form is not selected, something went wrong.');
       message.error('Cannot find selected form(s). Please try again.');
       return;
     }
 
-    try {
-      const appraisals: Appraisal[] = await client
-        .get<{ data: Appraisal[], message: string }>('/appraisal')
-        .then(response => response.data.data);
+    const appraisals: AppraisalObj[] = await fetchAppraisals(client);
+    for (const appraisal of appraisals) {
+      const reviewDate = dayjs(appraisal.deadline);
+      const selfClash =
+        appraisal.managee._id === auth.user?._id ||
+        appraisal.manager._id === auth.user?._id;
+      const othrClash =
+        appraisal.managee._id === selectedEmployee?._id ||
+        appraisal.manager._id === selectedEmployee?._id;
 
-      for (const appraisal of appraisals) {
-        const reviewDate = dayjs(appraisal.deadline);
-        const selfClash = appraisal.manageeId === auth.user?._id || appraisal.managerId === auth.user?._id;
-        const othrClash = appraisal.manageeId === selectedEmployee?._id || appraisal.managerId === selectedEmployee?._id;
-
-        if ((selfClash || othrClash) && (
-          (!reviewDate.isAfter(selectedDate, 'minute') && !reviewDate.add(30, 'minute').isBefore(selectedDate, 'minute')) ||
-          (!reviewDate.isBefore(selectedDate, 'minute') && !reviewDate.subtract(30, 'minute').isAfter(selectedDate, 'minute'))
-        )) {
-          message.warning(
-            `${selfClash ? 'You' : selectedEmployee?.name} ${selfClash ? 'have' : 'has'} a scheduled meeting at the selected time.`
-          );
-          form.resetFields(['pick-date']);
-          setSelectedDate(null);
-          return;
-        }
-      };
-
-      const newAppraisal: Appraisal = {
-        manageeId: auth.user._id,
-        managerId: selectedEmployee._id,
-        formId: selectedAppraisalForm._id,
-        status: 'in review',
-        answers: '{}',
-        reviewId: selectedReviewForm._id,
-        deadline: selectedDate.toDate(),
+      if ((selfClash || othrClash) && (
+        (
+          !reviewDate.isAfter(selectedDate, 'minute') &&
+          !reviewDate.add(30, 'minute').isBefore(selectedDate, 'minute')
+        ) ||
+        (
+          !reviewDate.isBefore(selectedDate, 'minute') &&
+          !reviewDate.subtract(30, 'minute').isAfter(selectedDate, 'minute')
+        )
+      )) {
+        message.warning(
+          `${selfClash ? 'You' : selectedEmployee?.name} ${selfClash ? 'have' : 'has'} ` +
+          'a scheduled meeting at the selected time.'
+        );
+        form.resetFields(['pick-date']);
+        setSelectedDate(null);
+        return;
       }
-      client.post<Appraisal>('/appraisal/createAppraisal', newAppraisal);
-      message.success(
-        `Scheduled meeting with ${selectedEmployee.name} on ${selectedDate.format('DD MMM YYYY HH:mm')}`
-      );
-      onClose();
+    };
+
+    const newAppraisal: AppraisalObj = {
+      managee: auth.user,
+      manager: selectedEmployee,
+      form: selectedForm,
+      status: AppraisalStatus.REVIEW,
+      deadline: selectedDate.toDate(),
+      answers: [],
+      comments: '',
     }
-    catch (err) {
-      console.error('User is not logged in, something went wrong.');
-      message.error('Something went wrong. Please try again later.');
-    }
+    client.post<AppraisalType>('/appraisal/', appraisalObjToType(newAppraisal));
+    message.success(
+      `Scheduled meeting with ${selectedEmployee.name} ` +
+      `on ${selectedDate.format('DD MMM YYYY HH:mm')}`
+    );
+    onClose();
   }
 
   return (
@@ -236,27 +209,7 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
             showSearch
             placeholder='Select a form'
             optionFilterProp='label'
-            onChange={(value: string | null) => onChangeForm(value, true)}
-            options={
-              forms.map(form => ({
-                value: form._id,
-                label: form.name,
-              }))
-            }
-          />
-        </Form.Item>
-        <Form.Item
-          name='pick-review'
-          label='Review Form:'
-          rules={[
-            { required: true, message: 'Please select a form.' },
-          ]}
-        >
-          <Select
-            showSearch
-            placeholder='Select a form'
-            optionFilterProp='label'
-            onChange={(value: string | null) => onChangeForm(value, false)}
+            onChange={(value: string | null) => onChangeForm(value)}
             options={
               forms.map(form => ({
                 value: form._id,

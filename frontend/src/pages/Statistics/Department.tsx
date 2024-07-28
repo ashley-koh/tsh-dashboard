@@ -1,46 +1,46 @@
 import React, { useState } from "react";
-import { Row, Col, Flex, Select, Space, Typography, Card } from "antd";
-import useAuth from "@/context/auth/useAuth";
-import getDeptLabel from "@/utils/getDeptLabel";
-import { DepartmentOptions } from "@/types/user.type";
+import {
+  Card,
+  Col,
+  Flex,
+  Row,
+  Select,
+  Space,
+  Typography,
+} from "antd";
 
+import {
+  DepartmentLabels,
+  DepartmentOptions,
+  RoleOptions
+} from "@/types/user.type";
 import Ranking from "./components/Ranking";
 import PieChart from "./components/PieChart";
+import useAuth from "@/context/auth/useAuth";
 
 const { Text } = Typography;
 
 const DepartmentStatistics: React.FC = () => {
   const { user } = useAuth();
   const [selectedDepartment, setSelectedDepartment] =
-    useState<DepartmentOptions>("hr");
-  const deptOptions = [
-    {
-      value: "hr",
-      label: "Human Resources (HR)",
-    },
-    {
-      value: "others",
-      label: "Others",
-    },
-  ];
+    useState<DepartmentOptions>(DepartmentOptions.HR);
 
   return (
     <>
       <Card>
         <Flex justify="space-between" align="center">
           <span style={{ fontSize: 32, fontWeight: 500 }}>
-            {getDeptLabel(selectedDepartment)}
+            {DepartmentLabels[selectedDepartment]}
           </span>
-          {user?.role === "business_owner" && (
+          {user?.role === RoleOptions.OWNER && (
             <Space>
               <Text>Select Department: </Text>
               <Select
                 size="large"
-                options={deptOptions}
-                defaultValue="hr"
-                onChange={(value: DepartmentOptions) =>
-                  setSelectedDepartment(value)
-                }
+                options={Object.entries(DepartmentLabels)
+                  .map(([key, value]: [string, string]) => ({ value: key, label: value }))}
+                defaultValue={DepartmentOptions.HR}
+                onChange={setSelectedDepartment}
                 style={{ width: 300 }}
               />
             </Space>

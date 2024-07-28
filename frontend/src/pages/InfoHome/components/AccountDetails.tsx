@@ -1,10 +1,12 @@
 import React from "react";
 import { Card, Avatar, Flex, Typography } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import User from "@/types/user.type";
-import getRoleLabel from "@/utils/getRoleLabel";
-import getDeptLabel from "@/utils/getDeptLabel";
-import getEmploymentLabel from "@/utils/getEmploymentLabel";
+
+import User, {
+  DepartmentLabels,
+  EmploymentStatusLabels,
+  RoleLables
+} from "@/types/user.type";
 
 const { Title, Text } = Typography;
 
@@ -25,10 +27,10 @@ const AccountDetails: React.FC<{ user: User }> = ({ user }) => {
                 <Text strong>Email:</Text>
               </Flex>
               <Flex vertical style={{ marginLeft: 10 }}>
-                <Text>{getRoleLabel(user.role)}</Text>
-                <Text>{getDeptLabel(user.dept)}</Text>
-                <Text>{user.employeeID}</Text>
-                <Text>{getEmploymentLabel(user.employmentStatus)}</Text>
+                <Text>{RoleLables[user.role]}</Text>
+                <Text>{DepartmentLabels[user.dept]}</Text>
+                <Text>{user.employeeId}</Text>
+                <Text>{EmploymentStatusLabels[user.employmentStatus]}</Text>
                 <Text>{user.email}</Text>
               </Flex>
             </Flex>

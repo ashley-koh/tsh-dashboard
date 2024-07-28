@@ -8,10 +8,11 @@ import {
   message,
 } from 'antd';
 
-import FormType from '@/types/form.type';
+import FormObj from '@/types/form.type';
 import Loading from '@/components/common/Loading';
 import axiosClient from '@/lib/axiosInstance';
 import useAuth from '@/context/auth/useAuth';
+import { fetchForms } from '@/utils/fetchData';
 
 interface FormSelectProps {
   onClose: () => void;
@@ -23,8 +24,8 @@ const FormSelect: React.FC<FormSelectProps> = ({ onClose }) => {
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
-  const [forms, setForms] = useState<FormType[]>([]);
-  const [selectedForm, setSelectedForm] = useState<FormType | null>(null);
+  const [forms, setForms] = useState<FormObj[]>([]);
+  const [selectedForm, setSelectedForm] = useState<FormObj | null>(null);
 
   if (auth.user === null) {
     console.error('User is not logged in, something went wrong.');
@@ -32,31 +33,13 @@ const FormSelect: React.FC<FormSelectProps> = ({ onClose }) => {
     return <Loading />;
   }
 
-  const fetchForms: () => Promise<FormType[]> = async () => {
-    try {
-      const response = await client.get<{ data: FormType[], message: string }>('/form');
-      return response.data.data;
-    }
-    catch (err) {
-      message.error('Something went wrong. Please try again later.');
-      console.error(err);
-      return [];
-    };
-  };
-
   /* Run this useEffect on first form selector load */
   useEffect(() => {
     const loadData = async () => {
-      try {
-        // Get relevant forms
-        const allForms = await fetchForms();
-        // Do some filtering here...
-        setForms(allForms);
-      }
-      catch (err) {
-        message.error('Something went wrong. Please try again later.');
-        console.error(err);
-      }
+      // Get relevant forms
+      const allForms = await fetchForms(client);
+      // Do some filtering here...
+      setForms(allForms);
     };
 
     loadData();

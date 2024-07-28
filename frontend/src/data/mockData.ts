@@ -11,9 +11,16 @@ export const employees = [
   { id: '10', name: 'Jack', kpi: 45, appraisals: ['Needs Improvement', 'Below Expectations'], department: "HQ"  },
 ];
 
+export const lms = {
+  modules: [
+    { name: "Elements of Software Construction", progress: 80, dueIn: 30 },
+    { name: "Computer Software Engineering", progress: 60, dueIn: 7 },
+    { name: "Machine Learning", progress: 100, dueIn: 12 },
+    { name: "Foundations of Cybersecurity", progress: 75, dueIn: 21 },
+    // { name: "Module 5 onwards will not display", progress: 15, dueIn: 40 },
+  ],
+  overallRating: 85,
+};
+
 export const HIGH_KPI_THRESHOLD = 80;
 export const AVERAGE_KPI_THRESHOLD = 60;
-
-export const cur_department = 'HQ';
-
-export const departments = ['Machining', 'HQ', 'Box Build'];

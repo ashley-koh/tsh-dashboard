@@ -1,6 +1,17 @@
 import React from 'react';
-import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
-import { employees, HIGH_KPI_THRESHOLD, AVERAGE_KPI_THRESHOLD } from '../../data/mockData';
+import {
+  Cell,
+  Pie,
+  PieChart,
+  Tooltip,
+  Legend
+} from 'recharts';
+
+import {
+  AVERAGE_KPI_THRESHOLD,
+  HIGH_KPI_THRESHOLD,
+  employees
+} from '@/data/mockData';
 import './PieChartComponent.css';
 
 interface PieChartComponentProps {
@@ -36,7 +47,7 @@ const PieChartComponent: React.FC<PieChartComponentProps> = ({ department }) => 
           dataKey="value"
           label
         >
-          {data.map((entry, index) => (
+          {data.map((_entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Pie>
