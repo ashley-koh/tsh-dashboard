@@ -18,7 +18,6 @@ import axiosClient from '@/lib/axiosInstance';
 import useAuth from '@/context/auth/useAuth';
 import {
   appraisalObjToType,
-  fetchAppraisals,
   fetchForms,
   fetchUsers
 } from '@/utils/fetchData';
@@ -57,7 +56,7 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
       )));
 
       // Get relevant forms
-      const allForms = await fetchForms(client);
+      const allForms: FormObj[] = await fetchForms(client);
       // Do some filtering here...
       setForms(allForms);
     };
@@ -92,35 +91,44 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
       return;
     }
 
-    const appraisals: AppraisalObj[] = await fetchAppraisals(client);
-    for (const appraisal of appraisals) {
+    function checkNoClash(appraisal: AppraisalObj, errorMsg: string) {
       const reviewDate = dayjs(appraisal.deadline);
-      const selfClash =
-        appraisal.managee._id === auth.user?._id ||
-        appraisal.manager._id === auth.user?._id;
-      const othrClash =
-        appraisal.managee._id === selectedEmployee?._id ||
-        appraisal.manager._id === selectedEmployee?._id;
 
-      if ((selfClash || othrClash) && (
-        (
-          !reviewDate.isAfter(selectedDate, 'minute') &&
-          !reviewDate.add(30, 'minute').isBefore(selectedDate, 'minute')
-        ) ||
-        (
-          !reviewDate.isBefore(selectedDate, 'minute') &&
-          !reviewDate.subtract(30, 'minute').isAfter(selectedDate, 'minute')
-        )
-      )) {
-        message.warning(
-          `${selfClash ? 'You' : selectedEmployee?.name} ${selfClash ? 'have' : 'has'} ` +
-          'a scheduled meeting at the selected time.'
-        );
+      const hasClash: boolean = (
+        !reviewDate.isAfter(selectedDate, 'minute') &&
+        !reviewDate.add(30, 'minute').isBefore(selectedDate, 'minute')
+      ) ||
+      (
+        !reviewDate.isBefore(selectedDate, 'minute') &&
+        !reviewDate.subtract(30, 'minute').isAfter(selectedDate, 'minute')
+      );
+
+      if (hasClash) {
+        message.warning(errorMsg);
         form.resetFields(['pick-date']);
         setSelectedDate(null);
+      }
+      return !hasClash;
+    };
+
+    for (const appraisal of auth.user.appraisals) {
+      const noClash: boolean = checkNoClash(
+        appraisal,
+        'You have a scheduled meeting at the selected time.'
+      );
+      if (!noClash) {
         return;
       }
-    };
+    }
+    for (const appraisal of selectedEmployee.appraisals) {
+      const noClash: boolean = checkNoClash(
+        appraisal,
+        `${selectedEmployee.name} has a scheduled meeting at the selected time.`
+      );
+      if (!noClash) {
+        return;
+      }
+    }
 
     const newAppraisal: AppraisalObj = {
       managee: auth.user,
@@ -131,7 +139,10 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
       answers: [],
       comments: '',
     }
-    client.post<AppraisalType>('/appraisal/', appraisalObjToType(newAppraisal));
+    const newAppraisalType: AppraisalType = appraisalObjToType(newAppraisal);
+    console.log(newAppraisalType);
+
+    await client.post<AppraisalType>('/appraisal/', newAppraisalType);
     message.success(
       `Scheduled meeting with ${selectedEmployee.name} ` +
       `on ${selectedDate.format('DD MMM YYYY HH:mm')}`

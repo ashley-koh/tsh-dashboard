@@ -18,7 +18,7 @@ import User, { defaultUser } from "@/types/user.type";
  */
 export async function fetchQuestion(client: AxiosInstance, id: string) {
   try {
-    const responses = await client.get<{ data: QuestionObj, message: string }>(`/question/${id}`);
+    const responses = await client.get<{ data: QuestionObj, message: string }>(`/questions/${id}`);
     return responses.data.data;
   }
   catch (err) {
@@ -37,7 +37,7 @@ export async function fetchQuestion(client: AxiosInstance, id: string) {
  */
 export async function fetchQuestions(client: AxiosInstance) {
   try {
-    const responses = await client.get<{ data: QuestionObj[], message: string }>('/question');
+    const responses = await client.get<{ data: QuestionObj[], message: string }>('/questions');
     return responses.data.data;
   }
   catch (err) {
@@ -74,9 +74,8 @@ export async function answerTypeToObj(client: AxiosInstance, answerType: AnswerT
  */
 export async function fetchAnswer(client: AxiosInstance, id: string) {
   try {
-    const responses = await client.get<{ data: AnswerType, message: string }>(`/answer/${id}`);
-    const answer: AnswerObj = await answerTypeToObj(client, responses.data.data);
-    return answer;
+    const responses = await client.get<{ data: AnswerObj, message: string }>(`/answer/${id}`);
+    return responses.data.data;
   }
   catch (err) {
     message.error('Something went wrong. Please try again later.');
@@ -93,22 +92,14 @@ export async function fetchAnswer(client: AxiosInstance, id: string) {
  * @returns Promise of list of answers.
  */
 export async function fetchAnswers(client: AxiosInstance) {
-  const answers: AnswerObj[] = [];
-
   try {
-    const responses = await client.get<{ data: AnswerType[], message: string }>('/answer');
-    responses.data.data.forEach(async response => {
-      const answer: AnswerObj = await answerTypeToObj(client, response);
-      answers.push(answer);
-    });
+    const responses = await client.get<{ data: AnswerObj[], message: string }>('/answer');
+    return responses.data.data;
   }
   catch (err) {
     message.error('Something went wrong. Please try again later.');
     console.error(`Error while retrieving answers: ${err}`);
     return [];
-  }
-  finally {
-    return answers
   }
 };
 
@@ -166,8 +157,8 @@ export function sectionObjToType(sectionObj: SectionObj) {
  */
 export async function fetchSection(client: AxiosInstance, id: string) {
   try {
-    const responses = await client.get<{ data: SectionType, message: string }>(`/formSection/${id}`);
-    return sectionTypeToObj(client, responses.data.data);
+    const responses = await client.get<{ data: SectionObj, message: string }>(`/formSection/${id}`);
+    return responses.data.data;
   }
   catch (err) {
     message.error('Something went wrong. Please try again later.');
@@ -184,18 +175,14 @@ export async function fetchSection(client: AxiosInstance, id: string) {
  * @returns Promise of list of sections.
  */
 export async function fetchSections(client: AxiosInstance) {
-  const sections: SectionObj[] = [];
-
   try {
-    const responses = await client.get<{ data: SectionType[], message: string }>('/formSection');
-    responses.data.data.forEach(response => sections.push(sectionTypeToObj(client, response)));
+    const responses = await client.get<{ data: SectionObj[], message: string }>('/formSection');
+    return responses.data.data;
   }
   catch (err) {
     message.error('Something went wrong. Please try again later.');
     console.error(`Error while retrieving sections: ${err}`);
-  }
-  finally {
-    return sections;
+    return [];
   }
 }
 
@@ -253,8 +240,8 @@ export function formObjToType(formObj: FormObj) {
  */
 export async function fetchForm(client: AxiosInstance, id: string) {
   try {
-    const responses = await client.get<{ data: FormType, message: string }>(`/form/${id}`);
-    return formTypeToObj(client, responses.data.data);
+    const responses = await client.get<{ data: FormObj, message: string }>(`/form/${id}`);
+    return responses.data.data;
   }
   catch (err) {
     message.error('Something went wrong. Please try again later.');
@@ -271,18 +258,14 @@ export async function fetchForm(client: AxiosInstance, id: string) {
  * @returns Promise of list of forms.
  */
 export async function fetchForms(client: AxiosInstance) {
-  const forms: FormObj[] = [];
-
   try {
-    const responses = await client.get<{ data: FormType[], message: string }>('/form');
-    responses.data.data.forEach(response => forms.push(formTypeToObj(client, response)));
+    const responses = await client.get<{ data: FormObj[], message: string }>('/form');
+    return responses.data.data;
   }
   catch (err) {
     message.error('Something went wrong. Please try again later.');
     console.error(`Error while retrieving forms: ${err}`);
-  }
-  finally {
-    return forms;
+    return [];
   }
 }
 
@@ -362,11 +345,13 @@ export async function appraisalTypeToObj(client: AxiosInstance, appraisalType: A
  * @returns The appraisal type to push to backend.
  */
 export function appraisalObjToType(appraisalObj: AppraisalObj) {
+  const { managee, manager, form, ...rest } = appraisalObj;
   const answers: string[] = appraisalObj.answers
     .map(answer => answer._id || '')
     .filter(id => id.length > 0);
+
   const appraisalType: AppraisalType = {
-    ...appraisalObj,
+    ...rest,
     answers: answers,
     manageeId: appraisalObj.managee._id || '',
     managerId: appraisalObj.manager._id || '',
