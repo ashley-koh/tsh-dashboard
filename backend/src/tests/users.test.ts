@@ -140,7 +140,8 @@ describe('Testing Users', () => {
       const app = new App([usersRoute]);
       return request(app.getServer())
         .put(`${usersRoute.path}/${userId}`)
-        .send(userData);
+        .send(userData)
+        .expect(200);
     });
   });
 

@@ -6,17 +6,17 @@ import QuestionService from '@services/question.service';
 class QuestionController {
   public questionService = new QuestionService();
 
-  public createQuestion = async (
+  public getQuestions = async (
     req: Request,
     res: Response,
     next: NextFunction,
   ) => {
     try {
-      const questionData: CreateQuestionDto = req.body;
-      const createQuestionData: Question =
-        await this.questionService.createQuestion(questionData);
-
-      res.status(201).json({ data: createQuestionData, message: 'created' });
+      const findAllQuestionsData: Question[] =
+        await this.questionService.findAllQuestions();
+      res
+        .status(200)
+        .json({ data: findAllQuestionsData, message: 'findAll question' });
     } catch (error) {
       next(error);
     }
@@ -32,21 +32,27 @@ class QuestionController {
       const findOneQuestionData: Question =
         await this.questionService.findQuestionById(questionID);
 
-      res.status(201).json({ data: findOneQuestionData, message: 'findOne' });
+      res
+        .status(200)
+        .json({ data: findOneQuestionData, message: 'findOne question' });
     } catch (error) {
       next(error);
     }
   };
 
-  public getQuestions = async (
+  public createQuestion = async (
     req: Request,
     res: Response,
     next: NextFunction,
   ) => {
     try {
-      const findAllQuestionsData: Question[] =
-        await this.questionService.findAllQuestions();
-      res.status(201).json({ data: findAllQuestionsData, message: 'findAll' });
+      const questionData: CreateQuestionDto = req.body;
+      const createQuestionData: Question =
+        await this.questionService.createQuestion(questionData);
+
+      res
+        .status(201)
+        .json({ data: createQuestionData, message: 'created question' });
     } catch (error) {
       next(error);
     }
@@ -64,7 +70,9 @@ class QuestionController {
       const updateQuestionData: Question =
         await this.questionService.updateQuestion(questionId, questionData);
 
-      res.status(201).json({ data: updateQuestionData, message: 'updated' });
+      res
+        .status(200)
+        .json({ data: updateQuestionData, message: 'updated question' });
     } catch (error) {
       next(error);
     }
@@ -81,7 +89,9 @@ class QuestionController {
       const deleteQuestionData: Question =
         await this.questionService.deleteQuestion(questionId);
 
-      res.status(201).json({ data: deleteQuestionData, message: 'deleted' });
+      res
+        .status(200)
+        .json({ data: deleteQuestionData, message: 'deleted question' });
     } catch (error) {
       next(error);
     }
