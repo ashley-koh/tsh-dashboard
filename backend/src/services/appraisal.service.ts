@@ -18,32 +18,25 @@ class AppraisalService {
       ...appraisalData,
     });
 
-    const populatedAppraisalData = await this.appraisal
-      .findById(createAppraisalData._id)
-      .populate('answers')
-      .exec();
-
-    return populatedAppraisalData;
+    return createAppraisalData;
   }
 
   public async findAppraisalById(appraisalId: string): Promise<Appraisal> {
     if (isEmpty(appraisalId))
       throw new HttpException(400, 'AppraisalID is empty');
 
-    const findAppraisal: Appraisal = await this.appraisal
-      .findOne({
-        _id: appraisalId,
-      })
-      .populate('answers');
+    const findAppraisal: Appraisal = await this.appraisal.findOne({
+      _id: appraisalId,
+    });
+
     if (!findAppraisal) throw new HttpException(409, "Appraisal doesn't exist");
 
     return findAppraisal;
   }
 
   public async findAllAppraisals(): Promise<Appraisal[]> {
-    const AllAppraisalsData: Appraisal[] = await this.appraisal
-      .find()
-      .populate('answers');
+    const AllAppraisalsData: Appraisal[] = await this.appraisal.find();
+
     return AllAppraisalsData;
   }
 
@@ -56,12 +49,12 @@ class AppraisalService {
     if (isEmpty(appraisalId))
       throw new HttpException(400, 'appraisalId is empty');
 
-    const updateAppraisalData: Appraisal = await this.appraisal
-      .findByIdAndUpdate(appraisalId, appraisalData)
-      .populate('answers');
+    const updateAppraisalData: Appraisal =
+      await this.appraisal.findByIdAndUpdate(appraisalId, appraisalData);
 
     if (!updateAppraisalData)
       throw new HttpException(409, "Appraisal doesn't exist");
+
     return updateAppraisalData;
   }
 
@@ -69,9 +62,8 @@ class AppraisalService {
     if (isEmpty(appraisalId))
       throw new HttpException(400, 'appraisalId is empty');
 
-    const deleteAppraisalData: Appraisal = (
-      await this.appraisal.findByIdAndDelete(appraisalId)
-    ).populated('answers');
+    const deleteAppraisalData: Appraisal =
+      await this.appraisal.findByIdAndDelete(appraisalId);
 
     if (!deleteAppraisalData)
       throw new HttpException(409, "Appraisal doesn't exist");

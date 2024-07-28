@@ -8,17 +8,9 @@ import { isEmpty } from '@utils/util';
 class QuestionService {
   public questions = questionModel;
 
-  public async createQuestion(
-    questionData: CreateQuestionDto,
-  ): Promise<Question> {
-    if (isEmpty(questionData))
-      throw new HttpException(400, 'questionData is empty');
-
-    const createQuestionData: Question = await this.questions.create({
-      ...questionData,
-    });
-
-    return createQuestionData;
+  public async findAllQuestions(): Promise<Question[]> {
+    const questions: Question[] = await this.questions.find();
+    return questions;
   }
 
   public async findQuestionById(questionID: string): Promise<Question> {
@@ -33,9 +25,17 @@ class QuestionService {
     return findQuestion;
   }
 
-  public async findAllQuestions(): Promise<Question[]> {
-    const questions: Question[] = await this.questions.find();
-    return questions;
+  public async createQuestion(
+    questionData: CreateQuestionDto,
+  ): Promise<Question> {
+    if (isEmpty(questionData))
+      throw new HttpException(400, 'questionData is empty');
+
+    const createQuestionData: Question = await this.questions.create({
+      ...questionData,
+    });
+
+    return createQuestionData;
   }
 
   public async updateQuestion(

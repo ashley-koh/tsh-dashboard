@@ -4,8 +4,8 @@ import { Routes } from '@interfaces/routes.interface';
 import { CreateQuestionDto } from '@dtos/question.dto';
 import validationMiddleware from '@middlewares/validation.middleware';
 
-class QuestionRoutes implements Routes {
-  public path = '/question';
+class QuestionsRoute implements Routes {
+  public path = '/questions';
 
   public router = Router();
 
@@ -16,18 +16,18 @@ class QuestionRoutes implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.post(
-      `${this.path}/`,
-      validationMiddleware(CreateQuestionDto, 'body'),
-      this.questionController.createQuestion,
-    );
+    this.router.get(`${this.path}`, this.questionController.getQuestions);
 
     this.router.get(
       `${this.path}/:id`,
       this.questionController.getQuestionById,
     );
 
-    this.router.get(`${this.path}`, this.questionController.getQuestions);
+    this.router.post(
+      `${this.path}/`,
+      validationMiddleware(CreateQuestionDto, 'body'),
+      this.questionController.createQuestion,
+    );
 
     this.router.put(
       `${this.path}/:id`,
@@ -42,4 +42,4 @@ class QuestionRoutes implements Routes {
   }
 }
 
-export default QuestionRoutes;
+export default QuestionsRoute;

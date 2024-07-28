@@ -62,13 +62,6 @@ class ReportService {
       doc.fontSize(14).text(`Appraisal ${index + 1}`);
       doc.fontSize(12).text(`Deadline: ${appraisal.deadline}`);
 
-      console.log(appraisal.answers);
-
-      const findOneAnswerData = await this.answerService.findAnswerById(
-        appraisal.answers[0],
-      );
-
-      doc.text(`Answers: ${findOneAnswerData.openEndedAnswer}`);
       doc.text(`Comments: ${appraisal.comments}`);
     });
 

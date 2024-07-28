@@ -30,11 +30,12 @@ const appraisalSchema: Schema = new Schema({
     required: true,
   },
 
-  answers: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Answer',
-    required: true,
-  },
+  answers: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
 
   comments: {
     type: String,

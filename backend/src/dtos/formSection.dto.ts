@@ -6,7 +6,6 @@ export class CreateFormSectionDto {
   public title: string;
 
   @IsString()
-  @IsNotEmpty()
   public description: string;
 
   @IsArray()
