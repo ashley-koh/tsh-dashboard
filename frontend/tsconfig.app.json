@@ -7,7 +7,7 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
-    "types": ["cypress"],
+    "types": ["@testing-library/jest-dom", "cypress"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -32,6 +32,6 @@
       "#root/*": ["./*"]
     }
   },
-  "include": ["src", "cypress/support/component.ts"],
-  "exclude": ["cypress.config.ts", "node_modules"],
+  "include": ["src", "cypress/support/component.ts", "vitest.setup.ts"],
+  "exclude": ["cypress.config.ts", "node_modules"]
 }
