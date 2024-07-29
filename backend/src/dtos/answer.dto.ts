@@ -12,7 +12,7 @@ export class CreateAnswerDto {
   @IsMongoId()
   public answerId: string;
 
-  @IsIn(['0', '1'])
+  @IsIn([0, 1])
   public type: number;
 
   // Validate response depending on type of question

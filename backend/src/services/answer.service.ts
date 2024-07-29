@@ -8,20 +8,9 @@ import { isEmpty } from '@utils/util';
 class AnswerService {
   public answers = answerModel;
 
-  public async createAnswer(answerData: CreateAnswerDto): Promise<Answer> {
-    if (isEmpty(answerData))
-      throw new HttpException(400, 'answerData is empty');
-
-    const createAnswerData: Answer = await this.answers.create({
-      ...answerData,
-    });
-
-    const populatedAnswer = await this.answers
-      .findById(createAnswerData._id)
-      .populate('answerId')
-      .exec();
-
-    return populatedAnswer;
+  public async findAllAnswers(): Promise<Answer[]> {
+    const answers: Answer[] = await this.answers.find().populate('answerId');
+    return answers;
   }
 
   public async findAnswerById(answerId: string): Promise<Answer> {
@@ -37,9 +26,19 @@ class AnswerService {
     return findAnswer;
   }
 
-  public async findAllAnswers(): Promise<Answer[]> {
-    const answers: Answer[] = await this.answers.find().populate('answerId');
-    return answers;
+  public async createAnswer(answerData: CreateAnswerDto): Promise<Answer> {
+    if (isEmpty(answerData))
+      throw new HttpException(400, 'answerData is empty');
+
+    const createAnswerData: Answer = await this.answers.create({
+      ...answerData,
+    });
+
+    const populatedAnswer = await this.answers
+      .findById(createAnswerData._id)
+      .populate('answerId');
+
+    return populatedAnswer;
   }
 
   public async updateAnswer(
