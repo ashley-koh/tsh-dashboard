@@ -1,4 +1,4 @@
-import { IsIn, IsMongoId, IsString } from 'class-validator';
+import { IsIn, IsString } from 'class-validator';
 
 export class CreateAppraisalDto {
   @IsString()
@@ -7,16 +7,16 @@ export class CreateAppraisalDto {
   @IsString()
   public managerId: string;
 
-  @IsMongoId()
+  @IsString()
   public formId: string;
 
   @IsIn(['in review', 'post review', 'completed'])
   public status: string;
 
   @IsString()
-  public deadline: Date;
+  public deadline: string;
 
-  @IsMongoId({ each: true })
+  @IsString({ each: true })
   public answers: string[];
 
   @IsString()
