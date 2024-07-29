@@ -317,9 +317,10 @@ export async function fetchUsers(client: AxiosInstance) {
  * @returns The appraisal object on frontend.
  */
 export async function appraisalTypeToObj(client: AxiosInstance, appraisalType: AppraisalType) {
-  const managee: User = await fetchUser(client, appraisalType.manageeId);
-  const manager: User = await fetchUser(client, appraisalType.managerId);
-  const form: FormObj = await fetchForm(client, appraisalType.formId);
+  const { manageeId, managerId, formId, ...rest } = appraisalType;
+  const managee: User = await fetchUser(client, manageeId);
+  const manager: User = await fetchUser(client, managerId);
+  const form: FormObj = await fetchForm(client, formId);
 
   const answers: AnswerObj[] = [];
   appraisalType.answers.forEach(async answerId => {
@@ -328,11 +329,11 @@ export async function appraisalTypeToObj(client: AxiosInstance, appraisalType: A
   });
 
   const appraisalObj: AppraisalObj = {
-    ...appraisalType,
+    ...rest,
     answers: answers,
     managee: managee,
     manager: manager,
-    form: form
+    form: form,
   };
   return appraisalObj;
 }
@@ -370,8 +371,9 @@ export function appraisalObjToType(appraisalObj: AppraisalObj) {
  */
 export async function fetchAppraisal(client: AxiosInstance, id: string) {
   try {
-    const responses = await client.get<{ data: AppraisalObj, message: string }>(`/appraisal/${id}`);
-    return responses.data.data;
+    const responses = await client.get<{ data: AppraisalType, message: string }>(`/appraisal/${id}`);
+    const appraisal: AppraisalObj = await appraisalTypeToObj(client, responses.data.data);
+    return appraisal;
   }
   catch (err) {
     message.error('Something went wrong. Please try again later.');
@@ -389,8 +391,11 @@ export async function fetchAppraisal(client: AxiosInstance, id: string) {
  */
 export async function fetchAppraisals(client: AxiosInstance) {
   try {
-    const responses = await client.get<{ data: AppraisalObj[], message: string }>('/appraisal');
-    return responses.data.data;
+    const responses = await client.get<{ data: AppraisalType[], message: string }>('/appraisal');
+    const appraisals: AppraisalObj[] = await Promise.all(
+      responses.data.data.map(async appraisalType => await appraisalTypeToObj(client, appraisalType))
+    );
+    return appraisals;
   }
   catch (err) {
     message.error('Something went wrong. Please try again later.');

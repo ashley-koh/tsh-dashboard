@@ -1,5 +1,3 @@
-import AppraisalObj from "./appraisal.type";
-
 /** List of all department options as stored in backend. */
 export enum DepartmentOptions {
   BOX_BUILD = "box_build",
@@ -50,6 +48,7 @@ export const RoleLables = {
 
 export type BaseUser = {
   _id?: string;
+  __v?: number;
   name: string;
   email: string;
   password: string;
@@ -62,7 +61,7 @@ export type BaseUser = {
 };
 
 type User = BaseUser & {
-  appraisals: AppraisalObj[];
+  appraisals: string[]; /* leave as string to avoid circular dependency */
 };
 
 export const defaultUser: User = {

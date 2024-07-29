@@ -7,6 +7,7 @@ import {
   Select,
   message
 } from 'antd';
+import { AxiosResponse } from 'axios';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 
@@ -18,6 +19,7 @@ import axiosClient from '@/lib/axiosInstance';
 import useAuth from '@/context/auth/useAuth';
 import {
   appraisalObjToType,
+  fetchAppraisal,
   fetchForms,
   fetchUsers
 } from '@/utils/fetchData';
@@ -25,6 +27,12 @@ import {
 interface SchedulerProps {
   onClose: () => void;
 };
+type AppraisalResponse = {
+  data: AppraisalType,
+  message: string,
+};
+
+const MEETING_LENGTH_MIN = 30;
 
 const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
   const auth = useAuth();
@@ -96,11 +104,11 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
 
       const hasClash: boolean = (
         !reviewDate.isAfter(selectedDate, 'minute') &&
-        !reviewDate.add(30, 'minute').isBefore(selectedDate, 'minute')
+        !reviewDate.add(MEETING_LENGTH_MIN, 'minute').isBefore(selectedDate, 'minute')
       ) ||
       (
         !reviewDate.isBefore(selectedDate, 'minute') &&
-        !reviewDate.subtract(30, 'minute').isAfter(selectedDate, 'minute')
+        !reviewDate.subtract(MEETING_LENGTH_MIN, 'minute').isAfter(selectedDate, 'minute')
       );
 
       if (hasClash) {
@@ -111,28 +119,28 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
       return !hasClash;
     };
 
-    for (const appraisal of auth.user.appraisals) {
-      const noClash: boolean = checkNoClash(
-        appraisal,
-        'You have a scheduled meeting at the selected time.'
-      );
-      if (!noClash) {
-        return;
-      }
+    async function checkAppraisals(user: User) {
+      const results: boolean[] = await Promise.all(user.appraisals.map(async appraisalId => {
+        const appraisal: AppraisalObj = await fetchAppraisal(client, appraisalId);
+        return checkNoClash(
+          appraisal,
+          (user._id === auth.user?._id ? 'You have' : `${user.name} has`) +
+          ' a scheduled meeting at the selected time.',
+        );
+      }));
+      return results.reduce((prev: boolean, curr: boolean) => prev && curr, true);
     }
-    for (const appraisal of selectedEmployee.appraisals) {
-      const noClash: boolean = checkNoClash(
-        appraisal,
-        `${selectedEmployee.name} has a scheduled meeting at the selected time.`
-      );
-      if (!noClash) {
-        return;
-      }
+
+    const selfFree: boolean = await checkAppraisals(auth.user);
+    const othrFree: boolean = await checkAppraisals(selectedEmployee);
+
+    if (!selfFree || !othrFree) {
+      return;
     }
 
     const newAppraisal: AppraisalObj = {
-      managee: auth.user,
-      manager: selectedEmployee,
+      manager: auth.user,
+      managee: selectedEmployee,
       form: selectedForm,
       status: AppraisalStatus.REVIEW,
       deadline: selectedDate.toDate(),
@@ -140,14 +148,29 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
       comments: '',
     }
     const newAppraisalType: AppraisalType = appraisalObjToType(newAppraisal);
-    console.log(newAppraisalType);
 
-    await client.post<AppraisalType>('/appraisal/', newAppraisalType);
-    message.success(
-      `Scheduled meeting with ${selectedEmployee.name} ` +
-      `on ${selectedDate.format('DD MMM YYYY HH:mm')}`
-    );
-    onClose();
+    try {
+      const response: AxiosResponse<AppraisalResponse> =
+        await client.post<AppraisalResponse>('/appraisal/', newAppraisalType);
+
+      [auth.user, selectedEmployee].forEach(async user => {
+        const { _id, __v, ...rest } = user;
+        await client.put(`/user/${user._id}`, {
+          ...rest,
+          appraisals: [ ...user.appraisals, response.data.data._id ],
+        });
+      });
+
+      message.success(
+        `Scheduled meeting with ${selectedEmployee.name} ` +
+        `on ${selectedDate.format('DD MMM YYYY HH:mm')}`
+      );
+      onClose();
+    }
+    catch (err) {
+      message.error('Something went wrong. Please try again later.');
+      console.log(err);
+    }
   }
 
   return (
