@@ -1,34 +1,8 @@
-import { IsEmail, IsIn, IsString, MinLength } from 'class-validator';
+import { IsString, MinLength } from 'class-validator';
+import UpdateUserDto from './users.update.dto';
 
-export default class CreateUserDto {
-  @IsString({ each: true })
-  public appraisals: string[];
-
-  @IsString()
-  public name: string;
-
-  @IsString()
-  public dept: string;
-
-  @IsIn(['employee', 'head_of_department', 'business_owner'])
-  public role: string;
-
-  @IsString()
-  public mobileNo: string;
-
-  @IsEmail()
-  public email: string;
-
+export default class CreateUserDto extends UpdateUserDto {
   @IsString()
   @MinLength(8)
   public password: string;
-
-  @IsString()
-  public employeeId: string;
-
-  @IsString()
-  public jobTitle: string;
-
-  @IsIn(['full_time', 'part_time', 'intern', 'temp'])
-  public employmentStatus: string;
 }

@@ -3,6 +3,9 @@ import UsersController from '@controllers/users.controller';
 import { CreateUserDto } from '@dtos/users';
 import { Routes } from '@interfaces/routes.interface';
 import validationMiddleware from '@middlewares/validation.middleware';
+import UpdateUserDto from '@/dtos/users/users.update.dto';
+import ResetPasswordDto from '@/dtos/users/users.password.dto';
+import authMiddleware from '@/middlewares/auth.middleware';
 
 class UsersRoute implements Routes {
   public path = '/user';
@@ -16,19 +19,38 @@ class UsersRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, this.usersController.getUsers);
-    this.router.get(`${this.path}/:id`, this.usersController.getUserById);
+    this.router.get(
+      `${this.path}`,
+      authMiddleware,
+      this.usersController.getUsers,
+    );
+    this.router.get(
+      `${this.path}/:id`,
+      authMiddleware,
+      this.usersController.getUserById,
+    );
     this.router.post(
       `${this.path}`,
       validationMiddleware(CreateUserDto, 'body'),
+      authMiddleware,
       this.usersController.createUser,
     );
     this.router.put(
       `${this.path}/:id`,
-      validationMiddleware(CreateUserDto, 'body', true),
+      validationMiddleware(UpdateUserDto, 'body', true),
       this.usersController.updateUser,
     );
-    this.router.delete(`${this.path}/:id`, this.usersController.deleteUser);
+    this.router.put(
+      `${this.path}/reset-password/:id`,
+      validationMiddleware(ResetPasswordDto, 'body', true),
+      authMiddleware,
+      this.usersController.updateUser,
+    );
+    this.router.delete(
+      `${this.path}/:id`,
+      authMiddleware,
+      this.usersController.deleteUser,
+    );
   }
 }
 

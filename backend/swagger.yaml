@@ -16,7 +16,7 @@ tags:
 
 paths:
   # [GET] users
-  /users:
+  /user:
     get:
       tags:
         - users
@@ -50,7 +50,7 @@ paths:
           description: 'Server Error'
 
   # [GET] users/id
-  /users/{id}:
+  /user/{id}:
     get:
       tags:
         - users
