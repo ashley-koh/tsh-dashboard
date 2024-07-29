@@ -6,19 +6,18 @@ import FormSectionService from '@services/formSection.service';
 class FormSectionController {
   public formSectionService = new FormSectionService();
 
-  public createFormSection = async (
+  public getFormSections = async (
     req: Request,
     res: Response,
     next: NextFunction,
   ) => {
     try {
-      const formSectionData: CreateFormSectionDto = req.body;
-      const createFormSectionData: FormSection =
-        await this.formSectionService.createFormSection(formSectionData);
-
-      res
-        .status(201)
-        .json({ data: createFormSectionData, message: 'created form section' });
+      const findAllFormSectionsData: FormSection[] =
+        await this.formSectionService.findAllFormSections();
+      res.status(200).json({
+        data: findAllFormSectionsData,
+        message: 'findAll formSection',
+      });
     } catch (error) {
       next(error);
     }
@@ -34,27 +33,28 @@ class FormSectionController {
       const findOneFormSectionData: FormSection =
         await this.formSectionService.findFormSectionById(formSectionID);
 
-      res.status(201).json({
+      res.status(200).json({
         data: findOneFormSectionData,
-        message: 'findOne form section',
+        message: 'findOne formSection',
       });
     } catch (error) {
       next(error);
     }
   };
 
-  public getFormSections = async (
+  public createFormSection = async (
     req: Request,
     res: Response,
     next: NextFunction,
   ) => {
     try {
-      const findAllFormSectionsData: FormSection[] =
-        await this.formSectionService.findAllFormSections();
-      res.status(201).json({
-        data: findAllFormSectionsData,
-        message: 'findAll form section',
-      });
+      const formSectionData: CreateFormSectionDto = req.body;
+      const createFormSectionData: FormSection =
+        await this.formSectionService.createFormSection(formSectionData);
+
+      res
+        .status(201)
+        .json({ data: createFormSectionData, message: 'created formSection' });
     } catch (error) {
       next(error);
     }
@@ -76,8 +76,8 @@ class FormSectionController {
         );
 
       res
-        .status(201)
-        .json({ data: updateFormSectionData, message: 'updated form section' });
+        .status(200)
+        .json({ data: updateFormSectionData, message: 'updated formSection' });
     } catch (error) {
       next(error);
     }
@@ -95,8 +95,8 @@ class FormSectionController {
         await this.formSectionService.deleteFormSection(formSectionId);
 
       res
-        .status(201)
-        .json({ data: deleteFormSectionData, message: 'deleted form section' });
+        .status(200)
+        .json({ data: deleteFormSectionData, message: 'deleted formSection' });
     } catch (error) {
       next(error);
     }

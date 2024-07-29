@@ -8,22 +8,12 @@ import { isEmpty } from '@utils/util';
 class FormSectionService {
   public formSections = formSectionModel;
 
-  public async createFormSection(
-    formSectionData: CreateFormSectionDto,
-  ): Promise<FormSection> {
-    if (isEmpty(formSectionData))
-      throw new HttpException(400, 'formSectionData is empty');
+  public async findAllFormSections(): Promise<FormSection[]> {
+    const findAllFormSectionsData: FormSection[] = await this.formSections
+      .find()
+      .populate('questions');
 
-    const createFormSectionData: FormSection = await this.formSections.create({
-      ...formSectionData,
-    });
-
-    const populatedFormSectionData = await this.formSections
-      .findById(createFormSectionData._id)
-      .populate('questions')
-      .exec();
-
-    return populatedFormSectionData;
+    return findAllFormSectionsData;
   }
 
   public async findFormSectionById(
@@ -44,12 +34,21 @@ class FormSectionService {
     return findFormSectionData;
   }
 
-  public async findAllFormSections(): Promise<FormSection[]> {
-    const findAllFormSectionsData: FormSection[] = await this.formSections
-      .find()
+  public async createFormSection(
+    formSectionData: CreateFormSectionDto,
+  ): Promise<FormSection> {
+    if (isEmpty(formSectionData))
+      throw new HttpException(400, 'formSectionData is empty');
+
+    const createFormSectionData: FormSection = await this.formSections.create({
+      ...formSectionData,
+    });
+
+    const populatedFormSectionData = await this.formSections
+      .findById(createFormSectionData._id)
       .populate('questions');
 
-    return findAllFormSectionsData;
+    return populatedFormSectionData;
   }
 
   public async updateFormSection(
