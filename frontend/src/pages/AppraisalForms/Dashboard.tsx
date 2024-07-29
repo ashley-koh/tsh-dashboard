@@ -54,21 +54,19 @@ const Dashboard: React.FC = () => {
         const appraisals: AppraisalObj[] = await fetchAppraisals(client);
         appraisals.forEach(appraisal => {
           // Fetch relevant appraisals
-          if (
-            appraisal.manager._id !== auth.user?._id &&
-            appraisal.managee._id !== auth.user?._id
-          ) {
+          const isManagee: boolean = appraisal.managee._id === auth.user?._id;
+          if (appraisal.manager._id !== auth.user?._id && !isManagee) {
             return;
           }
           reviews.push(appraisal);
 
           // Determine if this is the next appraisal review
           const reviewDate = dayjs(appraisal.deadline);
-          if (currReview === null || (
+          if (isManagee &&
+            appraisal.status === AppraisalStatus.REVIEW &&
             reviewDate.isAfter(dayjs(), 'minute') &&
-            reviewDate.isAfter(dayjs(currReview.deadline), 'minute') &&
-            appraisal.status === AppraisalStatus.REVIEW
-          )) {
+            (currReview === null || reviewDate.isAfter(dayjs(currReview.deadline), 'minute'))
+          ) {
             currReview = appraisal;
           }
         });

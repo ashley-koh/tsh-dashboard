@@ -37,7 +37,7 @@ const FormSelect: React.FC<FormSelectProps> = ({ onClose }) => {
   useEffect(() => {
     const loadData = async () => {
       // Get relevant forms
-      const allForms = await fetchForms(client);
+      const allForms: FormObj[] = await fetchForms(client);
       // Do some filtering here...
       setForms(allForms);
     };
