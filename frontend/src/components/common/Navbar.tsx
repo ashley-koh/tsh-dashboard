@@ -11,7 +11,7 @@ import { Popconfirm, Space, Tag } from "antd";
 import useAuth from "@/context/auth/useAuth";
 import "./Navbar.css";
 import logo from "../../assets/logo.png";
-import getRoleLabel from "@/utils/getRoleLabel";
+import { RoleLables } from "@/types/user.type";
 
 const Navbar: React.FC = () => {
   const auth = useAuth();
@@ -30,7 +30,7 @@ const Navbar: React.FC = () => {
                 <Tag color="blue" style={{ marginLeft: "1rem" }}>
                   {auth.user.name}
                 </Tag>
-                <Tag color="geekblue">{getRoleLabel(auth.user.role)}</Tag>
+                <Tag color="geekblue">{RoleLables[auth.user.role]}</Tag>
                 <Tag color="volcano">{auth.user.employeeId}</Tag>
               </>
             )}
