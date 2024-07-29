@@ -39,7 +39,7 @@ const appraisalSchema: Schema = new Schema({
 
   comments: {
     type: String,
-    required: true,
+    required: false,
   },
 });
 
