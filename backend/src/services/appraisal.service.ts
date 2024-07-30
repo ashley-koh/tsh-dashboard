@@ -6,7 +6,7 @@ import appraisalModel from '@models/appraisal.model';
 import { isEmpty } from '@utils/util';
 
 class AppraisalService {
-  public appraisal = appraisalModel;
+  public appraisals = appraisalModel;
 
   public async createAppraisal(
     appraisalData: CreateAppraisalDto,
@@ -14,7 +14,7 @@ class AppraisalService {
     if (isEmpty(appraisalData))
       throw new HttpException(400, 'appraisalData is empty');
 
-    const createAppraisalData: Appraisal = await this.appraisal.create({
+    const createAppraisalData: Appraisal = await this.appraisals.create({
       ...appraisalData,
     });
 
@@ -25,7 +25,7 @@ class AppraisalService {
     if (isEmpty(appraisalId))
       throw new HttpException(400, 'AppraisalID is empty');
 
-    const findAppraisal: Appraisal = await this.appraisal.findOne({
+    const findAppraisal: Appraisal = await this.appraisals.findOne({
       _id: appraisalId,
     });
 
@@ -35,7 +35,7 @@ class AppraisalService {
   }
 
   public async findAllAppraisals(): Promise<Appraisal[]> {
-    const AllAppraisalsData: Appraisal[] = await this.appraisal.find();
+    const AllAppraisalsData: Appraisal[] = await this.appraisals.find();
 
     return AllAppraisalsData;
   }
@@ -50,7 +50,7 @@ class AppraisalService {
       throw new HttpException(400, 'appraisalId is empty');
 
     const updateAppraisalData: Appraisal =
-      await this.appraisal.findByIdAndUpdate(appraisalId, appraisalData);
+      await this.appraisals.findByIdAndUpdate(appraisalId, appraisalData);
 
     if (!updateAppraisalData)
       throw new HttpException(409, "Appraisal doesn't exist");
@@ -63,7 +63,7 @@ class AppraisalService {
       throw new HttpException(400, 'appraisalId is empty');
 
     const deleteAppraisalData: Appraisal =
-      await this.appraisal.findByIdAndDelete(appraisalId);
+      await this.appraisals.findByIdAndDelete(appraisalId);
 
     if (!deleteAppraisalData)
       throw new HttpException(409, "Appraisal doesn't exist");

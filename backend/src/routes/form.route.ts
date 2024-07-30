@@ -16,15 +16,15 @@ class FormRoutes implements Routes {
   }
 
   private initializeRoutes() {
+    this.router.get(`${this.path}`, this.formController.getForms);
+
+    this.router.get(`${this.path}/:id`, this.formController.getFormById);
+
     this.router.post(
       `${this.path}/`,
       validationMiddleware(CreateFormDto, 'body'),
       this.formController.createForm,
     );
-
-    this.router.get(`${this.path}/:id`, this.formController.getFormById);
-
-    this.router.get(`${this.path}`, this.formController.getForms);
 
     this.router.put(
       `${this.path}/:id`,

@@ -38,8 +38,13 @@ import SectionObj, {
   SectionType
 } from '@/types/section.type';
 import axiosClient from "@/lib/axiosInstance";
-import { fetchForm, formObjToType } from '@/services/form.services';
-import { sectionObjToType } from '@/services/section.services';
+import {
+  FORM_ROUTE,
+  fetchForm,
+  formObjToType
+} from '@/services/form.services';
+import { QUESTION_ROUTE } from '@/services/question.service';
+import { SECTION_ROUTE, sectionObjToType } from '@/services/section.services';
 import './FormEditor.css';
 
 const { TextArea } = Input;
@@ -109,12 +114,12 @@ const FormEditor: React.FC = () => {
     try {
       if (question._id === undefined) {
         await client
-          .post<QuestionResponse>('/questions/', newQuestion)
+          .post<QuestionResponse>(QUESTION_ROUTE, newQuestion)
           .then(response => newQuestion = { ...newQuestion, _id: response.data.data._id } );
       }
       else {
         await client
-          .put<QuestionResponse>(`/questions/${question._id}`, newQuestion)
+          .put<QuestionResponse>(`${QUESTION_ROUTE}${question._id}`, newQuestion)
           .then(_response => newQuestion = { ...newQuestion, _id: question._id });
       }
       return newQuestion;
@@ -150,12 +155,12 @@ const FormEditor: React.FC = () => {
     try {
       if (section._id === undefined) {
         await client
-          .post<SectionResponse>('/formSection/', newSectionType)
+          .post<SectionResponse>(SECTION_ROUTE, newSectionType)
           .then(response => newSection = { ...newSection, _id: response.data.data._id } );
       }
       else {
         await client
-          .put<SectionResponse>(`/formSection/${section._id}`, newSectionType)
+          .put<SectionResponse>(`${SECTION_ROUTE}${section._id}`, newSectionType)
           .then(_response => newSection = { ...newSection, _id: section._id });
       }
       return newSection;
@@ -187,10 +192,10 @@ const FormEditor: React.FC = () => {
 
     try {
       if (location.state === null) {
-        await client.post<FormResponse>('/form/', newFormType);
+        await client.post<FormResponse>(FORM_ROUTE, newFormType);
       }
       else {
-        await client.put<FormResponse>(`/form/${location.state}`, newFormType);
+        await client.put<FormResponse>(`${FORM_ROUTE}${location.state}`, newFormType);
       }
       message.success(`Form successfully ${location.state === null ? 'created' : 'edited'}!`);
       navigate('/dashboard');

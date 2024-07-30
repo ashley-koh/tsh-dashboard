@@ -20,10 +20,10 @@ import FormObj from '@/types/form.type';
 import Loading from '@/components/common/Loading';
 import User, { RoleOptions, UserResponse } from '@/types/user.type';
 import axiosClient from '@/lib/axiosInstance';
-import { appraisalObjToType } from '@/services/appraisal.services';
+import { APPRAISAL_ROUTE, appraisalObjToType } from '@/services/appraisal.services';
 import { fetchAppraisal } from '@/services/appraisal.services';
 import { fetchForms } from '@/services/form.services';
-import { fetchUsers } from '@/services/user.services';
+import { USER_ROUTE, fetchUsers } from '@/services/user.services';
 import useAuth from '@/context/auth/useAuth';
 
 interface SchedulerProps {
@@ -149,11 +149,11 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
 
     try {
       const response: AxiosResponse<AppraisalResponse> =
-        await client.post<AppraisalResponse>('/appraisal/', newAppraisalType);
+        await client.post<AppraisalResponse>(APPRAISAL_ROUTE, newAppraisalType);
 
       [auth.user, selectedEmployee].forEach(async user => {
         const { _id, ...rest } = user;
-        await client.put<UserResponse>(`/user/${user._id}`, {
+        await client.put<UserResponse>(`${USER_ROUTE}${user._id}`, {
           ...rest,
           appraisals: [ ...user.appraisals, response.data.data._id ],
         });

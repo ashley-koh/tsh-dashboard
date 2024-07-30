@@ -15,6 +15,8 @@ import { fetchAnswer } from "./answer.services";
 import { fetchForm } from "./form.services";
 import { fetchUser } from "./user.services";
 
+export const APPRAISAL_ROUTE = '/appraisals/';
+
 export function cleanAppraisal(extendAppraisal: ExtendAppraisalType) {
   const { __v, ...rest } = extendAppraisal;
   const appraisalType: AppraisalType = rest;
@@ -85,7 +87,7 @@ export function appraisalObjToType(appraisalObj: AppraisalObj) {
  */
 export async function fetchAppraisal(client: AxiosInstance, id: string) {
   try {
-    const response = await client.get<AppraisalResponse>(`/appraisal/${id}`);
+    const response = await client.get<AppraisalResponse>(`${APPRAISAL_ROUTE}${id}`);
     const appraisal: AppraisalObj =
       await appraisalTypeToObj(client, cleanAppraisal(response.data.data));
     return appraisal;
@@ -106,7 +108,7 @@ export async function fetchAppraisal(client: AxiosInstance, id: string) {
  */
 export async function fetchAppraisals(client: AxiosInstance) {
   try {
-    const responses = await client.get<AppraisalsResponse>('/appraisal');
+    const responses = await client.get<AppraisalsResponse>(APPRAISAL_ROUTE);
     const appraisals: AppraisalObj[] = await Promise.all(
       responses.data.data.map(async appraisalType => {
         const appraisal: AppraisalObj =
