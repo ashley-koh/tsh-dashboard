@@ -1,28 +1,34 @@
 import BaseResponse from "./response.type";
-import QuestionObj from "./question.type";
+import QuestionObj, { ExtendQuestionObj } from "./question.type";
 
-/** Section type retrieved from backend. */
-export type SectionType = {
+type BaseSection = {
   _id?: string;
   title: string;
   description?: string;
+};
+
+/** Section type retrieved from backend. */
+export type SectionType = BaseSection & {
   questions: string[];
 };
 
 /** Section object used on frontend. */
-type SectionObj = {
-  _id?: string;
-  title: string;
-  description?: string;
+type SectionObj = BaseSection & {
   questions: QuestionObj[];
 };
 
+/** Backend response object */
+export type ExtendSectionObj = BaseSection & {
+  __v: number;
+  questions: ExtendQuestionObj[];
+};
+
 export type SectionResponse = BaseResponse & {
-  data: SectionObj;
+  data: ExtendSectionObj;
 };
 
 export type SectionsResponse = BaseResponse & {
-  data: SectionObj[];
+  data: ExtendSectionObj[];
 };
 
 export const defaultSection: SectionObj = {

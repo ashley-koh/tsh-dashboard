@@ -6,13 +6,20 @@ import AppraisalObj, {
   AppraisalResponse,
   AppraisalsResponse,
   AppraisalType,
-  defaultAppraisal
+  defaultAppraisal,
+  ExtendAppraisalType
 } from "@/types/appraisal.type";
 import FormObj from "@/types/form.type";
 import User from "@/types/user.type";
 import { fetchAnswer } from "./answer.services";
 import { fetchForm } from "./form.services";
 import { fetchUser } from "./user.services";
+
+export function cleanAppraisal(extendAppraisal: ExtendAppraisalType) {
+  const { __v, ...rest } = extendAppraisal;
+  const appraisalType: AppraisalType = rest;
+  return appraisalType;
+};
 
 /**
  * Converts an appraisal type into an appraisal object.
@@ -28,11 +35,12 @@ export async function appraisalTypeToObj(client: AxiosInstance, appraisalType: A
   const manager: User = await fetchUser(client, managerId);
   const form: FormObj = await fetchForm(client, formId);
 
-  const answers: AnswerObj[] = [];
-  appraisalType.answers.forEach(async answerId => {
-    const answer: AnswerObj = await fetchAnswer(client, answerId);
-    answers.push(answer);
-  });
+  const answers: AnswerObj[] = await Promise.all(
+    appraisalType.answers.map(async answerId => {
+      const answer: AnswerObj = await fetchAnswer(client, answerId);
+      return answer;
+    })
+  );
 
   const appraisalObj: AppraisalObj = {
     ...rest,
@@ -78,7 +86,8 @@ export function appraisalObjToType(appraisalObj: AppraisalObj) {
 export async function fetchAppraisal(client: AxiosInstance, id: string) {
   try {
     const response = await client.get<AppraisalResponse>(`/appraisal/${id}`);
-    const appraisal: AppraisalObj = await appraisalTypeToObj(client, response.data.data);
+    const appraisal: AppraisalObj =
+      await appraisalTypeToObj(client, cleanAppraisal(response.data.data));
     return appraisal;
   }
   catch (err) {
@@ -99,7 +108,11 @@ export async function fetchAppraisals(client: AxiosInstance) {
   try {
     const responses = await client.get<AppraisalsResponse>('/appraisal');
     const appraisals: AppraisalObj[] = await Promise.all(
-      responses.data.data.map(async appraisalType => await appraisalTypeToObj(client, appraisalType))
+      responses.data.data.map(async appraisalType => {
+        const appraisal: AppraisalObj =
+          await appraisalTypeToObj(client, cleanAppraisal(appraisalType));
+        return appraisal;
+      })
     );
     return appraisals;
   }

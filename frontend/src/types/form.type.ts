@@ -1,24 +1,31 @@
 import BaseResponse from "./response.type";
-import SectionObj from "./section.type";
+import SectionObj, { ExtendSectionObj } from "./section.type";
 
-export type FormType = {
+type BaseForm = {
   _id?: string;
   name: string;
+};
+
+export type FormType = BaseForm & {
   sections: string[];
 };
 
-type FormObj = {
-  _id?: string;
-  name: string;
+type FormObj = BaseForm & {
   sections: SectionObj[];
 };
 
+/** Backend response object */
+export type ExtendFormObj = BaseForm & {
+  __v: number;
+  sections: ExtendSectionObj[];
+};
+
 export type FormResponse = BaseResponse & {
-  data: FormObj;
+  data: ExtendFormObj;
 };
 
 export type FormsResponse = BaseResponse & {
-  data: FormObj[];
+  data: ExtendFormObj[];
 };
 
 export const defaultForm: FormObj = {

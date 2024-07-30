@@ -4,27 +4,18 @@ import { AxiosInstance } from "axios";
 import AnswerObj, {
   AnswerResponse,
   AnswersResponse,
-  AnswerType,
-  defaultAnswer
+  defaultAnswer,
+  ExtendAnswerType
 } from "@/types/answer.type";
-import QuestionObj from "@/types/question.type";
-import { fetchQuestion } from "./question.service";
+import { cleanQuestion } from "./question.service";
 
-/**
- * Converts an answer type into an answer object.
- *
- * @param client The axios client to retrieve data from.
- * @param answerType The answer type retrieved from backend.
- *
- * @returns The answer object on frontend.
- */
-export async function answerTypeToObj(client: AxiosInstance, answerType: AnswerType) {
-  const question: QuestionObj = await fetchQuestion(client, answerType.answerId);
-  const answerObj: AnswerObj = {
-    ...answerType,
-    question: question,
+export function cleanAnswer(extendAnswer: ExtendAnswerType) {
+  const { __v, answerId, ...rest } = extendAnswer;
+  const answer: AnswerObj = {
+    ...rest,
+    question: cleanQuestion(answerId),
   };
-  return answerObj;
+  return answer;
 };
 
 /**
@@ -37,8 +28,8 @@ export async function answerTypeToObj(client: AxiosInstance, answerType: AnswerT
  */
 export async function fetchAnswer(client: AxiosInstance, id: string) {
   try {
-    const responses = await client.get<AnswerResponse>(`/answer/${id}`);
-    return responses.data.data;
+    const response = await client.get<AnswerResponse>(`/answer/${id}`);
+    return cleanAnswer(response.data.data);
   }
   catch (err) {
     message.error('Something went wrong. Please try again later.');
@@ -57,7 +48,7 @@ export async function fetchAnswer(client: AxiosInstance, id: string) {
 export async function fetchAnswers(client: AxiosInstance) {
   try {
     const responses = await client.get<AnswersResponse>('/answer');
-    return responses.data.data;
+    return responses.data.data.map(cleanAnswer);
   }
   catch (err) {
     message.error('Something went wrong. Please try again later.');

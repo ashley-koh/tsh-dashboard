@@ -2,34 +2,21 @@ import { message } from "antd";
 import { AxiosInstance } from "axios";
 
 import FormObj, {
+  ExtendFormObj,
   FormResponse,
   FormType,
   FormsResponse,
   defaultForm
 } from "@/types/form.type";
-import SectionObj from "@/types/section.type";
-import { fetchSection } from "./section.services";
+import { cleanSection } from "./section.services";
 
-/**
- * Converts a form type into a form object.
- *
- * @param client The axios client to retrieve data from.
- * @param formType The form type retrieved from backend.
- *
- * @returns The form object on frontend.
- */
-export function formTypeToObj(client: AxiosInstance, formType: FormType) {
-  const sections: SectionObj[] = [];
-  formType.sections.forEach(async sectionId => {
-    const section: SectionObj = await fetchSection(client, sectionId);
-    sections.push(section);
-  });
-
-  const formObj: FormObj = {
-    ...formType,
-    sections: sections,
+export function cleanForm(extendForm: ExtendFormObj) {
+  const { __v, sections, ...rest } = extendForm;
+  const form: FormObj = {
+    ...rest,
+    sections: sections.map(cleanSection),
   };
-  return formObj;
+  return form;
 };
 
 /**
@@ -64,8 +51,8 @@ export function formObjToType(formObj: FormObj) {
  */
 export async function fetchForm(client: AxiosInstance, id: string) {
   try {
-    const responses = await client.get<FormResponse>(`/form/${id}`);
-    return responses.data.data;
+    const response = await client.get<FormResponse>(`/form/${id}`);
+    return cleanForm(response.data.data);
   }
   catch (err) {
     message.error('Something went wrong. Please try again later.');
@@ -84,7 +71,7 @@ export async function fetchForm(client: AxiosInstance, id: string) {
 export async function fetchForms(client: AxiosInstance) {
   try {
     const responses = await client.get<FormsResponse>('/form');
-    return responses.data.data;
+    return responses.data.data.map(cleanForm);
   }
   catch (err) {
     message.error('Something went wrong. Please try again later.');

@@ -10,6 +10,7 @@ import ErrorResponse, {
 import IAuthContext from "@/types/auth.type";
 import User, { UserResponse } from "@/types/user.type";
 import axiosClient from "@/lib/axiosInstance";
+import { cleanUser } from "@/services/user.services";
 
 type ProviderProps = {
   children?: React.ReactNode;
@@ -29,9 +30,7 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
     client
       .get<UserResponse>("/verify", { withCredentials: true })
       .then(response => {
-        const { __v, password, ...rest } = response.data.data;
-        const user: User = { ...rest };
-        setUser(user);
+        setUser(cleanUser(response.data.data));
         setAuthenticated(true);
         setLoading(false);
       })
@@ -47,9 +46,7 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
     return client
       .post<UserResponse>("/login", data, { withCredentials: true })
       .then(response => {
-        const { __v, password, ...rest } = response.data.data;
-        const user: User = { ...rest };
-        setUser(user);
+        setUser(cleanUser(response.data.data));
         setAuthenticated(true);
         setLoading(false);
         navigate("/home");

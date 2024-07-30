@@ -1,11 +1,18 @@
 import { message } from "antd";
 import { AxiosInstance } from "axios";
 
-import {
+import QuestionObj, {
+  ExtendQuestionObj,
   QuestionResponse,
   QuestionsResponse,
   defaultQuestion
 } from "@/types/question.type";
+
+export function cleanQuestion(extendQuestion: ExtendQuestionObj) {
+  const { __v, ...rest } = extendQuestion;
+  const question: QuestionObj = rest;
+  return question;
+};
 
 /**
  * Retrieves a specific question from backend by its ID.
@@ -17,8 +24,8 @@ import {
  */
 export async function fetchQuestion(client: AxiosInstance, id: string) {
   try {
-    const responses = await client.get<QuestionResponse>(`/questions/${id}`);
-    return responses.data.data;
+    const response = await client.get<QuestionResponse>(`/questions/${id}`);
+    return cleanQuestion(response.data.data);
   }
   catch (err) {
     message.error('Something went wrong. Please try again later.');
@@ -37,7 +44,7 @@ export async function fetchQuestion(client: AxiosInstance, id: string) {
 export async function fetchQuestions(client: AxiosInstance) {
   try {
     const responses = await client.get<QuestionsResponse>('/questions');
-    return responses.data.data;
+    return responses.data.data.map(cleanQuestion);
   }
   catch (err) {
     message.error('Something went wrong. Please try again later.');

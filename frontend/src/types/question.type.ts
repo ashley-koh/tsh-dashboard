@@ -12,12 +12,17 @@ type QuestionObj = {
   required: boolean;
 };
 
+/** Backend response object */
+export type ExtendQuestionObj = QuestionObj & {
+  __v: number;
+};
+
 export type QuestionResponse = BaseResponse & {
-  data: QuestionObj;
+  data: ExtendQuestionObj;
 };
 
 export type QuestionsResponse = BaseResponse & {
-  data: QuestionObj[];
+  data: ExtendQuestionObj[];
 };
 
 export const defaultQuestion: QuestionObj = {

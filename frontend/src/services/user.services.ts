@@ -2,10 +2,17 @@ import { message } from "antd";
 import { AxiosInstance } from "axios";
 
 import User, {
+  ExtendUser,
   UserResponse,
   UsersResponse,
   defaultUser
 } from "@/types/user.type";
+
+export function cleanUser(extendUser: ExtendUser) {
+  const { __v, password, ...rest } = extendUser;
+  const user: User = rest;
+  return user;
+};
 
 /**
  * Retrieves a specific user from backend by its ID.
@@ -21,9 +28,7 @@ export async function fetchUser(client: AxiosInstance, id: string) {
       `/user/${id}`,
       { withCredentials: true }, // route is protected; must use credentials
     );
-    const { __v, password, ...rest } = response.data.data;
-    const user: User = { ...rest };
-    return user;
+    return cleanUser(response.data.data);
   }
   catch (err) {
     message.error('Something went wrong. Please try again later.');
@@ -45,11 +50,7 @@ export async function fetchUsers(client: AxiosInstance) {
       '/user',
       { withCredentials: true }, // route is protected; must use credentials
     );
-    return responses.data.data.map(response => {
-      const { __v, password, ...rest } = response;
-      const user: User = { ...rest };
-      return user;
-    });
+    return responses.data.data.map(cleanUser);
   }
   catch (err) {
     message.error('Something went wrong. Please try again later.');

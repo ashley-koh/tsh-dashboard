@@ -1,31 +1,37 @@
 import BaseResponse from "./response.type";
 import QuestionObj, {
+  ExtendQuestionObj,
   QuestionType,
   defaultQuestion
 } from "./question.type";
 
-export type AnswerType = {
+type BaseAnswerType = {
   _id?: string;
-  answerId: string;
   type: QuestionType;
   openEndedAnswer?: string;
   rating?: number;
 };
 
-type AnswerObj = {
-  _id?: string;
+export type AnswerType = BaseAnswerType & {
+  answerId: string;
+};
+
+type AnswerObj = BaseAnswerType & {
   question: QuestionObj;
-  type: QuestionType;
-  openEndedAnswer?: string;
-  rating?: number;
+};
+
+/** Backend response object */
+export type ExtendAnswerType = BaseAnswerType & {
+  __v: number;
+  answerId: ExtendQuestionObj;
 };
 
 export type AnswerResponse = BaseResponse & {
-  data: AnswerObj;
+  data: ExtendAnswerType;
 };
 
 export type AnswersResponse = BaseResponse & {
-  data: AnswerObj[];
+  data: ExtendAnswerType[];
 };
 
 export const defaultAnswer: AnswerObj = {

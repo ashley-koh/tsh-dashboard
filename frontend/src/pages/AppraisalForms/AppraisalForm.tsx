@@ -1,282 +1,278 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Location, useLocation, useNavigate } from 'react-router-dom';
 import {
   Button,
   Collapse,
   Form,
+  FormInstance,
   Input,
   Rate,
   message,
 } from 'antd';
+import axiosClient from '@/lib/axiosInstance';
+
+import AnswerObj, {
+  AnswerResponse,
+  AnswerType
+} from '@/types/answer.type';
+import AppraisalObj, {
+  AppraisalResponse,
+  AppraisalStatus,
+  AppraisalType,
+  defaultAppraisal
+} from '@/types/appraisal.type';
+import IAppraisalAnswer, {
+  FormAnswer,
+  ISectionAnswer
+} from './types/formAnswer.type';
+import QuestionObj, { QuestionType } from '@/types/question.type';
+import SectionObj from '@/types/section.type';
+import {
+  appraisalObjToType,
+  fetchAppraisal
+} from '@/services/appraisal.services';
 import './AppraisalForm.css';
 
 const { TextArea } = Input;
 const { Panel } = Collapse;
-
-const sections = [
-  {
-    title: "Role & Responsibilities",
-    questions: [
-      {
-        title:
-          "Elaborate your understanding of your primary role and responsibilities.",
-        ranking: false,
-        required: true,
-      },
-    ],
-  },
-  {
-    title: "Discussion",
-    questions: [
-      {
-        title:
-          "Elaborate if the past year has been good/bad/satisfactory for you.",
-        ranking: false,
-        required: true,
-      },
-      {
-        title:
-          "What do you consider to be your most important achievements of the past months / years?",
-        ranking: false,
-        required: true,
-      },
-      {
-        title:
-          "What element(s) of your job do you find most difficult and challenging?",
-        ranking: false,
-        required: true,
-      },
-      {
-        title:
-          "What do you consider to be your most important goal and objective for next year?",
-        ranking: false,
-        required: true,
-      },
-      {
-        title:
-          "What recommendable action could be taken by you and/or your boss to improve your performance in your current function?",
-        ranking: false,
-        required: true,
-      },
-      {
-        title:
-          "What kind of work would you like to do in one/three/five years' time?",
-        ranking: false,
-        required: true,
-      },
-      {
-        title:
-          "What kind of training/experience would develop your strength which will benefit you and your work in the next year?",
-        ranking: false,
-        required: true,
-      },
-      {
-        title:
-          "List the objectives you set out to achieve in the past 12 months (or the period covered by the appraisal) with the measures or standards agreed - " +
-          "against each comment on achievement or otherwise, with reasons where appropriate. Score the performance against each objective as per below rating (1-5).",
-        ranking: false,
-        required: true,
-      },
-    ],
-  },
-  {
-    title: "Evaluating You Own Capability",
-    description:
-      "Score your own capability or knowledge in the following areas in terms of your current function requirements. " +
-      "If appropriate, provide evidence to the appraisal to support your assessment.",
-    questions: [
-      {
-        title: "Corporate Responsibility and Ethics",
-        ranking: true,
-        required: true,
-      },
-      {
-        title: "Job / Technical Knowledge",
-        ranking: true,
-        required: true,
-      },
-      {
-        title: "Time Management",
-        ranking: true,
-        required: true,
-      },
-      {
-        title: "Planning, Budgeting, and Forecasting",
-        ranking: true,
-        required: true,
-      },
-      {
-        title: "Reporting & Administrative Skills",
-        ranking: true,
-        required: true,
-      },
-      {
-        title: "Delegation Skills",
-        ranking: true,
-        required: true,
-      },
-      {
-        title: "Problem Solving & Decision Making",
-        ranking: true,
-        required: true,
-      },
-      {
-        title: "Meeting Deadlines / Commitments",
-        ranking: true,
-        required: true,
-      },
-      {
-        title: "Work Creativity",
-        ranking: true,
-        required: true,
-      },
-      {
-        title: "Team-working and Developing Others",
-        ranking: true,
-        required: true,
-      },
-      {
-        title: "Work Initiative",
-        ranking: true,
-        required: true,
-      },
-      {
-        title: "Energy, Determination, and Work-Rate",
-        ranking: true,
-        required: true,
-      },
-      {
-        title: "Work Responsibility",
-        ranking: true,
-        required: true,
-      },
-      {
-        title: "Steadiness under Pressure",
-        ranking: true,
-        required: true,
-      },
-      {
-        title: "Leadership and Integrity",
-        ranking: true,
-        required: true,
-      },
-      {
-        title: "Adaptability, Flexibility, and Mobility",
-        ranking: true,
-        required: true,
-      },
-      {
-        title: "IT/Equipment/Machinery Skill",
-        ranking: true,
-        required: true,
-      },
-      {
-        title: "Communication Skills",
-        ranking: true,
-        required: true,
-      },
-      {
-        title: "Personal Appearance and Image",
-        ranking: true,
-        required: true,
-      },
-      {
-        title: "Attendance / Punctuality",
-        ranking: true,
-        required: true,
-      },
-    ],
-  },
-];
+const PANEL_KEY = 'panel';
 
 const AppraisalForm: React.FC = () => {
-  const [form] = Form.useForm();
+  const client = axiosClient();
+  const [form]: [FormInstance<IAppraisalAnswer>] = Form.useForm();
+  const location: Location<string> = useLocation();
+  const navigate = useNavigate();
 
-  const handleSubmit = (values: object) => {
-    message.success("Form successfully submitted!");
-    console.log("Form Values:", values); // TODO debug
+  const [appraisal, setAppraisal] = useState(defaultAppraisal);
+
+  /* Run this useEffect on first form load */
+  useEffect(() => {
+    const loadData = async () => {
+      const currAppraisal: AppraisalObj = await fetchAppraisal(client, location.state);
+
+      const formFields: IAppraisalAnswer = {
+        sections: currAppraisal.form.sections.map(section => {
+          const answers: FormAnswer[] = section.questions.map(question => {
+            const answer: AnswerObj | undefined =
+              currAppraisal.answers.find(answer => answer.question._id === question._id);
+
+            const formAnswer: FormAnswer = {
+              _id: answer?._id,
+              questionId: question._id || '',
+              type: question.type,
+              openEndedAnswer: answer?.openEndedAnswer,
+              ranking: answer?.rating,
+            };
+            return formAnswer;
+          });
+          return {
+            title: section.title,
+            questions: answers,
+          };
+        }),
+      };
+
+      setAppraisal(currAppraisal);
+      form.setFieldsValue(formFields);
+    };
+
+    loadData();
+  }, []);
+
+  async function saveQuestionAnswer(formAnswer: FormAnswer) {
+    if (formAnswer.openEndedAnswer === undefined && formAnswer.ranking === undefined) {
+      return null;
+    }
+
+    let answer: AnswerType = {
+      answerId: formAnswer.questionId,
+      type: formAnswer.type,
+      openEndedAnswer: formAnswer.openEndedAnswer,
+      rating: formAnswer.ranking,
+    };
+    console.log(answer);
+
+    try {
+      if (formAnswer._id) {
+        await client.put<AnswerResponse>(`/answer/${formAnswer._id}`, answer);
+      }
+      else {
+        await client
+          .post<AnswerResponse>('/answer', answer)
+          .then(response => answer = { ...answer, _id: response.data.data._id });
+      }
+    }
+    catch (err) {
+      console.error(err);
+    }
+    finally {
+      return formAnswer._id ? null : answer._id;
+    }
+  }
+
+  async function saveSectionAnswers(section: ISectionAnswer) {
+    const ids: (string | undefined | null)[] =
+      await Promise.all(section.questions.map(saveQuestionAnswer));
+    return ids.filter(id => id !== null && id !== undefined);
+  }
+
+  async function saveAnswers(answers: IAppraisalAnswer, toSubmit: boolean) {
+    const sIds: string[][] = await Promise.all(answers.sections.map(saveSectionAnswers));
+    const ids: string[] = sIds.reduce(
+      (prev: string[], curr: string[]) => [ ...prev, ...curr ],
+      []
+    );
+    if (ids.length === 0 && !toSubmit) {
+      return true;
+    }
+
+    const appraisalType: AppraisalType = appraisalObjToType(appraisal);
+    const { _id, ...rest } = appraisalType;
+    let newAppraisalType: AppraisalType = {
+      ...rest,
+      answers: [ ...appraisalType.answers, ...ids ],
+      status: toSubmit ? AppraisalStatus.POST : AppraisalStatus.REVIEW,
+    };
+
+    try {
+      await client.put<AppraisalResponse>(`/appraisal/${location.state}`, newAppraisalType);
+      return true;
+    }
+    catch (err) {
+      console.error(err);
+      return false;
+    }
+  }
+
+  const handleSave = async () => {
+    const result: boolean = await saveAnswers(form.getFieldsValue(), false);
+    if (result) {
+      message.success('Form successfully saved!');
+      navigate('/dashboard');
+    }
+    else {
+      message.error('Could not save the form. Please try again.');
+    }
+  }
+
+  const handleSubmit = async (values: IAppraisalAnswer) => {
+    const result: boolean = await saveAnswers(values, true);
+    if (result) {
+      message.success('Form successfully submitted!');
+      navigate('/dashboard');
+    }
+    else {
+      message.error('Could not submit the form. Please try again.');
+    }
   };
 
   return (
     <Form
-      className="form-container"
+      className='form-container'
       form={form}
       scrollToFirstError
-      layout="vertical"
+      layout='vertical'
       onFinish={handleSubmit}
     >
-      {sections.map((section) => (
-        <div key={section.title}>
-          <div className="section-container">
-            <h1>{section.title}</h1>
-            {section?.description !== undefined && (
-              <p>
-                <em>{section.description}</em>
-              </p>
-            )}
-          </div>
-          {section.questions.map((question) => (
-            <Collapse
-              key={question.title}
-              className="question-container"
-              ghost
-              defaultActiveKey={question.ranking ? [] : ["panel"]}
-            >
-              <Panel
-                key="panel"
-                header={
-                  <div className="header-container">
-                    <p
-                      className={`header ${
-                        question.required ? "required-field" : ""
-                      }`}
-                    >
-                      {question.title}
-                    </p>
-                    {question.ranking && (
-                      <Form.Item
-                        name={`${question.title}_ranking`}
-                        rules={[
-                          {
-                            required: question.ranking && question.required,
-                            message: "Ranking is required",
-                          },
-                        ]}
-                      >
-                        <Rate className="ranking" />
-                      </Form.Item>
-                    )}
+      <Form.List name='sections'>
+        {sectionFields => (
+          <>
+            {sectionFields.map((sectionField, sectionIdx) => {
+              const section: SectionObj = appraisal.form.sections[sectionIdx];
+
+              return (
+                <div key={sectionField.key}>
+                  <div className='section-container'>
+                    <h1>{section.title}</h1>
+                    {section.description && <p><em>{section.description}</em></p>}
                   </div>
-                }
-              >
-                <Form.Item
-                  name={`${question.title}_input`}
-                  hasFeedback
-                  rules={[
-                    {
-                      required: !question.ranking && question.required,
-                      message: "Input is required",
-                    },
-                  ]}
-                >
-                  <TextArea
-                    rows={4}
-                    placeholder={
-                      question.ranking
-                        ? "Your comments, if any"
-                        : "Your response"
-                    }
-                  />
-                </Form.Item>
-              </Panel>
-            </Collapse>
-          ))}
-        </div>
-      ))}
-      <Form.Item className="submit-container">
-        <Button type="primary" htmlType="submit" className="submit">
+                  <Form.List name={[sectionField.name, 'questions']}>
+                    {questionFields => (
+                      <>
+                        {questionFields.map((questionField, questionIdx) => {
+                          const question: QuestionObj = section.questions[questionIdx];
+                          const isRanking: boolean = question.type === QuestionType.RATING;
+
+                          return (
+                            <Collapse
+                              key={questionField.key}
+                              className='question-container'
+                              ghost
+                              defaultActiveKey={isRanking ? [] : [PANEL_KEY]}
+                            >
+                              <Panel
+                                key={PANEL_KEY}
+                                header={
+                                  <div className='header-container'>
+                                    <p
+                                      className={`header ${
+                                        question.required ? 'required-field' : ''
+                                      }`}
+                                    >
+                                      {question.description}
+                                    </p>
+                                    {isRanking && (
+                                      <Form.Item
+                                        name={[questionField.name, 'ranking']}
+                                        rules={[
+                                          {
+                                            required: isRanking && question.required,
+                                            message: 'Ranking is required',
+                                          },
+                                        ]}
+                                      >
+                                        <Rate className='ranking' />
+                                      </Form.Item>
+                                    )}
+                                  </div>
+                                }
+                              >
+                                <Form.Item
+                                  name={[questionField.name, 'openEndedAnswer']}
+                                  hasFeedback
+                                  rules={[
+                                    {
+                                      required: !isRanking && question.required,
+                                      message: 'Input is required',
+                                    },
+                                  ]}
+                                >
+                                  <TextArea
+                                    rows={4}
+                                    placeholder={
+                                      isRanking ? 'Your comments, if any' : 'Your response'
+                                    }
+                                  />
+                                </Form.Item>
+                              </Panel>
+                            </Collapse>
+                          );
+                        })}
+                      </>
+                    )}
+                  </Form.List>
+                </div>
+              );
+            })}
+          </>
+        )}
+      </Form.List>
+      <div className='submit-container'>
+        <Button
+            type='default'
+            className='reset'
+            onClick={handleSave}
+          >
+            Save
+          </Button>
+        <Button
+          type='primary'
+          htmlType='submit'
+          className='submit'
+        >
           Submit
         </Button>
-      </Form.Item>
+      </div>
     </Form>
   );
 };
