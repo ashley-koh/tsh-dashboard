@@ -23,7 +23,9 @@ class EmailController {
             recipientEmail,
             deadline,
           );
-        res.status(201).json({ data: sendEmailData, message: 'email sent' });
+        res
+          .status(201)
+          .json({ data: sendEmailData, message: 'sent reminder email' });
       } else {
         const sendEmailData: string =
           await this.confirmationTemplate.sendConfirmationEmail(
@@ -31,7 +33,9 @@ class EmailController {
             recipientEmail,
             deadline,
           );
-        res.status(201).json({ data: sendEmailData, message: 'email sent' });
+        res
+          .status(201)
+          .json({ data: sendEmailData, message: 'sent confirmation email' });
       }
     } catch (error) {
       next(error);
