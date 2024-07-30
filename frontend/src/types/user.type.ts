@@ -1,3 +1,5 @@
+import BaseResponse from "./response.type";
+
 /** List of all department options as stored in backend. */
 export enum DepartmentOptions {
   BOX_BUILD = "box_build",
@@ -51,7 +53,6 @@ export type BaseUser = {
   __v?: number;
   name: string;
   email: string;
-  password: string;
   employeeId: string;
   mobileNo: string;
   role: RoleOptions;
@@ -64,17 +65,30 @@ type User = BaseUser & {
   appraisals: string[]; /* leave as string to avoid circular dependency */
 };
 
+/** Backend response object */
+export type ExtendUser = User & {
+  __v: number;
+  password: string;
+};
+
 export const defaultUser: User = {
   appraisals: [],
   name: 'name',
   email: 'email',
-  password: 'password',
   employeeId: 'XXXXXXXXXX',
   mobileNo: '12345678',
   role: RoleOptions.EMPLOYEE,
   jobTitle: 'job',
   dept: DepartmentOptions.OTHER,
   employmentStatus: EmploymentStatusOptions.FULL_TIME,
+};
+
+export type UserResponse = BaseResponse & {
+  data: ExtendUser;
+};
+
+export type UsersResponse = BaseResponse & {
+  data: ExtendUser[];
 };
 
 export default User;

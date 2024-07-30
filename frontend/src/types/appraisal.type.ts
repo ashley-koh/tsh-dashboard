@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 
 import AnswerObj from "./answer.type";
+import BaseResponse from "./response.type";
 import FormObj, { defaultForm } from "./form.type";
 import User, { defaultUser } from "./user.type";
 
@@ -10,26 +11,38 @@ export enum AppraisalStatus {
   COMPLETE = "completed",
 };
 
-export type AppraisalType = {
+type BaseAppraisal = {
   _id?: string;
-  manageeId: string;
-  managerId: string;
-  formId: string;
   status: AppraisalStatus;
   deadline: Date;
-  answers: string[];
   comments: string;
 };
 
-type AppraisalObj = {
-  _id?: string;
+export type AppraisalType = BaseAppraisal & {
+  manageeId: string;
+  managerId: string;
+  formId: string;
+  answers: string[];
+};
+
+type AppraisalObj = BaseAppraisal & {
   managee: User;
   manager: User;
   form: FormObj;
-  status: AppraisalStatus;
-  deadline: Date;
   answers: AnswerObj[];
-  comments: string;
+};
+
+/** Backend response object */
+export type ExtendAppraisalType = AppraisalType & {
+  __v: number;
+};
+
+export type AppraisalResponse = BaseResponse & {
+  data: ExtendAppraisalType;
+};
+
+export type AppraisalsResponse = BaseResponse & {
+  data: ExtendAppraisalType[];
 };
 
 export const defaultAppraisal: AppraisalObj = {

@@ -1,28 +1,16 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
+
+import ErrorResponse, {
+  LoginActionFunc,
+  LoginData,
+  LogoutFunc
+} from "@/types/auth.type";
+import IAuthContext from "@/types/auth.type";
+import User, { UserResponse } from "@/types/user.type";
 import axiosClient from "@/lib/axiosInstance";
-import User from "@/types/user.type";
-
-type LoginData = {
-  email: string;
-  password: string;
-};
-
-type LoginActionFunc = {
-  (data: LoginData): Promise<void>;
-};
-
-type LogoutFunc = {
-  (): void;
-};
-
-type IAuthContext = {
-  user: User | null;
-  authenticated: boolean;
-  loading: boolean;
-  loginAction: LoginActionFunc;
-  logout: LogoutFunc;
-};
+import { cleanUser } from "@/services/user.services";
 
 type ProviderProps = {
   children?: React.ReactNode;
@@ -38,41 +26,44 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
   const navigate = useNavigate();
   const client = axiosClient();
 
-  const verifyAction = async () => {
+  const verifyAction = () => {
     client
-      .get("/verify", { withCredentials: true })
-      .then((res) => {
-        setUser(res.data.data); // because user has data and verify
+      .get<UserResponse>("/verify", { withCredentials: true })
+      .then(response => {
+        setUser(cleanUser(response.data.data));
         setAuthenticated(true);
         setLoading(false);
       })
-      .catch(() => {
-        return logout();
+      .catch((err: AxiosError<ErrorResponse>) => {
+        console.error(err);
+        logout();
       });
   };
 
-  useEffect(() => {
-    verifyAction();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useEffect(verifyAction, []);
 
-  const loginAction: LoginActionFunc = async (data) => {
+  const loginAction: LoginActionFunc = async (data: LoginData) => {
     return client
-      .post("/login", data, { withCredentials: true })
-      .then((response) => {
-        setUser(response.data.data);
+      .post<UserResponse>("/login", data, { withCredentials: true })
+      .then(response => {
+        setUser(cleanUser(response.data.data));
         setAuthenticated(true);
         setLoading(false);
-        navigate("/");
-      });
+        navigate("/home");
+      })
+      .catch((err: AxiosError<ErrorResponse>) => console.error(err));
   };
 
-  const logout = async () => {
-    setUser(null);
-    setAuthenticated(false);
-    setLoading(false);
-    navigate("/login");
-    return client.post("/logout", { withCredentials: true }).catch(() => {});
+  const logout: LogoutFunc = () => {
+    client
+      .post<UserResponse>("/logout", {}, { withCredentials: true })
+      .then(_response => {
+        setUser(null);
+        setAuthenticated(false);
+        setLoading(false);
+      })
+      .catch((err: AxiosError<ErrorResponse>) => console.error(err))
+      .finally(() => navigate("/login"));
   };
 
   return (
