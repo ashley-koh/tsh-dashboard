@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import { Flex, Button, Checkbox, Form, Input, Alert } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { AxiosError } from "axios";
 
+import { ErrorResponse } from "@/types/auth.type";
+import ILoginForm from "./types/form.type";
 import logoImage from "@/assets/logo.png";
 import useAuth from "@/context/auth/useAuth";
 import "./Login.css";
 
 const LoginModal: React.FC = () => {
   const auth = useAuth();
-  const navigate = useNavigate();
-
   const [errorMessage, setErrorMessage] = useState("");
 
   // If user has auth token and enters login page, redirect to home page
@@ -18,20 +19,18 @@ const LoginModal: React.FC = () => {
     if (auth.authenticated) {
       redirect("/home");
     }
-  });
+  }, []);
 
-  const onFinish = (values: {
-    email: string;
-    password: string;
-    remember: boolean;
-  }) => {
+  const onFinish = (values: ILoginForm) => {
     auth
       .loginAction({
         email: values.email,
         password: values.password,
       })
-      .then(() => navigate('/home'))
-      .catch(() => setErrorMessage('Login failed.'));
+      .catch((err: AxiosError<ErrorResponse>) => {
+        setErrorMessage('Login failed.');
+        console.error(err);
+      });
   };
 
   return (

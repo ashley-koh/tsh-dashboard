@@ -55,7 +55,7 @@ const FormEditor: React.FC = () => {
           const formSection: FormSection = {
             _id: section._id,
             sectionTitle: section.title,
-            sectionDescription: section.description,
+            sectionDescription: section.description || '',
             questions: section.questions.map(question => {
 
               const formQuestion: FormQuestion = {

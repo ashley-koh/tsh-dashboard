@@ -298,7 +298,10 @@ export async function fetchUser(client: AxiosInstance, id: string) {
  */
 export async function fetchUsers(client: AxiosInstance) {
   try {
-    const responses = await client.get<{ data: User[], message: string }>('/user');
+    const responses = await client.get<{ data: User[], message: string }>(
+      '/user',
+      { withCredentials: true },
+    );
     return responses.data.data;
   }
   catch (err) {

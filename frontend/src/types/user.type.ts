@@ -51,7 +51,6 @@ export type BaseUser = {
   __v?: number;
   name: string;
   email: string;
-  password: string;
   employeeId: string;
   mobileNo: string;
   role: RoleOptions;
@@ -68,13 +67,17 @@ export const defaultUser: User = {
   appraisals: [],
   name: 'name',
   email: 'email',
-  password: 'password',
   employeeId: 'XXXXXXXXXX',
   mobileNo: '12345678',
   role: RoleOptions.EMPLOYEE,
   jobTitle: 'job',
   dept: DepartmentOptions.OTHER,
   employmentStatus: EmploymentStatusOptions.FULL_TIME,
+};
+
+export type UserResponse = {
+  data: User;
+  message: string;
 };
 
 export default User;

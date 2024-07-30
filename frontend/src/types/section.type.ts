@@ -4,7 +4,7 @@ import QuestionObj from "./question.type";
 export type SectionType = {
   _id?: string;
   title: string;
-  description: string;
+  description?: string;
   questions: string[];
 };
 
@@ -12,13 +12,12 @@ export type SectionType = {
 type SectionObj = {
   _id?: string;
   title: string;
-  description: string;
+  description?: string;
   questions: QuestionObj[];
 };
 
 export const defaultSection: SectionObj = {
   title: '',
-  description: '',
   questions: [],
 };
 
