@@ -80,10 +80,12 @@ const Navbar: React.FC = () => {
                 okText="Yes"
                 cancelText="No"
               >
-                <Space>
-                  <LogoutOutlined />
-                  Logout
-                </Space>
+                <NavLink to="#" className="logout">
+                  <Space>
+                    <LogoutOutlined />
+                    Logout
+                  </Space>
+                </NavLink>
               </Popconfirm>
             </li>
           </ul>
