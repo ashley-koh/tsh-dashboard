@@ -74,18 +74,16 @@ const Navbar: React.FC = () => {
             <li>
               <Popconfirm
                 title="Logout"
-                description="Are you sure you want to Logout?"
+                description="Are you sure you want to log out?"
                 onConfirm={auth.logout}
                 placement="bottomRight"
                 okText="Yes"
                 cancelText="No"
               >
-                <NavLink to="/" className="logout">
-                  <Space>
-                    <LogoutOutlined />
-                    Logout
-                  </Space>
-                </NavLink>
+                <Space>
+                  <LogoutOutlined />
+                  Logout
+                </Space>
               </Popconfirm>
             </li>
           </ul>

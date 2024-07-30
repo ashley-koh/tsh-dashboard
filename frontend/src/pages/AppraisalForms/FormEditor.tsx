@@ -21,12 +21,25 @@ import {
   message,
 } from 'antd';
 
-import FormObj, { FormType } from '@/types/form.type';
-import IAppraisalForm, { FormQuestion, FormSection } from './types/form.type';
-import QuestionObj, { QuestionType } from '@/types/question.type';
-import SectionObj, { SectionType } from '@/types/section.type';
+import FormObj, {
+  FormResponse,
+  FormType
+} from '@/types/form.type';
+import IAppraisalForm, {
+  FormQuestion,
+  FormSection
+} from './types/form.type';
+import QuestionObj, {
+  QuestionResponse,
+  QuestionType
+} from '@/types/question.type';
+import SectionObj, {
+  SectionResponse,
+  SectionType
+} from '@/types/section.type';
 import axiosClient from "@/lib/axiosInstance";
-import { fetchForm, formObjToType, sectionObjToType } from '@/utils/fetchData';
+import { fetchForm, formObjToType } from '@/services/form.services';
+import { sectionObjToType } from '@/services/section.services';
 import './FormEditor.css';
 
 const { TextArea } = Input;
@@ -55,7 +68,7 @@ const FormEditor: React.FC = () => {
           const formSection: FormSection = {
             _id: section._id,
             sectionTitle: section.title,
-            sectionDescription: section.description,
+            sectionDescription: section.description || '',
             questions: section.questions.map(question => {
 
               const formQuestion: FormQuestion = {
@@ -96,13 +109,13 @@ const FormEditor: React.FC = () => {
     try {
       if (question._id === undefined) {
         await client
-          .post<{ data: QuestionObj, message: string }>('/questions/', newQuestion)
+          .post<QuestionResponse>('/questions/', newQuestion)
           .then(response => newQuestion = { ...newQuestion, _id: response.data.data._id } );
       }
       else {
         await client
-          .put(`/questions/${question._id}`, newQuestion)
-          .then(() => newQuestion = { ...newQuestion, _id: question._id });
+          .put<QuestionResponse>(`/questions/${question._id}`, newQuestion)
+          .then(_response => newQuestion = { ...newQuestion, _id: question._id });
       }
       return newQuestion;
     }
@@ -137,13 +150,13 @@ const FormEditor: React.FC = () => {
     try {
       if (section._id === undefined) {
         await client
-          .post<{ data: SectionType, message: string }>('/formSection/', newSectionType)
+          .post<SectionResponse>('/formSection/', newSectionType)
           .then(response => newSection = { ...newSection, _id: response.data.data._id } );
       }
       else {
         await client
-          .put(`/formSection/${section._id}`, newSectionType)
-          .then(() => newSection = { ...newSection, _id: section._id });
+          .put<SectionResponse>(`/formSection/${section._id}`, newSectionType)
+          .then(_response => newSection = { ...newSection, _id: section._id });
       }
       return newSection;
     }
@@ -174,10 +187,10 @@ const FormEditor: React.FC = () => {
 
     try {
       if (location.state === null) {
-        await client.post('/form/', newFormType);
+        await client.post<FormResponse>('/form/', newFormType);
       }
       else {
-        await client.put(`/form/${location.state}`, newFormType);
+        await client.put<FormResponse>(`/form/${location.state}`, newFormType);
       }
       message.success(`Form successfully ${location.state === null ? 'created' : 'edited'}!`);
       navigate('/dashboard');

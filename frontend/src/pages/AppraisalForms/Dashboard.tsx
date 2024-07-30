@@ -24,7 +24,7 @@ import Loading from '@/components/common/Loading';
 import Scheduler from './Scheduler';
 import { DepartmentOptions, RoleOptions } from '@/types/user.type';
 import axiosClient from '@/lib/axiosInstance';
-import { fetchAppraisals } from '@/utils/fetchData';
+import { fetchAppraisals } from '@/services/appraisal.services';
 import useAuth from '@/context/auth/useAuth';
 import './Dashboard.css';
 
@@ -124,7 +124,7 @@ const Dashboard: React.FC = () => {
     const count = scheduledReviews.filter(
       review => dayjs(review.deadline).isSame(value, 'month')
     ).length;
-    return count > 0 ? <div>{count} events</div> : null;
+    return count > 0 ? <div>{count} {count === 1 ? 'event' : 'events'}</div> : null;
   };
 
   const cellRender: CalendarProps<Dayjs>['cellRender'] = (current, info) => {
@@ -146,7 +146,7 @@ const Dashboard: React.FC = () => {
               <Button
                 type='dashed'
                 className='alert-text'
-                onClick={() => navigate('/appraisals', { state: nextReview.form._id } )}
+                onClick={() => navigate('/appraisals', { state: nextReview._id } )}
               >
                 Complete Appraisal Form
               </Button>
@@ -155,7 +155,10 @@ const Dashboard: React.FC = () => {
         )}
         <Calendar cellRender={cellRender} />
         {showEdit && <FormSelect onClose={() => setShowEdit(false)} />}
-        {showScheduler && <Scheduler onClose={() => setShowScheduler(false)} />}
+        {showScheduler && <Scheduler onClose={() => {
+          setShowScheduler(false);
+          window.location.reload();
+        }} />}
       </Layout>
       {auth.user.role !== RoleOptions.EMPLOYEE && (
         <FloatButton

@@ -1,8 +1,9 @@
 import { BaseUser } from "@/types/user.type";
 
-interface RegisterForm extends BaseUser {
+interface IRegisterForm extends BaseUser {
+  password: string;
   confirm: string;
   agreement: boolean;
 };
 
-export default RegisterForm;
+export default IRegisterForm;

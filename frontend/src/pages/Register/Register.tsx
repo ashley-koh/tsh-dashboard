@@ -9,9 +9,16 @@ import {
   Input,
   Select
 } from "antd";
+import { AxiosError } from "axios";
 
-import RegisterForm from "./types/form.type";
-import User, { DepartmentLabels, EmploymentStatusLabels, RoleLables } from "@/types/user.type";
+import { ErrorResponse } from "@/types/auth.type";
+import IRegisterForm from "./types/form.type";
+import User, {
+  DepartmentLabels,
+  EmploymentStatusLabels,
+  RoleLables,
+  UserResponse
+} from "@/types/user.type";
 import axiosClient from '@/lib/axiosInstance';
 import logoImage from "@/assets/logo.png";
 import useAuth from "@/context/auth/useAuth";
@@ -32,18 +39,22 @@ const RegisterModal: React.FC = () => {
     }
   });
 
-  const onFinish = (values: RegisterForm) => {
+  const onFinish = (values: IRegisterForm) => {
     // Handle confirmation and agreement separately
-    const { confirm: string, agreement: boolean, ...rest } = values;
+    const { confirm, agreement, password, ...rest } = values;
     const user: User = { ...rest, appraisals: [] };
 
     client
-      .post("/user", user)
-      .then(() => {
-        navigate("/login");
+      .post<UserResponse>('/signup', {
+        ...user,
+        password: password,
       })
-      .catch((err) => {
-        setErrorMessage(err.response.data.message);
+      .then(_response => navigate('/login'))
+      .catch((err: AxiosError<ErrorResponse>) => {
+        setErrorMessage(
+          err.response?.data.message ||
+          'Unable to register. Please try again later.'
+        );
         console.error(err);
       });
   };
