@@ -51,7 +51,8 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
         setLoading(false);
         navigate("/home");
       })
-      .catch((err: AxiosError<ErrorResponse>) => console.error(err));
+      // Errors for login should be caught in pages/Login/Login.tsx
+      // .catch((err: AxiosError<ErrorResponse>) => console.error(err));
   };
 
   const logout: LogoutFunc = () => {
