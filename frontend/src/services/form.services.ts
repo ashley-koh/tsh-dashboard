@@ -10,6 +10,8 @@ import FormObj, {
 } from "@/types/form.type";
 import { cleanSection } from "./section.services";
 
+export const FORM_ROUTE = '/form/';
+
 export function cleanForm(extendForm: ExtendFormObj) {
   const { __v, sections, ...rest } = extendForm;
   const form: FormObj = {
@@ -51,7 +53,7 @@ export function formObjToType(formObj: FormObj) {
  */
 export async function fetchForm(client: AxiosInstance, id: string) {
   try {
-    const response = await client.get<FormResponse>(`/form/${id}`);
+    const response = await client.get<FormResponse>(`${FORM_ROUTE}${id}`);
     return cleanForm(response.data.data);
   }
   catch (err) {
@@ -70,7 +72,7 @@ export async function fetchForm(client: AxiosInstance, id: string) {
  */
 export async function fetchForms(client: AxiosInstance) {
   try {
-    const responses = await client.get<FormsResponse>('/form');
+    const responses = await client.get<FormsResponse>(FORM_ROUTE);
     return responses.data.data.map(cleanForm);
   }
   catch (err) {

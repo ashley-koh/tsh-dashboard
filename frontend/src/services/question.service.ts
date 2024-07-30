@@ -8,6 +8,8 @@ import QuestionObj, {
   defaultQuestion
 } from "@/types/question.type";
 
+export const QUESTION_ROUTE = '/questions/';
+
 export function cleanQuestion(extendQuestion: ExtendQuestionObj) {
   const { __v, ...rest } = extendQuestion;
   const question: QuestionObj = rest;
@@ -24,7 +26,7 @@ export function cleanQuestion(extendQuestion: ExtendQuestionObj) {
  */
 export async function fetchQuestion(client: AxiosInstance, id: string) {
   try {
-    const response = await client.get<QuestionResponse>(`/questions/${id}`);
+    const response = await client.get<QuestionResponse>(`${QUESTION_ROUTE}${id}`);
     return cleanQuestion(response.data.data);
   }
   catch (err) {
@@ -43,7 +45,7 @@ export async function fetchQuestion(client: AxiosInstance, id: string) {
  */
 export async function fetchQuestions(client: AxiosInstance) {
   try {
-    const responses = await client.get<QuestionsResponse>('/questions');
+    const responses = await client.get<QuestionsResponse>(QUESTION_ROUTE);
     return responses.data.data.map(cleanQuestion);
   }
   catch (err) {

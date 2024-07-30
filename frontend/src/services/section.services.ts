@@ -10,6 +10,8 @@ import SectionObj, {
 } from "@/types/section.type";
 import { cleanQuestion } from "./question.service";
 
+export const SECTION_ROUTE = '/formSections/';
+
 export function cleanSection(extendSection: ExtendSectionObj) {
   const { __v, questions, ...rest } = extendSection;
   const section: SectionObj = {
@@ -51,7 +53,7 @@ export function sectionObjToType(sectionObj: SectionObj) {
  */
 export async function fetchSection(client: AxiosInstance, id: string) {
   try {
-    const response = await client.get<SectionResponse>(`/formSection/${id}`);
+    const response = await client.get<SectionResponse>(`${SECTION_ROUTE}${id}`);
     return cleanSection(response.data.data);
   }
   catch (err) {
@@ -70,7 +72,7 @@ export async function fetchSection(client: AxiosInstance, id: string) {
  */
 export async function fetchSections(client: AxiosInstance) {
   try {
-    const responses = await client.get<SectionsResponse>('/formSection');
+    const responses = await client.get<SectionsResponse>(SECTION_ROUTE);
     return responses.data.data.map(cleanSection);
   }
   catch (err) {

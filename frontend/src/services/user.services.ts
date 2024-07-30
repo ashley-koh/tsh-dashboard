@@ -8,6 +8,8 @@ import User, {
   defaultUser
 } from "@/types/user.type";
 
+export const USER_ROUTE = '/user/';
+
 export function cleanUser(extendUser: ExtendUser) {
   const { __v, password, ...rest } = extendUser;
   const user: User = rest;
@@ -25,7 +27,7 @@ export function cleanUser(extendUser: ExtendUser) {
 export async function fetchUser(client: AxiosInstance, id: string) {
   try {
     const response = await client.get<UserResponse>(
-      `/user/${id}`,
+      `${USER_ROUTE}${id}`,
       { withCredentials: true }, // route is protected; must use credentials
     );
     return cleanUser(response.data.data);
@@ -47,7 +49,7 @@ export async function fetchUser(client: AxiosInstance, id: string) {
 export async function fetchUsers(client: AxiosInstance) {
   try {
     const responses = await client.get<UsersResponse>(
-      '/user',
+      USER_ROUTE,
       { withCredentials: true }, // route is protected; must use credentials
     );
     return responses.data.data.map(cleanUser);

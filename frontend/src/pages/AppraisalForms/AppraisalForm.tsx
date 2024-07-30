@@ -11,6 +11,7 @@ import {
 } from 'antd';
 import axiosClient from '@/lib/axiosInstance';
 
+import { ANSWER_ROUTE } from '@/services/answer.services';
 import AnswerObj, {
   AnswerResponse,
   AnswerType
@@ -28,6 +29,7 @@ import IAppraisalAnswer, {
 import QuestionObj, { QuestionType } from '@/types/question.type';
 import SectionObj from '@/types/section.type';
 import {
+  APPRAISAL_ROUTE,
   appraisalObjToType,
   fetchAppraisal
 } from '@/services/appraisal.services';
@@ -94,11 +96,11 @@ const AppraisalForm: React.FC = () => {
 
     try {
       if (formAnswer._id) {
-        await client.put<AnswerResponse>(`/answer/${formAnswer._id}`, answer);
+        await client.put<AnswerResponse>(`${ANSWER_ROUTE}${formAnswer._id}`, answer);
       }
       else {
         await client
-          .post<AnswerResponse>('/answer', answer)
+          .post<AnswerResponse>(ANSWER_ROUTE, answer)
           .then(response => answer = { ...answer, _id: response.data.data._id });
       }
     }
@@ -135,7 +137,7 @@ const AppraisalForm: React.FC = () => {
     };
 
     try {
-      await client.put<AppraisalResponse>(`/appraisal/${location.state}`, newAppraisalType);
+      await client.put<AppraisalResponse>(`${APPRAISAL_ROUTE}${location.state}`, newAppraisalType);
       return true;
     }
     catch (err) {
