@@ -28,7 +28,7 @@ import FormObj, {
 import IAppraisalForm, {
   FormQuestion,
   FormSection
-} from './types/form.type';
+} from './types/formEdit.type';
 import QuestionObj, {
   QuestionResponse,
   QuestionType

@@ -94,21 +94,29 @@ const Dashboard: React.FC = () => {
           const key = reviewDate.toString();
           const time = reviewDate.isAfter(dayjs()) ? `${reviewDate.format('HH:mm')} - ` : '';
 
-          const isManager = review.manager._id === auth.user?._id;
-          const desc = isManager ?
-            (reviewDate.isAfter(dayjs()) ? 'To review' : 'Complete review of') :
-            'Review with';
+          const isManager: boolean = review.manager._id === auth.user?._id;
+          const isComplete: boolean = review.status === AppraisalStatus.COMPLETE;
+          const desc = isComplete ? '[COMPLETE] Review with' : (
+            isManager ? (
+              reviewDate.isAfter(dayjs()) ?
+                'To review' :
+                'Complete review of'
+              ) :
+              'Review with'
+          );
 
           return (
             <li key={key}>
               <Badge
-                status={reviewDate.isAfter(dayjs()) ? 'error' : 'processing'}
+                status={isComplete ? 'success' :
+                  (reviewDate.isAfter(dayjs()) ? 'error' : 'processing')
+                }
                 text={`${time}${desc} ${isManager ? review.managee.name : review.manager.name}`}
               />
-              {isManager && reviewDate.isBefore(dayjs()) && (
+              {!isComplete && isManager && reviewDate.isBefore(dayjs()) && (
                 <Button
                   type='link'
-                  onClick={() => navigate('/appraisals', /* { state: review.reviewId } */)} // TODO add form link
+                  onClick={() => navigate('/review', { state: review._id })}
                 >
                   Complete Review
                 </Button>
