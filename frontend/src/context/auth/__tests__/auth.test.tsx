@@ -39,12 +39,8 @@ const TestHome = () => {
   );
 };
 
-// beforeEach(() => {
-//   server.use(...unauthenticatedUserHandlers);
-// });
-
 describe("AuthContext", () => {
-  test("Should render initial values", () => {
+  test.sequential("Should render initial values", () => {
     render(
       <MemoryRouter initialEntries={["/login"]}>
         <AuthProvider>
@@ -60,26 +56,28 @@ describe("AuthContext", () => {
     expect(screen.getByTestId("user")).toHaveTextContent("null");
   });
 
-  // test("Should login", () => {
-  //   render(
-  //     <MemoryRouter initialEntries={["/login"]}>
-  //       <AuthProvider>
-  //         <Routes>
-  //           <Route path="/login" element={<TestComponent />} />
-  //           <Route path="/" element={<TestHome />} />
-  //         </Routes>
-  //       </AuthProvider>
-  //     </MemoryRouter>
-  //   );
+  test.sequential("Should login", () => {
+    render(
+      <MemoryRouter initialEntries={["/login"]}>
+        <AuthProvider>
+          <Routes>
+            <Route path="/login" element={<TestComponent />} />
+            <Route path="/home" element={<TestHome />} />
+          </Routes>
+        </AuthProvider>
+      </MemoryRouter>
+    );
 
-  //   const loginButton = screen.getByRole("button", { name: "login" });
-  //   fireEvent.click(loginButton);
+    const loginButton = screen.getByRole("button", { name: "login" });
+    fireEvent.click(loginButton);
 
-  //   expect(screen.getByTestId("authenticated")).toHaveTextContent("true");
-  //   expect(screen.getByTestId("loading")).toHaveTextContent("false");
-  //   expect(screen.getByTestId("user")).toHaveTextContent(
-  //     JSON.stringify(testUser)
-  //   );
-  //   expect(screen.getByText(/This is the homepage/i)).toBeInTheDocument();
-  // });
+    screen.debug();
+
+    expect(screen.getByTestId("authenticated")).toHaveTextContent("true");
+    expect(screen.getByTestId("loading")).toHaveTextContent("false");
+    expect(screen.getByTestId("user")).toHaveTextContent(
+      JSON.stringify(testUser)
+    );
+    expect(screen.getByText(/This is the homepage/i)).toBeInTheDocument();
+  });
 });

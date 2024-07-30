@@ -1,5 +1,9 @@
 import { http, HttpResponse } from "msw";
 
+const localhost = (path: string) => {
+  return new URL(path, import.meta.env.VITE_API_URL).toString();
+};
+
 export const testUser = {
   appraisals: [],
   _id: "669f51f96b9bf41537a78187",
@@ -22,22 +26,22 @@ export const responseObj = (message: "login" | "verify") => {
 };
 
 export const unauthenticatedUserHandlers = [
-  http.post("/login", () => {
+  http.post(localhost("/login"), () => {
     return HttpResponse.json(responseObj("login"));
   }),
-  http.get("/verify", () => {
+  http.get(localhost("/verify"), () => {
     return HttpResponse.error();
   }),
-  http.post("/logout", () => {
+  http.post(localhost("/logout"), () => {
     return HttpResponse.error();
   }),
 ];
 
 export const authenticatedUserHandlers = [
-  http.get("/verify", () => {
+  http.get(localhost("/verify"), () => {
     return HttpResponse.json(responseObj("verify"));
   }),
-  http.post("/login", () => {
+  http.post(localhost("/login"), () => {
     return HttpResponse.error();
   }),
 ];
