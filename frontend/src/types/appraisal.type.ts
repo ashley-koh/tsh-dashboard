@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 
 import AnswerObj from "./answer.type";
+import BaseResponse from "./response.type";
 import FormObj, { defaultForm } from "./form.type";
 import User, { defaultUser } from "./user.type";
 
@@ -30,6 +31,14 @@ type AppraisalObj = {
   deadline: Date;
   answers: AnswerObj[];
   comments: string;
+};
+
+export type AppraisalResponse = BaseResponse & {
+  data: AppraisalType;
+};
+
+export type AppraisalsResponse = BaseResponse & {
+  data: AppraisalType[];
 };
 
 export const defaultAppraisal: AppraisalObj = {

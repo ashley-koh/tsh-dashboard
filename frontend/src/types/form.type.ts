@@ -1,3 +1,4 @@
+import BaseResponse from "./response.type";
 import SectionObj from "./section.type";
 
 export type FormType = {
@@ -10,6 +11,14 @@ type FormObj = {
   _id?: string;
   name: string;
   sections: SectionObj[];
+};
+
+export type FormResponse = BaseResponse & {
+  data: FormObj;
+};
+
+export type FormsResponse = BaseResponse & {
+  data: FormObj[];
 };
 
 export const defaultForm: FormObj = {

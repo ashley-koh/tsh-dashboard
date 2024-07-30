@@ -29,7 +29,9 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
     client
       .get<UserResponse>("/verify", { withCredentials: true })
       .then(response => {
-        setUser(response.data.data);
+        const { __v, password, ...rest } = response.data.data;
+        const user: User = { ...rest };
+        setUser(user);
         setAuthenticated(true);
         setLoading(false);
       })
@@ -45,7 +47,9 @@ const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
     return client
       .post<UserResponse>("/login", data, { withCredentials: true })
       .then(response => {
-        setUser(response.data.data);
+        const { __v, password, ...rest } = response.data.data;
+        const user: User = { ...rest };
+        setUser(user);
         setAuthenticated(true);
         setLoading(false);
         navigate("/home");

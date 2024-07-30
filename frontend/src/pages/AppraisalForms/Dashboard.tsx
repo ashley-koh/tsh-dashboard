@@ -24,7 +24,7 @@ import Loading from '@/components/common/Loading';
 import Scheduler from './Scheduler';
 import { DepartmentOptions, RoleOptions } from '@/types/user.type';
 import axiosClient from '@/lib/axiosInstance';
-import { fetchAppraisals } from '@/utils/fetchData';
+import { fetchAppraisals } from '@/services/appraisal.services';
 import useAuth from '@/context/auth/useAuth';
 import './Dashboard.css';
 

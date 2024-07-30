@@ -11,25 +11,23 @@ import { AxiosResponse } from 'axios';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 
-import AppraisalObj, { AppraisalStatus, AppraisalType } from '@/types/appraisal.type';
+import AppraisalObj, {
+  AppraisalResponse,
+  AppraisalStatus,
+  AppraisalType
+} from '@/types/appraisal.type';
 import FormObj from '@/types/form.type';
 import Loading from '@/components/common/Loading';
-import User, { RoleOptions } from '@/types/user.type';
+import User, { RoleOptions, UserResponse } from '@/types/user.type';
 import axiosClient from '@/lib/axiosInstance';
+import { appraisalObjToType } from '@/services/appraisal.services';
+import { fetchAppraisal } from '@/services/appraisal.services';
+import { fetchForms } from '@/services/form.services';
+import { fetchUsers } from '@/services/user.services';
 import useAuth from '@/context/auth/useAuth';
-import {
-  appraisalObjToType,
-  fetchAppraisal,
-  fetchForms,
-  fetchUsers
-} from '@/utils/fetchData';
 
 interface SchedulerProps {
   onClose: () => void;
-};
-type AppraisalResponse = {
-  data: AppraisalType,
-  message: string,
 };
 
 const MEETING_LENGTH_MIN = 30;
@@ -154,8 +152,8 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
         await client.post<AppraisalResponse>('/appraisal/', newAppraisalType);
 
       [auth.user, selectedEmployee].forEach(async user => {
-        const { _id, __v, ...rest } = user;
-        await client.put(`/user/${user._id}`, {
+        const { _id, ...rest } = user;
+        await client.put<UserResponse>(`/user/${user._id}`, {
           ...rest,
           appraisals: [ ...user.appraisals, response.data.data._id ],
         });

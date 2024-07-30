@@ -22,11 +22,15 @@ import {
 } from 'antd';
 
 import FormObj, { FormType } from '@/types/form.type';
-import IAppraisalForm, { FormQuestion, FormSection } from './types/form.type';
+import IAppraisalForm, {
+  FormQuestion,
+  FormSection
+} from './types/form.type';
 import QuestionObj, { QuestionType } from '@/types/question.type';
 import SectionObj, { SectionType } from '@/types/section.type';
 import axiosClient from "@/lib/axiosInstance";
-import { fetchForm, formObjToType, sectionObjToType } from '@/utils/fetchData';
+import { fetchForm, formObjToType } from '@/services/form.services';
+import { sectionObjToType } from '@/services/section.services';
 import './FormEditor.css';
 
 const { TextArea } = Input;
