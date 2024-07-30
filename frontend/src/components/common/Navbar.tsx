@@ -8,16 +8,13 @@ import {
 } from "@ant-design/icons";
 import { Popconfirm, Space, Tag } from "antd";
 
+import { DepartmentOptions, RoleLables, RoleOptions } from "@/types/user.type";
+import logo from "@/assets/logo.png";
 import useAuth from "@/context/auth/useAuth";
 import "./Navbar.css";
-import logo from "../../assets/logo.png";
-import getRoleLabel from "@/utils/getRoleLabel";
 
 const Navbar: React.FC = () => {
   const auth = useAuth();
-
-  const roles = ["business_owner", "head_of_department"];
-  const dept = "hr";
 
   return (
     <>
@@ -30,7 +27,7 @@ const Navbar: React.FC = () => {
                 <Tag color="blue" style={{ marginLeft: "1rem" }}>
                   {auth.user.name}
                 </Tag>
-                <Tag color="geekblue">{getRoleLabel(auth.user.role)}</Tag>
+                <Tag color="geekblue">{RoleLables[auth.user.role]}</Tag>
                 <Tag color="volcano">{auth.user.employeeId}</Tag>
               </>
             )}
@@ -47,9 +44,10 @@ const Navbar: React.FC = () => {
                 </Space>
               </NavLink>
             </li>
-            {auth.user &&
-              (roles.includes(auth.user.role) ||
-                dept.includes(auth.user.dept)) && (
+            {auth.user && (
+              auth.user.role != RoleOptions.EMPLOYEE ||
+              auth.user.dept === DepartmentOptions.HR
+            ) && (
                 <li>
                   <NavLink
                     to="/statistics"

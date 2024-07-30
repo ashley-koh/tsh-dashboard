@@ -46,23 +46,31 @@ export const RoleLables = {
   [RoleOptions.OWNER]: "Business Owner",
 };
 
-type User = {
+export type BaseUser = {
   _id?: string;
+  __v?: number;
   name: string;
   email: string;
   password: string;
   employeeId: string;
+  mobileNo: string;
   role: RoleOptions;
   jobTitle: string;
   dept: DepartmentOptions;
   employmentStatus: EmploymentStatusOptions;
 };
 
+type User = BaseUser & {
+  appraisals: string[]; /* leave as string to avoid circular dependency */
+};
+
 export const defaultUser: User = {
+  appraisals: [],
   name: 'name',
   email: 'email',
   password: 'password',
   employeeId: 'XXXXXXXXXX',
+  mobileNo: '12345678',
   role: RoleOptions.EMPLOYEE,
   jobTitle: 'job',
   dept: DepartmentOptions.OTHER,

@@ -7,6 +7,7 @@ import {
   Select,
   message
 } from 'antd';
+import { AxiosResponse } from 'axios';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 
@@ -18,7 +19,7 @@ import axiosClient from '@/lib/axiosInstance';
 import useAuth from '@/context/auth/useAuth';
 import {
   appraisalObjToType,
-  fetchAppraisals,
+  fetchAppraisal,
   fetchForms,
   fetchUsers
 } from '@/utils/fetchData';
@@ -26,6 +27,12 @@ import {
 interface SchedulerProps {
   onClose: () => void;
 };
+type AppraisalResponse = {
+  data: AppraisalType,
+  message: string,
+};
+
+const MEETING_LENGTH_MIN = 30;
 
 const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
   const auth = useAuth();
@@ -57,7 +64,7 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
       )));
 
       // Get relevant forms
-      const allForms = await fetchForms(client);
+      const allForms: FormObj[] = await fetchForms(client);
       // Do some filtering here...
       setForms(allForms);
     };
@@ -92,51 +99,78 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
       return;
     }
 
-    const appraisals: AppraisalObj[] = await fetchAppraisals(client);
-    for (const appraisal of appraisals) {
+    function checkNoClash(appraisal: AppraisalObj, errorMsg: string) {
       const reviewDate = dayjs(appraisal.deadline);
-      const selfClash =
-        appraisal.managee._id === auth.user?._id ||
-        appraisal.manager._id === auth.user?._id;
-      const othrClash =
-        appraisal.managee._id === selectedEmployee?._id ||
-        appraisal.manager._id === selectedEmployee?._id;
 
-      if ((selfClash || othrClash) && (
-        (
-          !reviewDate.isAfter(selectedDate, 'minute') &&
-          !reviewDate.add(30, 'minute').isBefore(selectedDate, 'minute')
-        ) ||
-        (
-          !reviewDate.isBefore(selectedDate, 'minute') &&
-          !reviewDate.subtract(30, 'minute').isAfter(selectedDate, 'minute')
-        )
-      )) {
-        message.warning(
-          `${selfClash ? 'You' : selectedEmployee?.name} ${selfClash ? 'have' : 'has'} ` +
-          'a scheduled meeting at the selected time.'
-        );
+      const hasClash: boolean = (
+        !reviewDate.isAfter(selectedDate, 'minute') &&
+        !reviewDate.add(MEETING_LENGTH_MIN, 'minute').isBefore(selectedDate, 'minute')
+      ) ||
+      (
+        !reviewDate.isBefore(selectedDate, 'minute') &&
+        !reviewDate.subtract(MEETING_LENGTH_MIN, 'minute').isAfter(selectedDate, 'minute')
+      );
+
+      if (hasClash) {
+        message.warning(errorMsg);
         form.resetFields(['pick-date']);
         setSelectedDate(null);
-        return;
       }
+      return !hasClash;
     };
 
+    async function checkAppraisals(user: User) {
+      const results: boolean[] = await Promise.all(user.appraisals.map(async appraisalId => {
+        const appraisal: AppraisalObj = await fetchAppraisal(client, appraisalId);
+        return checkNoClash(
+          appraisal,
+          (user._id === auth.user?._id ? 'You have' : `${user.name} has`) +
+          ' a scheduled meeting at the selected time.',
+        );
+      }));
+      return results.reduce((prev: boolean, curr: boolean) => prev && curr, true);
+    }
+
+    const selfFree: boolean = await checkAppraisals(auth.user);
+    const othrFree: boolean = await checkAppraisals(selectedEmployee);
+
+    if (!selfFree || !othrFree) {
+      return;
+    }
+
     const newAppraisal: AppraisalObj = {
-      managee: auth.user,
-      manager: selectedEmployee,
+      manager: auth.user,
+      managee: selectedEmployee,
       form: selectedForm,
       status: AppraisalStatus.REVIEW,
       deadline: selectedDate.toDate(),
       answers: [],
       comments: '',
     }
-    client.post<AppraisalType>('/appraisal/', appraisalObjToType(newAppraisal));
-    message.success(
-      `Scheduled meeting with ${selectedEmployee.name} ` +
-      `on ${selectedDate.format('DD MMM YYYY HH:mm')}`
-    );
-    onClose();
+    const newAppraisalType: AppraisalType = appraisalObjToType(newAppraisal);
+
+    try {
+      const response: AxiosResponse<AppraisalResponse> =
+        await client.post<AppraisalResponse>('/appraisal/', newAppraisalType);
+
+      [auth.user, selectedEmployee].forEach(async user => {
+        const { _id, __v, ...rest } = user;
+        await client.put(`/user/${user._id}`, {
+          ...rest,
+          appraisals: [ ...user.appraisals, response.data.data._id ],
+        });
+      });
+
+      message.success(
+        `Scheduled meeting with ${selectedEmployee.name} ` +
+        `on ${selectedDate.format('DD MMM YYYY HH:mm')}`
+      );
+      onClose();
+    }
+    catch (err) {
+      message.error('Something went wrong. Please try again later.');
+      console.log(err);
+    }
   }
 
   return (
