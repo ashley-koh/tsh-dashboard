@@ -5,7 +5,7 @@ import { CreateAppraisalDto } from '@dtos/appraisal.dto';
 import validationMiddleware from '@middlewares/validation.middleware';
 
 class AppraisalRoutes implements Routes {
-  public path = '/appraisal';
+  public path = '/appraisals';
 
   public router = Router();
 
@@ -16,18 +16,18 @@ class AppraisalRoutes implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.post(
-      `${this.path}/`,
-      validationMiddleware(CreateAppraisalDto, 'body'),
-      this.appraisalController.createAppraisal,
-    );
+    this.router.get(`${this.path}`, this.appraisalController.getAppraisals);
 
     this.router.get(
       `${this.path}/:id`,
       this.appraisalController.getAppraisalById,
     );
 
-    this.router.get(`${this.path}`, this.appraisalController.getAppraisals);
+    this.router.post(
+      `${this.path}/`,
+      validationMiddleware(CreateAppraisalDto, 'body'),
+      this.appraisalController.createAppraisal,
+    );
 
     this.router.put(
       `${this.path}/:id`,

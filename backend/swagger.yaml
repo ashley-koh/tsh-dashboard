@@ -16,7 +16,7 @@ tags:
 
 paths:
   # [GET] users
-  /users:
+  /user:
     get:
       tags:
         - users
@@ -50,7 +50,7 @@ paths:
           description: 'Server Error'
 
   # [GET] users/id
-  /users/{id}:
+  /user/{id}:
     get:
       tags:
         - users
@@ -478,7 +478,7 @@ paths:
           description: user Data
           required: true
           schema:
-            $ref: '#/definitions/users'
+            $ref: '#/definitions/login'
       responses:
         200:
           description: 'OK'
@@ -516,7 +516,7 @@ paths:
         - name: Auth Token
           in: Authorization
           description: Authorization Token
-          required: true
+          required: false
       responses:
         200:
           description: 'OK'
@@ -527,6 +527,20 @@ paths:
 
 # definitions
 definitions:
+  login:
+    type: object
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+        description: User Email
+
+      password:
+        type: string
+        description: User Password
+
   users:
     type: object
     required:

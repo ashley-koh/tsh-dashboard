@@ -4,8 +4,8 @@ import { Routes } from '@interfaces/routes.interface';
 import { CreateFormSectionDto } from '@dtos/formSection.dto';
 import validationMiddleware from '@middlewares/validation.middleware';
 
-class FormSectionRoutes implements Routes {
-  public path = '/formSection';
+class FormSectionsRoute implements Routes {
+  public path = '/formSections';
 
   public router = Router();
 
@@ -16,18 +16,18 @@ class FormSectionRoutes implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.post(
-      `${this.path}/`,
-      validationMiddleware(CreateFormSectionDto, 'body'),
-      this.formSectionController.createFormSection,
-    );
+    this.router.get(`${this.path}`, this.formSectionController.getFormSections);
 
     this.router.get(
       `${this.path}/:id`,
       this.formSectionController.getFormSectionById,
     );
 
-    this.router.get(`${this.path}`, this.formSectionController.getFormSections);
+    this.router.post(
+      `${this.path}`,
+      validationMiddleware(CreateFormSectionDto, 'body'),
+      this.formSectionController.createFormSection,
+    );
 
     this.router.put(
       `${this.path}/:id`,
@@ -42,4 +42,4 @@ class FormSectionRoutes implements Routes {
   }
 }
 
-export default FormSectionRoutes;
+export default FormSectionsRoute;

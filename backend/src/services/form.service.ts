@@ -8,24 +8,15 @@ import { isEmpty } from '@utils/util';
 class FormService {
   public forms = formModel;
 
-  public async createForm(formData: CreateFormDto): Promise<Form> {
-    if (isEmpty(formData)) throw new HttpException(400, 'formData is empty');
-
-    const createFormData: Form = await this.forms.create({
-      ...formData,
+  public async findAllForms(): Promise<Form[]> {
+    const findAllFormsData: Form[] = await this.forms.find().populate({
+      path: 'sections',
+      populate: {
+        path: 'questions',
+      },
     });
 
-    const populatedForm = await this.forms
-      .findById(createFormData._id)
-      .populate({
-        path: 'sections',
-        populate: {
-          path: 'questions',
-        },
-      })
-      .exec();
-
-    return populatedForm;
+    return findAllFormsData;
   }
 
   public async findFormById(formId: string): Promise<Form> {
@@ -47,15 +38,23 @@ class FormService {
     return findFormData;
   }
 
-  public async findAllForms(): Promise<Form[]> {
-    const findAllFormsData: Form[] = await this.forms.find().populate({
-      path: 'sections',
-      populate: {
-        path: 'questions',
-      },
+  public async createForm(formData: CreateFormDto): Promise<Form> {
+    if (isEmpty(formData)) throw new HttpException(400, 'formData is empty');
+
+    const createFormData: Form = await this.forms.create({
+      ...formData,
     });
 
-    return findAllFormsData;
+    const populatedForm = await this.forms
+      .findById(createFormData._id)
+      .populate({
+        path: 'sections',
+        populate: {
+          path: 'questions',
+        },
+      });
+
+    return populatedForm;
   }
 
   public async updateForm(

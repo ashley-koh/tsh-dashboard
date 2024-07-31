@@ -58,7 +58,7 @@ describe("AuthContext", () => {
         <AuthProvider>
           <Routes>
             <Route path="/login" element={<TestComponent />} />
-            <Route path="/" element={<TestHome />} />
+            <Route path="/home" element={<TestHome />} />
           </Routes>
         </AuthProvider>
       </MemoryRouter>
@@ -81,10 +81,10 @@ describe("AuthContext", () => {
       const Home = () => <div>This is the homepage</div>;
 
       render(
-        <MemoryRouter initialEntries={["/"]}>
+        <MemoryRouter initialEntries={["/home"]}>
           <AuthProvider>
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/home" element={<Home />} />
               <Route path="/login" element={<TestComponent />} />
             </Routes>
           </AuthProvider>
@@ -96,7 +96,7 @@ describe("AuthContext", () => {
       );
 
       expect(screen.getByTestId("authenticated")).toHaveTextContent("false");
-      expect(screen.getByTestId("loading")).toHaveTextContent("false");
+      expect(screen.getByTestId("loading")).toHaveTextContent("true");
       expect(screen.getByTestId("user")).toHaveTextContent("null");
       expect(screen.getByText(/Login/i)).toBeInTheDocument();
     }

@@ -9,9 +9,16 @@ import {
   Input,
   Select
 } from "antd";
+import { AxiosError } from "axios";
 
-import RegisterForm from "./types/form.type";
-import User from "@/types/user.type";
+import { ErrorResponse } from "@/types/auth.type";
+import IRegisterForm from "./types/form.type";
+import User, {
+  DepartmentLabels,
+  EmploymentStatusLabels,
+  RoleLables,
+  UserResponse
+} from "@/types/user.type";
 import axiosClient from '@/lib/axiosInstance';
 import logoImage from "@/assets/logo.png";
 import useAuth from "@/context/auth/useAuth";
@@ -32,26 +39,22 @@ const RegisterModal: React.FC = () => {
     }
   });
 
-  const onFinish = async (values: RegisterForm) => {
-    console.log(values);
-    const user: User = {
-      name: values.name,
-      email: values.email,
-      password: values.password,
-      employeeId: values.employeeId,
-      role: values.role,
-      jobTitle: values.jobTitle,
-      dept: values.dept,
-      employmentStatus: values.employmentStatus,
-    };
+  const onFinish = (values: IRegisterForm) => {
+    // Handle confirmation and agreement separately
+    const { confirm, agreement, password, ...rest } = values;
+    const user: User = { ...rest, appraisals: [] };
 
     client
-      .post("/signup", user)
-      .then(() => {
-        navigate("/login");
+      .post<UserResponse>('/signup', {
+        ...user,
+        password: password,
       })
-      .catch((err) => {
-        setErrorMessage(err.response.data.message);
+      .then(_response => navigate('/login'))
+      .catch((err: AxiosError<ErrorResponse>) => {
+        setErrorMessage(
+          err.response?.data.message ||
+          'Unable to register. Please try again later.'
+        );
         console.error(err);
       });
   };
@@ -123,6 +126,14 @@ const RegisterModal: React.FC = () => {
           </Form.Item>
 
           <Form.Item
+            name="mobileNo"
+            label="Mobile Number"
+            rules={[{ required: true, message: "Please input your mobile number!" }]}
+          >
+            <Input placeholder="Mobile Number" />
+          </Form.Item>
+
+          <Form.Item
             name="employeeId"
             label="Employee ID"
             rules={[
@@ -139,15 +150,11 @@ const RegisterModal: React.FC = () => {
               { required: true, message: "Please input your job level!" },
             ]}
           >
-            <Select placeholder="Job Level">
-              <Select.Option value="employee">Employee</Select.Option>
-              <Select.Option value="head_of_department">
-                Head of Department
-              </Select.Option>
-              <Select.Option value="business_owner">
-                Business Owner
-              </Select.Option>
-            </Select>
+            <Select
+              placeholder="Job Level"
+              options={Object.entries(RoleLables)
+                .map(([key, value]: [string, string]) => ({ value: key, label: value }))}
+            />
           </Form.Item>
 
           <Form.Item
@@ -157,10 +164,12 @@ const RegisterModal: React.FC = () => {
               { required: true, message: "Please input your Department!" },
             ]}
           >
-            <Select placeholder="Department" showSearch>
-              <Select.Option value="hr">Human Resources (HR)</Select.Option>
-              <Select.Option value="other">Other</Select.Option>
-            </Select>
+            <Select
+              showSearch
+              placeholder="Department"
+              options={Object.entries(DepartmentLabels)
+                .map(([key, value]: [string, string]) => ({ value: key, label: value }))}
+            />
           </Form.Item>
 
           <Form.Item
@@ -183,12 +192,11 @@ const RegisterModal: React.FC = () => {
               },
             ]}
           >
-            <Select placeholder="Employment Status">
-              <Select.Option value="full_time">Full-Time</Select.Option>
-              <Select.Option value="part_time">Part-Time</Select.Option>
-              <Select.Option value="intern">Intern</Select.Option>
-              <Select.Option value="temp">Temp</Select.Option>
-            </Select>
+            <Select
+              placeholder="Employment Status"
+              options={Object.entries(EmploymentStatusLabels)
+                .map(([key, value]: [string, string]) => ({ value: key, label: value }))}
+            />
           </Form.Item>
 
           <Form.Item

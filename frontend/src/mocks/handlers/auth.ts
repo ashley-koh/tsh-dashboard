@@ -9,13 +9,11 @@ export const testUser = {
   _id: "669f51f96b9bf41537a78187",
   name: "Test test",
   email: "test@gmail.com",
-  password: "$2b$10$jkX9AcZdyXmt0H5wCjp3Oe0xu49KyFggr1O7CN/SmsKcKdLCd/Pbq",
   employeeId: "1234567890",
   role: "business_owner",
   jobTitle: "admin",
   dept: "hr",
   employmentStatus: "full_time",
-  __v: 0,
 };
 
 export const responseObj = (message: "login" | "verify") => {
@@ -42,6 +40,6 @@ export const authenticatedUserHandlers = [
     return HttpResponse.json(responseObj("verify"));
   }),
   http.post(localhost("/login"), () => {
-    return HttpResponse.error().json({ message: "some error" });
+    return HttpResponse.error();
   }),
 ];

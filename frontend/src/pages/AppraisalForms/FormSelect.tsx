@@ -11,8 +11,8 @@ import {
 import FormObj from '@/types/form.type';
 import Loading from '@/components/common/Loading';
 import axiosClient from '@/lib/axiosInstance';
+import { fetchForms } from '@/services/form.services';
 import useAuth from '@/context/auth/useAuth';
-import { fetchForms } from '@/utils/fetchData';
 
 interface FormSelectProps {
   onClose: () => void;
@@ -37,7 +37,7 @@ const FormSelect: React.FC<FormSelectProps> = ({ onClose }) => {
   useEffect(() => {
     const loadData = async () => {
       // Get relevant forms
-      const allForms = await fetchForms(client);
+      const allForms: FormObj[] = await fetchForms(client);
       // Do some filtering here...
       setForms(allForms);
     };

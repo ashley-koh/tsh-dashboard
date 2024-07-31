@@ -24,7 +24,7 @@ import Loading from '@/components/common/Loading';
 import Scheduler from './Scheduler';
 import { DepartmentOptions, RoleOptions } from '@/types/user.type';
 import axiosClient from '@/lib/axiosInstance';
-import { fetchAppraisals } from '@/utils/fetchData';
+import { fetchAppraisals } from '@/services/appraisal.services';
 import useAuth from '@/context/auth/useAuth';
 import './Dashboard.css';
 
@@ -54,21 +54,19 @@ const Dashboard: React.FC = () => {
         const appraisals: AppraisalObj[] = await fetchAppraisals(client);
         appraisals.forEach(appraisal => {
           // Fetch relevant appraisals
-          if (
-            appraisal.manager._id !== auth.user?._id &&
-            appraisal.managee._id !== auth.user?._id
-          ) {
+          const isManagee: boolean = appraisal.managee._id === auth.user?._id;
+          if (appraisal.manager._id !== auth.user?._id && !isManagee) {
             return;
           }
           reviews.push(appraisal);
 
           // Determine if this is the next appraisal review
           const reviewDate = dayjs(appraisal.deadline);
-          if (currReview === null || (
+          if (isManagee &&
+            appraisal.status === AppraisalStatus.REVIEW &&
             reviewDate.isAfter(dayjs(), 'minute') &&
-            reviewDate.isAfter(dayjs(currReview.deadline), 'minute') &&
-            appraisal.status === AppraisalStatus.REVIEW
-          )) {
+            (currReview === null || reviewDate.isAfter(dayjs(currReview.deadline), 'minute'))
+          ) {
             currReview = appraisal;
           }
         });
@@ -96,21 +94,29 @@ const Dashboard: React.FC = () => {
           const key = reviewDate.toString();
           const time = reviewDate.isAfter(dayjs()) ? `${reviewDate.format('HH:mm')} - ` : '';
 
-          const isManager = review.manager._id === auth.user?._id;
-          const desc = isManager ?
-            (reviewDate.isAfter(dayjs()) ? 'To review' : 'Complete review of') :
-            'Review with';
+          const isManager: boolean = review.manager._id === auth.user?._id;
+          const isComplete: boolean = review.status === AppraisalStatus.COMPLETE;
+          const desc = isComplete ? '[COMPLETE] Review with' : (
+            isManager ? (
+              reviewDate.isAfter(dayjs()) ?
+                'To review' :
+                'Complete review of'
+              ) :
+              'Review with'
+          );
 
           return (
             <li key={key}>
               <Badge
-                status={reviewDate.isAfter(dayjs()) ? 'error' : 'processing'}
+                status={isComplete ? 'success' :
+                  (reviewDate.isAfter(dayjs()) ? 'error' : 'processing')
+                }
                 text={`${time}${desc} ${isManager ? review.managee.name : review.manager.name}`}
               />
-              {isManager && reviewDate.isBefore(dayjs()) && (
+              {!isComplete && isManager && reviewDate.isBefore(dayjs()) && (
                 <Button
                   type='link'
-                  onClick={() => navigate('/appraisals', /* { state: review.reviewId } */)} // TODO add form link
+                  onClick={() => navigate('/review', { state: review._id })}
                 >
                   Complete Review
                 </Button>
@@ -126,7 +132,7 @@ const Dashboard: React.FC = () => {
     const count = scheduledReviews.filter(
       review => dayjs(review.deadline).isSame(value, 'month')
     ).length;
-    return count > 0 ? <div>{count} events</div> : null;
+    return count > 0 ? <div>{count} {count === 1 ? 'event' : 'events'}</div> : null;
   };
 
   const cellRender: CalendarProps<Dayjs>['cellRender'] = (current, info) => {
@@ -148,7 +154,7 @@ const Dashboard: React.FC = () => {
               <Button
                 type='dashed'
                 className='alert-text'
-                onClick={() => navigate('/appraisals', { state: nextReview.form._id } )}
+                onClick={() => navigate('/appraisals', { state: nextReview._id } )}
               >
                 Complete Appraisal Form
               </Button>
@@ -157,7 +163,10 @@ const Dashboard: React.FC = () => {
         )}
         <Calendar cellRender={cellRender} />
         {showEdit && <FormSelect onClose={() => setShowEdit(false)} />}
-        {showScheduler && <Scheduler onClose={() => setShowScheduler(false)} />}
+        {showScheduler && <Scheduler onClose={() => {
+          setShowScheduler(false);
+          window.location.reload();
+        }} />}
       </Layout>
       {auth.user.role !== RoleOptions.EMPLOYEE && (
         <FloatButton

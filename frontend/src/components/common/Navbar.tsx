@@ -8,16 +8,13 @@ import {
 } from "@ant-design/icons";
 import { Popconfirm, Space, Tag } from "antd";
 
+import { DepartmentOptions, RoleLables, RoleOptions } from "@/types/user.type";
+import logo from "@/assets/logo.png";
 import useAuth from "@/context/auth/useAuth";
 import "./Navbar.css";
-import logo from "../../assets/logo.png";
-import { RoleLables } from "@/types/user.type";
 
 const Navbar: React.FC = () => {
   const auth = useAuth();
-
-  const roles = ["business_owner", "head_of_department"];
-  const dept = "hr";
 
   return (
     <>
@@ -48,8 +45,8 @@ const Navbar: React.FC = () => {
               </NavLink>
             </li>
             {auth.user &&
-              (roles.includes(auth.user.role) ||
-                dept.includes(auth.user.dept)) && (
+              (auth.user.role != RoleOptions.EMPLOYEE ||
+                auth.user.dept === DepartmentOptions.HR) && (
                 <li>
                   <NavLink
                     to="/statistics"
@@ -76,13 +73,13 @@ const Navbar: React.FC = () => {
             <li>
               <Popconfirm
                 title="Logout"
-                description="Are you sure you want to Logout?"
+                description="Are you sure you want to log out?"
                 onConfirm={auth.logout}
                 placement="bottomRight"
                 okText="Yes"
                 cancelText="No"
               >
-                <NavLink to="/" className="logout">
+                <NavLink to="#" className="logout">
                   <Space>
                     <LogoutOutlined />
                     Logout

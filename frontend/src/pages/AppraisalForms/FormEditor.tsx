@@ -21,12 +21,30 @@ import {
   message,
 } from 'antd';
 
-import FormObj, { FormType } from '@/types/form.type';
-import IAppraisalForm, { FormQuestion, FormSection } from './types/form.type';
-import QuestionObj, { QuestionType } from '@/types/question.type';
-import SectionObj, { SectionType } from '@/types/section.type';
+import FormObj, {
+  FormResponse,
+  FormType
+} from '@/types/form.type';
+import IAppraisalForm, {
+  FormQuestion,
+  FormSection
+} from './types/formEdit.type';
+import QuestionObj, {
+  QuestionResponse,
+  QuestionType
+} from '@/types/question.type';
+import SectionObj, {
+  SectionResponse,
+  SectionType
+} from '@/types/section.type';
 import axiosClient from "@/lib/axiosInstance";
-import { fetchForm, formObjToType, sectionObjToType } from '@/utils/fetchData';
+import {
+  FORM_ROUTE,
+  fetchForm,
+  formObjToType
+} from '@/services/form.services';
+import { QUESTION_ROUTE } from '@/services/question.service';
+import { SECTION_ROUTE, sectionObjToType } from '@/services/section.services';
 import './FormEditor.css';
 
 const { TextArea } = Input;
@@ -46,23 +64,33 @@ const FormEditor: React.FC = () => {
       const editForm: FormObj | null =
         location.state === null ? null : await fetchForm(client, location.state);
 
-      form.setFieldsValue({
+      const formFields: IAppraisalForm = {
+        _id: location.state === null ? undefined : location.state,
         formTitle: editForm === null ? '' : editForm.name,
         sections: editForm === null ? [] : editForm.sections.map(section => {
           fieldCount.push(section.questions.length);
-          return {
+
+          const formSection: FormSection = {
+            _id: section._id,
             sectionTitle: section.title,
-            sectionDescription: section.description,
+            sectionDescription: section.description || '',
             questions: section.questions.map(question => {
-              return {
-                ...question,
+
+              const formQuestion: FormQuestion = {
+                _id: question._id,
+                question: question.description,
+                required: question.required,
                 type: question.type === QuestionType.RATING,
               };
+              return formQuestion;
             }),
           };
-        }),
-      });
 
+          return formSection;
+        }),
+      };
+
+      form.setFieldsValue(formFields);
       setFieldsCount(fieldCount);
     };
 
@@ -74,7 +102,7 @@ const FormEditor: React.FC = () => {
    *
    * @param question The form question to submit.
    *
-   * @returns The submitted question object.
+   * @returns The submitted question object, if any.
    */
   async function handleQuestionSubmit(question: FormQuestion) {
     let newQuestion: QuestionObj = {
@@ -82,26 +110,24 @@ const FormEditor: React.FC = () => {
       type: question.type ? QuestionType.RATING : QuestionType.OPEN_ENDED,
       required: question.required,
     };
-    if (question._id !== undefined) {
-      newQuestion = { ...newQuestion, _id: question._id };
-    }
-    console.log(`Question: ${newQuestion}`); // TODO debug
 
     try {
-      const response = await (newQuestion?._id === undefined ?
-        client.post<string>('/question/', newQuestion) :
-        client.put<string>(`/question/${newQuestion._id}`, newQuestion)
-      );
-      if (newQuestion?._id === undefined) {
-        newQuestion = { ...newQuestion, _id: response.data };
+      if (question._id === undefined) {
+        await client
+          .post<QuestionResponse>(QUESTION_ROUTE, newQuestion)
+          .then(response => newQuestion = { ...newQuestion, _id: response.data.data._id } );
       }
+      else {
+        await client
+          .put<QuestionResponse>(`${QUESTION_ROUTE}${question._id}`, newQuestion)
+          .then(_response => newQuestion = { ...newQuestion, _id: question._id });
+      }
+      return newQuestion;
     }
     catch (err) {
       message.error('Something went wrong. Please try again later.');
       console.error(`Error in question edit submission: ${err}`);
-    }
-    finally {
-      return newQuestion;
+      return null;
     }
   };
 
@@ -113,36 +139,36 @@ const FormEditor: React.FC = () => {
    * @returns The submitted section object.
    */
   async function handleSectionSubmit(section: FormSection) {
+    const questions: (QuestionObj | null)[] = await Promise.all(
+      section.questions.map(
+        async question => await handleQuestionSubmit(question)
+      )
+    );
+
     let newSection: SectionObj = {
       title: section.sectionTitle,
       description: section.sectionDescription,
-      questions: [],
+      questions: questions.filter(question => question !== null),
     };
-    section.questions.forEach(async formQuestion => {
-      const question: QuestionObj = await handleQuestionSubmit(formQuestion);
-      newSection.questions.push(question);
-    });
-    if (section._id !== undefined) {
-      newSection = { ...newSection, _id: section._id };
-    }
     const newSectionType: SectionType = sectionObjToType(newSection);
-    console.log(`Section: ${newSectionType}`); // TODO debug
 
     try {
-      const response = await (newSectionType?._id === undefined ?
-        client.post<string>('/formSection/', newSectionType) :
-        client.put<string>(`/formSection/${newSectionType._id}`, newSectionType)
-      );
-      if (newSectionType?._id === undefined) {
-        newSection = { ...newSection, _id: response.data };
+      if (section._id === undefined) {
+        await client
+          .post<SectionResponse>(SECTION_ROUTE, newSectionType)
+          .then(response => newSection = { ...newSection, _id: response.data.data._id } );
       }
+      else {
+        await client
+          .put<SectionResponse>(`${SECTION_ROUTE}${section._id}`, newSectionType)
+          .then(_response => newSection = { ...newSection, _id: section._id });
+      }
+      return newSection;
     }
     catch (err) {
       message.error('Something went wrong. Please try again later.');
       console.error(`Error in section edit submission: ${err}`);
-    }
-    finally {
-      return newSection;
+      return null;
     }
   }
 
@@ -152,30 +178,26 @@ const FormEditor: React.FC = () => {
    * @param form The form to submit.
    */
   async function handleSubmit(form: IAppraisalForm) {
+    const sections: (SectionObj | null)[] = await Promise.all(
+      form.sections.map(
+        async section => await handleSectionSubmit(section)
+      )
+    );
+
     let newForm: FormObj = {
       name: form.formTitle,
-      sections: [],
+      sections: sections.filter(section => section !== null),
     };
-    form.sections.forEach(async formSection => {
-      const section: SectionObj = await handleSectionSubmit(formSection);
-      newForm.sections.push(section);
-    });
-    if (form._id !== undefined) {
-      newForm = { ...newForm, _id: form._id };
-    }
     const newFormType: FormType = formObjToType(newForm);
-    console.log(`Form: ${newFormType}`); // TODO debug
 
     try {
-      const response = await (newFormType?._id === undefined ?
-        client.post<string>('/form/', newFormType) :
-        client.put<string>(`/form/${newFormType._id}`, newFormType)
-      );
-      if (newFormType?._id === undefined) {
-        newForm = { ...newForm, _id: response.data };
+      if (location.state === null) {
+        await client.post<FormResponse>(FORM_ROUTE, newFormType);
       }
-
-      message.success(`Form successfully ${location.state === undefined ? 'created' : 'edited'}!`);
+      else {
+        await client.put<FormResponse>(`${FORM_ROUTE}${location.state}`, newFormType);
+      }
+      message.success(`Form successfully ${location.state === null ? 'created' : 'edited'}!`);
       navigate('/dashboard');
     }
     catch (err) {
@@ -341,7 +363,7 @@ const FormEditor: React.FC = () => {
           </>
         )}
       </Form.List>
-      <Form.Item className='submit-container'>
+      <div className='submit-container'>
         <Popconfirm
           title={`Cancel ${location.state === undefined ? 'Create' : 'Edit'} Form`}
           description='Are you sure you want to cancel?'
@@ -352,7 +374,6 @@ const FormEditor: React.FC = () => {
         >
           <Button
             type='default'
-            htmlType='reset'
             className='reset'
           >
             Cancel
@@ -365,7 +386,7 @@ const FormEditor: React.FC = () => {
         >
           Save
         </Button>
-      </Form.Item>
+      </div>
     </Form>
   );
 };

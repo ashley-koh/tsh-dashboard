@@ -6,17 +6,17 @@ import AnswerService from '@services/answer.service';
 class AnswerController {
   public answerService = new AnswerService();
 
-  public createAnswer = async (
+  public getAnswers = async (
     req: Request,
     res: Response,
     next: NextFunction,
   ) => {
     try {
-      const answerData: CreateAnswerDto = req.body;
-      const createAnswerData: Answer =
-        await this.answerService.createAnswer(answerData);
-
-      res.status(201).json({ data: createAnswerData, message: 'created' });
+      const findAllAnswersData: Answer[] =
+        await this.answerService.findAllAnswers();
+      res
+        .status(200)
+        .json({ data: findAllAnswersData, message: 'findAll answer' });
     } catch (error) {
       next(error);
     }
@@ -32,21 +32,27 @@ class AnswerController {
       const findOneAnswerData: Answer =
         await this.answerService.findAnswerById(answerId);
 
-      res.status(201).json({ data: findOneAnswerData, message: 'findOne' });
+      res
+        .status(200)
+        .json({ data: findOneAnswerData, message: 'findOne answer' });
     } catch (error) {
       next(error);
     }
   };
 
-  public getAnswers = async (
+  public createAnswer = async (
     req: Request,
     res: Response,
     next: NextFunction,
   ) => {
     try {
-      const findAllAnswersData: Answer[] =
-        await this.answerService.findAllAnswers();
-      res.status(201).json({ data: findAllAnswersData, message: 'findAll' });
+      const answerData: CreateAnswerDto = req.body;
+      const createAnswerData: Answer =
+        await this.answerService.createAnswer(answerData);
+
+      res
+        .status(201)
+        .json({ data: createAnswerData, message: 'created answer' });
     } catch (error) {
       next(error);
     }
@@ -66,7 +72,9 @@ class AnswerController {
         answerData,
       );
 
-      res.status(201).json({ data: updateAnswerData, message: 'updated' });
+      res
+        .status(200)
+        .json({ data: updateAnswerData, message: 'updated answer' });
     } catch (error) {
       next(error);
     }
@@ -83,7 +91,9 @@ class AnswerController {
       const answerQuestionData: Answer =
         await this.answerService.deleteAnswer(answerId);
 
-      res.status(201).json({ data: answerQuestionData, message: 'deleted' });
+      res
+        .status(200)
+        .json({ data: answerQuestionData, message: 'deleted answer' });
     } catch (error) {
       next(error);
     }

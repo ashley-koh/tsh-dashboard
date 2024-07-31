@@ -1,12 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-import "./index.css";
 
 import App from "./App";
-import DepartmentStatistics from "./pages/Statistics";
 import AppraisalForm from "./pages/AppraisalForms/AppraisalForm";
+import AppraisalReview from "./pages/AppraisalForms/AppraisalReview";
 import Dashboard from "./pages/AppraisalForms/Dashboard";
+import DepartmentStatistics from "./pages/Statistics";
 import FormEditor from "./pages/AppraisalForms/FormEditor";
 import InfoHome from "./pages/InfoHome";
 import LoginPage from "./pages/Login";
@@ -16,6 +16,8 @@ import DetailedEmployeeStats from "./pages/Statistics/DetailedEmployeeStats";
 import AuthProvider from "./context/auth/AuthContext";
 import PrivateRoute from "./components/router/PrivateRoute";
 import RoleBasedRoute from "./components/router/RoleBasedRoute";
+
+import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -45,6 +47,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/appraisals" element={<AppraisalForm />} />
               <Route path="/edit" element={<FormEditor />} />
+              <Route path="/review" element={<AppraisalReview />} />
             </Route>
           </Route>
         </Routes>
