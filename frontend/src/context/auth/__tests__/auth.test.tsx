@@ -1,14 +1,10 @@
-import { describe, expect, test, beforeEach } from "vitest";
-import { server } from "@/mocks/mockServer";
-import {
-  authenticatedUserHandlers,
-  testUser,
-  unauthenticatedUserHandlers,
-} from "@/mocks/handlers/auth";
+import { describe, expect, test, beforeEach, vi } from "vitest";
+import { testUser } from "@/mocks/handlers/auth";
 import AuthProvider from "../AuthContext";
 import useAuth from "../useAuth";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
+import userEvent from "@testing-library/user-event";
 
 const TestComponent = () => {
   const { authenticated, loading, loginAction, logout, user } = useAuth();
@@ -56,22 +52,20 @@ describe("AuthContext", () => {
     expect(screen.getByTestId("user")).toHaveTextContent("null");
   });
 
-  test.sequential("Should login", () => {
+  test.sequential("Should login", async () => {
     render(
       <MemoryRouter initialEntries={["/login"]}>
         <AuthProvider>
           <Routes>
             <Route path="/login" element={<TestComponent />} />
-            <Route path="/home" element={<TestHome />} />
+            <Route path="/" element={<TestHome />} />
           </Routes>
         </AuthProvider>
       </MemoryRouter>
     );
 
     const loginButton = screen.getByRole("button", { name: "login" });
-    fireEvent.click(loginButton);
-
-    screen.debug();
+    await userEvent.click(loginButton);
 
     expect(screen.getByTestId("authenticated")).toHaveTextContent("true");
     expect(screen.getByTestId("loading")).toHaveTextContent("false");
