@@ -1,10 +1,11 @@
-import { describe, expect, test } from "vitest";
-import { testUser } from "@/mocks/handlers/auth";
+import { describe, expect, test, beforeEach } from "vitest";
+import { testUser, unauthenticatedUserHandlers } from "@/mocks/handlers/auth";
 import AuthProvider from "../AuthContext";
 import useAuth from "../useAuth";
 import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
+import { server } from "@/mocks/mockServer";
 
 const TestComponent = () => {
   const { authenticated, loading, loginAction, logout, user } = useAuth();
@@ -36,6 +37,10 @@ const TestHome = () => {
 };
 
 describe("AuthContext", () => {
+  beforeEach(() => {
+    server.use(...unauthenticatedUserHandlers); // override authenticated routes
+  });
+
   test.sequential("Should render initial values", () => {
     render(
       <MemoryRouter initialEntries={["/login"]}>

@@ -22,13 +22,16 @@ const InfoHome: React.FC = () => {
     <>
       <Row gutter={12}>
         <Col span={7}>
-          <AccountDetails user={auth.user} />
+          <AccountDetails data-testid="AccountDetails" user={auth.user} />
         </Col>
         <Col span={12}>
-          <ModuleProgress modules={lms.modules} />
+          <ModuleProgress data-testid="ModuleProgress" modules={lms.modules} />
         </Col>
         <Col span={5}>
-          <OverallRating rating={lms.overallRating} />
+          <OverallRating
+            data-testid="OverallRating"
+            rating={lms.overallRating}
+          />
         </Col>
       </Row>
       {/* <div className="container">
