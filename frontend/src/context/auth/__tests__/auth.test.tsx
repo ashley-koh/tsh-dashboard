@@ -1,8 +1,8 @@
-import { describe, expect, test, beforeEach, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 import { testUser } from "@/mocks/handlers/auth";
 import AuthProvider from "../AuthContext";
 import useAuth from "../useAuth";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 
@@ -52,7 +52,7 @@ describe("AuthContext", () => {
     expect(screen.getByTestId("user")).toHaveTextContent("null");
   });
 
-  test.sequential("Should login", async () => {
+  test.sequential("Should redirect on successful login attempt", async () => {
     render(
       <MemoryRouter initialEntries={["/login"]}>
         <AuthProvider>
@@ -74,4 +74,31 @@ describe("AuthContext", () => {
     );
     expect(screen.getByText(/This is the homepage/i)).toBeInTheDocument();
   });
+
+  test.sequential(
+    "Should route to /login with unauthenticated user",
+    async () => {
+      const Home = () => <div>This is the homepage</div>;
+
+      render(
+        <MemoryRouter initialEntries={["/"]}>
+          <AuthProvider>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<TestComponent />} />
+            </Routes>
+          </AuthProvider>
+        </MemoryRouter>
+      );
+
+      await waitFor(() =>
+        expect(screen.getByTestId("authenticated")).toBeInTheDocument()
+      );
+
+      expect(screen.getByTestId("authenticated")).toHaveTextContent("false");
+      expect(screen.getByTestId("loading")).toHaveTextContent("false");
+      expect(screen.getByTestId("user")).toHaveTextContent("null");
+      expect(screen.getByText(/Login/i)).toBeInTheDocument();
+    }
+  );
 });

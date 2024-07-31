@@ -42,6 +42,6 @@ export const authenticatedUserHandlers = [
     return HttpResponse.json(responseObj("verify"));
   }),
   http.post(localhost("/login"), () => {
-    return HttpResponse.error();
+    return HttpResponse.error().json({ message: "some error" });
   }),
 ];
