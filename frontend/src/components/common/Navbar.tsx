@@ -44,10 +44,9 @@ const Navbar: React.FC = () => {
                 </Space>
               </NavLink>
             </li>
-            {auth.user && (
-              auth.user.role != RoleOptions.EMPLOYEE ||
-              auth.user.dept === DepartmentOptions.HR
-            ) && (
+            {auth.user &&
+              (auth.user.role != RoleOptions.EMPLOYEE ||
+                auth.user.dept === DepartmentOptions.HR) && (
                 <li>
                   <NavLink
                     to="/statistics"
