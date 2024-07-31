@@ -1,19 +1,25 @@
+import User, {
+  DepartmentOptions,
+  EmploymentStatusOptions,
+  RoleOptions,
+} from "@/types/user.type";
 import { http, HttpResponse } from "msw";
 
 const localhost = (path: string) => {
   return new URL(path, import.meta.env.VITE_API_URL).toString();
 };
 
-export const testUser = {
+export const testUser: User = {
   appraisals: [],
   _id: "669f51f96b9bf41537a78187",
   name: "Test test",
   email: "test@gmail.com",
   employeeId: "1234567890",
-  role: "business_owner",
+  role: RoleOptions.OWNER,
   jobTitle: "admin",
-  dept: "hr",
-  employmentStatus: "full_time",
+  dept: DepartmentOptions.HR,
+  mobileNo: "987654321",
+  employmentStatus: EmploymentStatusOptions.FULL_TIME,
 };
 
 export const responseObj = (message: "login" | "verify") => {
