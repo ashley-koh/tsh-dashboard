@@ -1,9 +1,7 @@
-import React from "react";
-import { vi, expect, describe, it } from "vitest";
+import { expect, describe, it } from "vitest";
 import AccountDetails from "../components/AccountDetails";
 import { render, screen } from "@testing-library/react";
-import useAuth from "@/context/auth/useAuth";
-import { authenticatedUserHandlers, testUser } from "@/mocks/handlers/auth";
+import { testUser } from "@/mocks/handlers/auth";
 import "@/mocks/utils/matchMedia.mock";
 import {
   DepartmentLabels,
@@ -11,20 +9,9 @@ import {
   RoleLables,
 } from "@/types/user.type";
 import ModuleProgress from "../components/ModuleProgress";
-import { lms } from "@/data/mockData";
 import OverallRating from "../components/OverallRating";
 import InfoHome from "../InfoHome";
-import { server } from "@/mocks/mockServer";
-import { MemoryRouter } from "react-router-dom";
-import IAuthContext from "@/types/auth.type";
-
-// const AuthenticatedEnvironment = ({ children}: { children: React.ReactNode}) => {
-//   const auth = useAuth();
-
-//   return (
-//     { children }
-//   )
-// }
+import authenticatedRender from "@/mocks/utils/authenticatedRender.mock";
 
 describe("InfoHome Page", () => {
   it("AccountDetails", () => {
@@ -75,5 +62,13 @@ describe("InfoHome Page", () => {
 
     expect(screen.getByText(/Overall Rating/i)).toBeInTheDocument();
     expect(screen.getByText(rating.toString() + "%")).toBeInTheDocument();
+  });
+
+  it("InfoHome", () => {
+    authenticatedRender(<InfoHome />);
+
+    expect(screen.getByText(/Account Details/i)).toBeInTheDocument();
+    expect(screen.getByText(/Module Progress Overview/i)).toBeInTheDocument();
+    expect(screen.getByText(/Overall Rating/i)).toBeInTheDocument();
   });
 });
