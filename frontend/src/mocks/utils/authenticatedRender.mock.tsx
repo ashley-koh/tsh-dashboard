@@ -5,6 +5,9 @@ import { render, RenderOptions } from "@testing-library/react";
 import IAuthContext from "@/types/auth.type";
 import { testUser } from "../handlers/auth";
 
+export const loginMockFn = vi.fn();
+export const logoutMockFn = vi.fn();
+
 const authenticatedRender = (
   ui: React.ReactNode,
   renderOptions?: RenderOptions
@@ -14,8 +17,8 @@ const authenticatedRender = (
       user: testUser,
       authenticated: true,
       loading: false,
-      loginAction: vi.fn(),
-      logout: vi.fn(),
+      loginAction: loginMockFn,
+      logout: logoutMockFn,
     },
   };
 
