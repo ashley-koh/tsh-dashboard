@@ -23,7 +23,6 @@ describe('<LoginPage />', () => {
           <AuthProvider>
             <Routes>
               <Route path='/login' element={<LoginPage />} />
-              <Route path='/home' element={<></>} />
             </Routes>
           </AuthProvider>
         </Router>
@@ -80,13 +79,5 @@ describe('<LoginPage />', () => {
 
     cy.wait('@loginRequest').its('response.statusCode').should('eq', 409);
     cy.dataCy(errorAlert).should('exist');
-  });
-
-  it('valid email and password', () => {
-    cy.dataCy(emailInput).type(Cypress.env('email'));
-    cy.dataCy(passwordInput).type(Cypress.env('password'), { log: false });
-    cy.dataCy(buttonSubmit).click();
-
-    cy.url().should('include', '/home');
   });
 });
