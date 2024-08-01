@@ -15,8 +15,9 @@ import DetailedEmployeeStats from "./pages/Statistics/DetailedEmployeeStats";
 
 import AuthProvider from "./context/auth/AuthContext";
 import PrivateRoute from "./components/router/PrivateRoute";
-import RoleBasedRoute from "./components/router/RoleBasedRoute";
+import RuleBasedRoute from "./components/router/RuleBasedRoute";
 
+import { DepartmentOptions, RoleOptions } from "./types/user.type";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -33,14 +34,15 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="/home" element={<InfoHome />} />
               <Route
                 element={
-                  <RoleBasedRoute
-                    roles={["business_owner", "head_of_department"]}
+                  <RuleBasedRoute
+                    departments={[DepartmentOptions.HR]}
+                    roles={[RoleOptions.HOD, RoleOptions.OWNER]}
                   />
                 }
               >
-                <Route path="statistics" element={<DepartmentStatistics />} />
+                <Route path="/statistics" element={<DepartmentStatistics />} />
                 <Route
-                  path="employee/:employeeId"
+                  path="/employee"
                   element={<DetailedEmployeeStats />}
                 />
               </Route>
