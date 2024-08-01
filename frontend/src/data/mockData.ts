@@ -17,9 +17,9 @@ export const lms = {
     { name: "Computer Software Engineering", progress: 60, dueIn: 7 },
     { name: "Machine Learning", progress: 100, dueIn: 12 },
     { name: "Foundations of Cybersecurity", progress: 75, dueIn: 21 },
-    // { name: "Module 5 onwards will not display", progress: 15, dueIn: 40 },
+    { name: "Service Design Studio", progress: 15, dueIn: 40 },
   ],
-  overallRating: 85,
+  // overallRating: 85,
 };
 
 export const HIGH_KPI_THRESHOLD = 80;

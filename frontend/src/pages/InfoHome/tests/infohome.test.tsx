@@ -1,17 +1,18 @@
-import { expect, describe, it } from "vitest";
-import AccountDetails from "../components/AccountDetails";
+import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { testUser } from "@/mocks/handlers/auth";
-import "@/mocks/utils/matchMedia.mock";
+
+import AccountDetails from "../components/AccountDetails";
 import {
   DepartmentLabels,
   EmploymentStatusLabels,
   RoleLables,
 } from "@/types/user.type";
+import InfoHome from "../InfoHome";
 import ModuleProgress from "../components/ModuleProgress";
 import OverallRating from "../components/OverallRating";
-import InfoHome from "../InfoHome";
 import authenticatedRender from "@/mocks/utils/authenticatedRender.mock";
+import { lms } from "@/data/mockData";
+import { testUser } from "@/mocks/handlers/auth";
 
 describe("InfoHome Page", () => {
   it("AccountDetails", () => {
@@ -37,23 +38,14 @@ describe("InfoHome Page", () => {
   });
 
   it("ModuleProgress", () => {
-    const modulesMock = [
-      { name: "Elements of Software Construction", progress: 80, dueIn: 30 },
-      { name: "Computer Software Engineering", progress: 60, dueIn: 7 },
-      { name: "Machine Learning", progress: 100, dueIn: 12 },
-      { name: "Foundations of Cybersecurity", progress: 75, dueIn: 21 },
-      // { name: "Module 5 onwards will not display", progress: 15, dueIn: 40 },
-    ];
-
-    render(<ModuleProgress modules={modulesMock} />);
+    render(<ModuleProgress modules={lms.modules} />);
 
     expect(screen.getByText(/Module Progress Overview/i)).toBeInTheDocument();
     expect(screen.getByText(/Due in 7 days/i)).toBeInTheDocument();
     expect(screen.queryByText(/12/i)).not.toBeInTheDocument();
-    expect(screen.getByText(modulesMock[0].name)).toBeInTheDocument();
-    expect(screen.getByText(modulesMock[1].name)).toBeInTheDocument();
-    expect(screen.getByText(modulesMock[2].name)).toBeInTheDocument();
-    expect(screen.getByText(modulesMock[3].name)).toBeInTheDocument();
+    for (const module of lms.modules) {
+      expect(screen.getByText(module.name)).toBeInTheDocument();
+    }
   });
 
   it("OverallRating", () => {

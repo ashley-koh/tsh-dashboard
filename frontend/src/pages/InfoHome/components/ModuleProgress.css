@@ -1,0 +1,8 @@
+.module-container {
+  height: 80vh;
+  overflow-y: scroll;
+}
+
+.progress-bar {
+  margin-top: 8px;
+}
