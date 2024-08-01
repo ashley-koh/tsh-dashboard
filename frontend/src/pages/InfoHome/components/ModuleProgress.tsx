@@ -8,8 +8,8 @@ import {
   Typography
 } from 'antd';
 
-import { twoColors } from '..';
-import './ModuleProgress.css';
+import { twoColors } from '@/utils/rateEmployee';
+import './InfoComponents.css';
 
 const { Text } = Typography;
 

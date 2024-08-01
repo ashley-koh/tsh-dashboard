@@ -1,6 +1,7 @@
 .module-container {
   height: 80vh;
-  overflow-y: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .progress-bar {

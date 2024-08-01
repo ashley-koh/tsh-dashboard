@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Flex, Progress } from "antd";
 
-import { twoColors } from "..";
+import { twoColors } from "@/utils/rateEmployee";
 import './OverallRating.css';
 
 const OverallRating: React.FC<{ rating: number; }> = ({ rating }) => (
