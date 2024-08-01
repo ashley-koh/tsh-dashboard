@@ -5,7 +5,7 @@ import { UserOutlined } from "@ant-design/icons";
 import User, {
   DepartmentLabels,
   EmploymentStatusLabels,
-  RoleLables
+  RoleLables,
 } from "@/types/user.type";
 
 const { Title, Text } = Typography;
@@ -23,7 +23,8 @@ const AccountDetails: React.FC<{ user: User }> = ({ user }) => {
                 <Text strong>Role:</Text>
                 <Text strong>Department:</Text>
                 <Text strong>Employee ID:</Text>
-                <Text strong>Employemt:</Text>
+                <Text strong>Employment:</Text>
+                <Text strong>Phone Number:</Text>
                 <Text strong>Email:</Text>
               </Flex>
               <Flex vertical style={{ marginLeft: 10 }}>
@@ -31,6 +32,7 @@ const AccountDetails: React.FC<{ user: User }> = ({ user }) => {
                 <Text>{DepartmentLabels[user.dept]}</Text>
                 <Text>{user.employeeId}</Text>
                 <Text>{EmploymentStatusLabels[user.employmentStatus]}</Text>
+                <Text>{user.mobileNo}</Text>
                 <Text>{user.email}</Text>
               </Flex>
             </Flex>

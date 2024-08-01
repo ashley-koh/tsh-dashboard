@@ -1,4 +1,4 @@
 import { setupServer } from "msw/node";
-import { unauthenticatedUserHandlers } from "./handlers/auth";
+import { authenticatedUserHandlers } from "./handlers/auth";
 
-export const server = setupServer(...unauthenticatedUserHandlers);
+export const server = setupServer(...authenticatedUserHandlers);

@@ -1,4 +1,4 @@
-import { afterAll, afterEach, beforeAll, expect } from "vitest";
+import { afterAll, afterEach, beforeAll, expect, vi } from "vitest";
 import { server } from "@/mocks/mockServer";
 import { cleanup } from "@testing-library/react";
 import * as matchers from "@testing-library/jest-dom/matchers";
@@ -7,6 +7,7 @@ expect.extend(matchers);
 
 afterEach(() => {
   cleanup();
+  vi.clearAllMocks();
 });
 
 // Start server before all tests

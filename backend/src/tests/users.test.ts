@@ -4,6 +4,7 @@ import request from 'supertest';
 import { CreateUserDto } from '@dtos/users';
 import UsersRoute from '@routes/users.route';
 import App from '@app';
+import UpdateUserDto from '@/dtos/users/users.update.dto';
 
 beforeAll(async () => {
   jest.setTimeout(10000);
@@ -104,11 +105,10 @@ describe('Testing Users', () => {
   describe('[PUT] /users/:id', () => {
     it('response Update User', async () => {
       const userId = '60706478aad6c9ad19a31c84';
-      const userData: CreateUserDto = {
+      const userData: UpdateUserDto = {
         appraisals: ['test1', 'test2'],
         mobileNo: '100000',
         email: 'test@email.com',
-        password: 'q1w2e3r4',
         name: 'test',
         employeeId: '0123456789',
         employmentStatus: 'full_time',
@@ -124,7 +124,6 @@ describe('Testing Users', () => {
         users.findOne = jest.fn().mockReturnValue({
           _id: userId,
           email: userData.email,
-          password: await bcrypt.hash(userData.password, 10),
           ...userData,
         });
       }
@@ -132,7 +131,6 @@ describe('Testing Users', () => {
       users.findByIdAndUpdate = jest.fn().mockReturnValue({
         _id: userId,
         email: userData.email,
-        password: await bcrypt.hash(userData.password, 10),
         ...userData,
       });
 
