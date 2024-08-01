@@ -1,13 +1,17 @@
 import React from "react";
-import { Row, Col } from "antd";
-import AccountDetails from "./components/AccountDetails";
-import OverallRating from "./components/OverallRating";
-import ModuleProgress from "./components/ModuleProgress";
+import { Col, Layout, Row } from "antd";
 
+import AccountDetails from "./components/AccountDetails";
 import Loading from "@/components/common/Loading";
+import ModuleProgress from "./components/ModuleProgress";
+import OverallRating from "./components/OverallRating";
+import { calculateOverallRating } from "@/utils/rateEmployee";
+import { LMS } from "@/data/mockData";
 import useAuth from "@/context/auth/useAuth";
-import { lms } from "@/data/mockData";
 import "./InfoHome.css";
+import './components/InfoComponents.css';
+
+const { Content } = Layout;
 
 const InfoHome: React.FC = () => {
   const auth = useAuth();
@@ -19,66 +23,31 @@ const InfoHome: React.FC = () => {
   }
 
   return (
-    <>
-      <Row gutter={12}>
-        <Col span={7}>
-          <AccountDetails data-testid="AccountDetails" user={auth.user} />
+    <Layout>
+      <Row gutter={20}>
+        <Col span={10}>
+          <Row className='module-container'>
+            <Col span={24} className='component'>
+              <AccountDetails data-testid='AccountDetails' />
+            </Col>
+            <Col span={24} className='component'>
+              <OverallRating
+                data-testid='OverallRating'
+                rating={calculateOverallRating(auth.user)}
+              />
+            </Col>
+          </Row>
         </Col>
-        <Col span={12}>
-          <ModuleProgress data-testid="ModuleProgress" modules={lms.modules} />
-        </Col>
-        <Col span={5}>
-          <OverallRating
-            data-testid="OverallRating"
-            rating={lms.overallRating}
-          />
-        </Col>
-      </Row>
-      {/* <div className="container">
-        <div className="info-panel">
-          <div>
-            <Avatar size={128} icon={<UserOutlined />} />
-            <h1>{auth.user.name}</h1>
-            <p>{auth.user.dept} Department</p>
-            <p>{auth.user.role}</p>
-          </div>
-          <div className="overall">
-            <h2>Overall Rating</h2>
-            <Progress
-              type="dashboard"
-              percent={lms.overallRating}
-              strokeColor={twoColors}
-              size={125}
+        <Layout>
+          <Content className='component'>
+            <ModuleProgress
+              data-testid='ModuleProgress'
+              modules={LMS.modules}
             />
-          </div>
-        </div>
-        <Card
-          title={<p className="module-title">Module Progress Overview</p>}
-          className="card-panel"
-        >
-          {lms.modules.slice(0, 4).map((module, index) => (
-            <Card.Grid
-              hoverable
-              key={index}
-              className="module-card"
-              style={{ width: "45%", fontSize: "15px" }}
-            >
-              <>
-                <strong>
-                  <span className="card-title">{module.name}</span>
-                </strong>
-                <Progress
-                  percent={module.progress}
-                  percentPosition={{ align: "center", type: "inner" }}
-                  size={{ height: 20 }}
-                  strokeColor={twoColors}
-                />
-              </>
-            </Card.Grid>
-          ))}
-        </Card>
-      </div> */}
-    </>
+          </Content>
+        </Layout>
+      </Row>
+    </Layout>
   );
 };
 

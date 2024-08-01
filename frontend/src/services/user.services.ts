@@ -28,7 +28,7 @@ export async function fetchUser(client: AxiosInstance, id: string) {
   try {
     const response = await client.get<UserResponse>(
       `${USER_ROUTE}${id}`,
-      { withCredentials: true }, // route is protected; must use credentials
+      { withCredentials: true },
     );
     return cleanUser(response.data.data);
   }
@@ -50,7 +50,7 @@ export async function fetchUsers(client: AxiosInstance) {
   try {
     const responses = await client.get<UsersResponse>(
       USER_ROUTE,
-      { withCredentials: true }, // route is protected; must use credentials
+      { withCredentials: true },
     );
     return responses.data.data.map(cleanUser);
   }

@@ -53,7 +53,10 @@ export function sectionObjToType(sectionObj: SectionObj) {
  */
 export async function fetchSection(client: AxiosInstance, id: string) {
   try {
-    const response = await client.get<SectionResponse>(`${SECTION_ROUTE}${id}`);
+    const response = await client.get<SectionResponse>(
+      `${SECTION_ROUTE}${id}`,
+      { withCredentials: true },
+    );
     return cleanSection(response.data.data);
   }
   catch (err) {
@@ -72,7 +75,10 @@ export async function fetchSection(client: AxiosInstance, id: string) {
  */
 export async function fetchSections(client: AxiosInstance) {
   try {
-    const responses = await client.get<SectionsResponse>(SECTION_ROUTE);
+    const responses = await client.get<SectionsResponse>(
+      SECTION_ROUTE,
+      { withCredentials: true },
+    );
     return responses.data.data.map(cleanSection);
   }
   catch (err) {
