@@ -1,26 +1,58 @@
-import React from "react";
-import { Card, List, Avatar } from "antd";
+import React, { useEffect, useState } from 'react';
+import {
+  Avatar,
+  Card,
+  List,
+  message
+} from 'antd';
 
-const Ranking: React.FC = () => {
-  const data: { name: string; value: number }[] = [];
-  for (let i = 0; i < 80; i++) {
-    data.push({
-      name: `Employee ${i}`,
-      value: Math.round(Math.random() * 100),
-    });
-  }
+import User from '@/types/user.type';
+import axiosClient from '@/lib/axiosInstance';
+import { fetchUsers } from '@/services/user.services';
+import './StatsComponents.css';
+
+interface RankingProps {
+  department: string;
+};
+
+/**
+ * Generate and allow download of employee report in PDF format.
+ *
+ * @param user The employee to generate the report for.
+ */
+export function downloadPDF(user: User) {
+  message.warning('This feature is not implemented yet, sorry!');
+};
+
+const Ranking: React.FC<RankingProps> = ({ department }) => {
+  const client = axiosClient();
+  const [employees, setEmployees] = useState<User[]>([]);
+
+  /** Run each time department changes */
+  useEffect(() => {
+    const loadData = async () => {
+      const users: User[] = await fetchUsers(client);
+      setEmployees(users.filter(user => user.dept === department));
+    };
+
+    loadData();
+  }, [department]);
 
   return (
-    <Card title="Department Ranking">
+    <Card title='Department Ranking' className='stats-container'>
       <List
-        pagination={{ position: "bottom", align: "center" }}
-        itemLayout="horizontal"
-        dataSource={data}
-        renderItem={(item, index) => (
+        pagination={{ position: 'bottom', align: 'center' }}
+        itemLayout='horizontal'
+        dataSource={employees}
+        renderItem={(employee, index) => (
           <List.Item
             actions={[
-              <a key="list-loadmore-edit">view</a>,
-              <a key="list-loadmore-more">contact</a>,
+              <a
+                key='list-loadmore-view'
+                onClick={() => downloadPDF(employee)}
+              >
+                Download Employee Report
+              </a>,
             ]}
           >
             <List.Item.Meta
@@ -29,10 +61,10 @@ const Ranking: React.FC = () => {
                   src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
                 />
               }
-              title={<a href="https://ant.design">{item.name}</a>}
-              description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+              title={employee.name}
+              description={employee.jobTitle}
             />
-            <div>{item.value}</div>
+            <div>{employee?.rating || 80}</div>
           </List.Item>
         )}
       />

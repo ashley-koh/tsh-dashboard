@@ -14,8 +14,8 @@ import {
   DepartmentOptions,
   RoleOptions
 } from "@/types/user.type";
-import Ranking from "./components/Ranking";
 import PieChart from "./components/PieChart";
+import Ranking from "./components/Ranking";
 import useAuth from "@/context/auth/useAuth";
 
 const { Text } = Typography;
@@ -50,10 +50,10 @@ const DepartmentStatistics: React.FC = () => {
 
       <Row gutter={12} style={{ marginTop: 12 }}>
         <Col span={12}>
-          <PieChart />
+          <PieChart department={selectedDepartment} />
         </Col>
         <Col span={12}>
-          <Ranking />
+          <Ranking department={selectedDepartment} />
         </Col>
       </Row>
     </>
