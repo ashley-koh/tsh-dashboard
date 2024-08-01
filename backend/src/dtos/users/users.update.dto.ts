@@ -1,4 +1,10 @@
-import { IsEmail, IsIn, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsIn,
+  IsMobilePhone,
+  IsString,
+  NotContains,
+} from 'class-validator';
 
 export default class UpdateUserDto {
   @IsString({ each: true })
@@ -13,13 +19,14 @@ export default class UpdateUserDto {
   @IsIn(['employee', 'head_of_department', 'business_owner'])
   public role: string;
 
-  @IsString()
+  @IsMobilePhone()
   public mobileNo: string;
 
   @IsEmail()
   public email: string;
 
   @IsString()
+  @NotContains(' ')
   public employeeId: string;
 
   @IsString()
