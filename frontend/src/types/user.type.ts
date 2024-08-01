@@ -59,6 +59,7 @@ export type BaseUser = {
   jobTitle: string;
   dept: DepartmentOptions;
   employmentStatus: EmploymentStatusOptions;
+  rating?: number;
 };
 
 type User = BaseUser & {
