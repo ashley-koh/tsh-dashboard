@@ -53,7 +53,10 @@ export function formObjToType(formObj: FormObj) {
  */
 export async function fetchForm(client: AxiosInstance, id: string) {
   try {
-    const response = await client.get<FormResponse>(`${FORM_ROUTE}${id}`);
+    const response = await client.get<FormResponse>(
+      `${FORM_ROUTE}${id}`,
+      { withCredentials: true },
+    );
     return cleanForm(response.data.data);
   }
   catch (err) {
@@ -72,7 +75,10 @@ export async function fetchForm(client: AxiosInstance, id: string) {
  */
 export async function fetchForms(client: AxiosInstance) {
   try {
-    const responses = await client.get<FormsResponse>(FORM_ROUTE);
+    const responses = await client.get<FormsResponse>(
+      FORM_ROUTE,
+      { withCredentials: true },
+    );
     return responses.data.data.map(cleanForm);
   }
   catch (err) {
