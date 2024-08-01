@@ -16,6 +16,7 @@ type BaseAppraisal = {
   status: AppraisalStatus;
   deadline: Date;
   comments: string;
+  rating?: number;
 };
 
 export type AppraisalType = BaseAppraisal & {

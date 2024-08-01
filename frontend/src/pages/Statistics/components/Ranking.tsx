@@ -2,26 +2,20 @@ import React, { useEffect, useState } from 'react';
 import {
   Avatar,
   Card,
-  List,
-  message
+  List
 } from 'antd';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 
+import { DownloadOutlined } from '@ant-design/icons';
 import User from '@/types/user.type';
+import UserReport from './UserReport';
 import axiosClient from '@/lib/axiosInstance';
+import { calculateOverallRating } from '@/utils/rateEmployee';
 import { fetchUsers } from '@/services/user.services';
 import './StatsComponents.css';
 
 interface RankingProps {
   department: string;
-};
-
-/**
- * Generate and allow download of employee report in PDF format.
- *
- * @param user The employee to generate the report for.
- */
-export function downloadPDF(user: User) {
-  message.warning('This feature is not implemented yet, sorry!');
 };
 
 const Ranking: React.FC<RankingProps> = ({ department }) => {
@@ -47,12 +41,15 @@ const Ranking: React.FC<RankingProps> = ({ department }) => {
         renderItem={(employee, index) => (
           <List.Item
             actions={[
-              <a
-                key='list-loadmore-view'
-                onClick={() => downloadPDF(employee)}
+              <PDFDownloadLink
+                document={<UserReport user={employee} />}
+                fileName={`report-${employee.name.replace(' ', '-')}.pdf`}
               >
-                Download Employee Report
-              </a>,
+                <div>
+                  <DownloadOutlined />
+                  <span> Download Employee Report</span>
+                </div>
+              </PDFDownloadLink>,
             ]}
           >
             <List.Item.Meta
@@ -64,7 +61,7 @@ const Ranking: React.FC<RankingProps> = ({ department }) => {
               title={employee.name}
               description={employee.jobTitle}
             />
-            <div>{employee?.rating || 80}</div>
+            <div>{calculateOverallRating(employee)}</div>
           </List.Item>
         )}
       />
