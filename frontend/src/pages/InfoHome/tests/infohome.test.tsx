@@ -11,7 +11,7 @@ import InfoHome from "../InfoHome";
 import ModuleProgress from "../components/ModuleProgress";
 import OverallRating from "../components/OverallRating";
 import authenticatedRender from "@/mocks/utils/authenticatedRender.mock";
-import { lms } from "@/data/mockData";
+import { LMS } from "@/data/mockData";
 import { testUser } from "@/mocks/handlers/auth";
 
 describe("InfoHome Page", () => {
@@ -38,12 +38,12 @@ describe("InfoHome Page", () => {
   });
 
   it("ModuleProgress", () => {
-    render(<ModuleProgress modules={lms.modules} />);
+    render(<ModuleProgress modules={LMS.modules} />);
 
     expect(screen.getByText(/Module Progress Overview/i)).toBeInTheDocument();
     expect(screen.getByText(/Due in 7 days/i)).toBeInTheDocument();
     expect(screen.queryByText(/12/i)).not.toBeInTheDocument();
-    for (const module of lms.modules) {
+    for (const module of LMS.modules) {
       expect(screen.getByText(module.name)).toBeInTheDocument();
     }
   });
