@@ -10,6 +10,11 @@ const userSchema: Schema = new Schema({
     },
   ],
 
+  rating: {
+    type: Number,
+    required: false,
+  },
+
   name: {
     type: String,
     required: true,

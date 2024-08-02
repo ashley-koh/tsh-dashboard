@@ -41,6 +41,11 @@ const appraisalSchema: Schema = new Schema({
     type: String,
     required: false,
   },
+
+  rating: {
+    type: Number,
+    required: false,
+  },
 });
 
 const appraisalModel = model<Appraisal>('Appraisal', appraisalSchema);

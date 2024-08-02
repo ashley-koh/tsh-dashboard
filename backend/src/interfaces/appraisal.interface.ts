@@ -9,4 +9,5 @@ export interface Appraisal {
   deadline: Date;
   answers: string[];
   comments: string;
+  rating: number;
 }

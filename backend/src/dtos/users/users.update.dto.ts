@@ -4,11 +4,21 @@ import {
   IsMobilePhone,
   IsString,
   NotContains,
+  Max,
+  Min,
+  IsNumber,
+  IsOptional,
 } from 'class-validator';
 
 export default class UpdateUserDto {
   @IsString({ each: true })
   public appraisals: string[];
+
+  @IsNumber()
+  @Min(0)
+  @Max(100)
+  @IsOptional()
+  public rating: number;
 
   @IsString()
   public name: string;

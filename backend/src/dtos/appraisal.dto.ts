@@ -1,4 +1,11 @@
-import { IsIn, IsString } from 'class-validator';
+import {
+  IsIn,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
 
 export class CreateAppraisalDto {
   @IsString()
@@ -21,4 +28,10 @@ export class CreateAppraisalDto {
 
   @IsString()
   public comments: string;
+
+  @IsNumber()
+  @Min(0)
+  @Max(100)
+  @IsOptional()
+  public rating: number;
 }
