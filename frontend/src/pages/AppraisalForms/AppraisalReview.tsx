@@ -8,6 +8,7 @@ import {
   Input,
   message,
   Rate,
+  Slider,
   Typography
 } from "antd";
 import { AxiosError } from "axios";
@@ -31,6 +32,7 @@ import './AppraisalForm.css';
 
 type IAppraisalReview = {
   review: string;
+  rating: number;
 };
 
 const { Panel } = Collapse;
@@ -62,6 +64,7 @@ const AppraisalReview: React.FC = () => {
     let newAppraisalType: AppraisalType = {
       ...rest,
       comments: review.review,
+      // rating: review.rating,
       status: AppraisalStatus.COMPLETE,
     };
 
@@ -146,13 +149,21 @@ const AppraisalReview: React.FC = () => {
       >
         <Form.Item
           name='review'
+          label='Your Review'
           hasFeedback
-          rules={[{ required: true, message: 'Input is required' }]}
+          rules={[{ required: true, message: 'Review is required' }]}
         >
           <TextArea
             rows={4}
-            placeholder='Your review'
+            placeholder='Enter your review here'
           />
+        </Form.Item>
+        <Form.Item
+          name='rating'
+          label='Your Final Rating'
+          rules={[{ required: true, message: 'Rating is required' }]}
+        >
+          <Slider defaultValue={50} tooltip={{ open: true }} />
         </Form.Item>
         <div className='submit-container'>
           <Button

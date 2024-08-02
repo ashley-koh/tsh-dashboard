@@ -19,20 +19,11 @@ class UsersRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get(
-      `${this.path}`,
-      authMiddleware,
-      this.usersController.getUsers,
-    );
-    this.router.get(
-      `${this.path}/:id`,
-      authMiddleware,
-      this.usersController.getUserById,
-    );
+    this.router.get(`${this.path}`, this.usersController.getUsers);
+    this.router.get(`${this.path}/:id`, this.usersController.getUserById);
     this.router.post(
       `${this.path}`,
       validationMiddleware(CreateUserDto, 'body'),
-      authMiddleware,
       this.usersController.createUser,
     );
     this.router.put(
@@ -43,14 +34,9 @@ class UsersRoute implements Routes {
     this.router.put(
       `${this.path}/reset-password/:id`,
       validationMiddleware(ResetPasswordDto, 'body', true),
-      authMiddleware,
       this.usersController.updateUser,
     );
-    this.router.delete(
-      `${this.path}/:id`,
-      authMiddleware,
-      this.usersController.deleteUser,
-    );
+    this.router.delete(`${this.path}/:id`, this.usersController.deleteUser);
   }
 }
 

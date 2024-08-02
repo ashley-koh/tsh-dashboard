@@ -9,18 +9,20 @@ import {
   Row
 } from 'antd';
 
-import {
-  AVERAGE_KPI_THRESHOLD,
-  HIGH_KPI_THRESHOLD,
-  employees
-} from '@/data/mockData';
+import { HIGH_KPI_THRESHOLD, AVERAGE_KPI_THRESHOLD } from '@/utils/rateEmployee';
+import { DepartmentOptions } from '@/types/user.type';
 import useAuth from '@/context/auth/useAuth';
 import './DetailedEmployeeStats.css';
-import { DepartmentOptions } from '@/types/user.type';
 
 const DetailedEmployeeStats: React.FC = () => {
   const { employeeId } = useParams<{ employeeId: string }>();
-  const employee = employees.find(emp => emp.id === employeeId);
+  //const employee = employees.find(emp => emp.id === employeeId);
+  const employee = {
+    name: 'John Doe',
+    department: 'HR',
+    appraisals: [],
+    kpi: 80,
+  }
   const { user } = useAuth();
 
   const handleDownloadPDF = () => {

@@ -12,4 +12,5 @@ module.exports = {
     prefix: '<rootDir>/src',
   }),
   maxConcurrency: 4,
+  setupFiles: ['./jest.setup.ts'],
 };

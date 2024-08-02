@@ -26,7 +26,10 @@ export function cleanQuestion(extendQuestion: ExtendQuestionObj) {
  */
 export async function fetchQuestion(client: AxiosInstance, id: string) {
   try {
-    const response = await client.get<QuestionResponse>(`${QUESTION_ROUTE}${id}`);
+    const response = await client.get<QuestionResponse>(
+      `${QUESTION_ROUTE}${id}`,
+      { withCredentials: true },
+    );
     return cleanQuestion(response.data.data);
   }
   catch (err) {
@@ -45,7 +48,10 @@ export async function fetchQuestion(client: AxiosInstance, id: string) {
  */
 export async function fetchQuestions(client: AxiosInstance) {
   try {
-    const responses = await client.get<QuestionsResponse>(QUESTION_ROUTE);
+    const responses = await client.get<QuestionsResponse>(
+      QUESTION_ROUTE,
+      { withCredentials: true },
+    );
     return responses.data.data.map(cleanQuestion);
   }
   catch (err) {

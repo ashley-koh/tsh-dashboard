@@ -87,7 +87,10 @@ export function appraisalObjToType(appraisalObj: AppraisalObj) {
  */
 export async function fetchAppraisal(client: AxiosInstance, id: string) {
   try {
-    const response = await client.get<AppraisalResponse>(`${APPRAISAL_ROUTE}${id}`);
+    const response = await client.get<AppraisalResponse>(
+      `${APPRAISAL_ROUTE}${id}`,
+      { withCredentials: true },
+    );
     const appraisal: AppraisalObj =
       await appraisalTypeToObj(client, cleanAppraisal(response.data.data));
     return appraisal;
@@ -108,7 +111,10 @@ export async function fetchAppraisal(client: AxiosInstance, id: string) {
  */
 export async function fetchAppraisals(client: AxiosInstance) {
   try {
-    const responses = await client.get<AppraisalsResponse>(APPRAISAL_ROUTE);
+    const responses = await client.get<AppraisalsResponse>(
+      APPRAISAL_ROUTE,
+      { withCredentials: true },
+    );
     const appraisals: AppraisalObj[] = await Promise.all(
       responses.data.data.map(async appraisalType => {
         const appraisal: AppraisalObj =

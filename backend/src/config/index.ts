@@ -3,6 +3,7 @@ import { config } from 'dotenv';
 config({ path: `.env.${process.env.NODE_ENV || 'development'}.local` });
 
 export const CREDENTIALS = process.env.CREDENTIALS === 'true';
+export const { FUZZ, FUZZ_TIMEOUT } = process.env;
 export const {
   NODE_ENV,
   PORT,
@@ -17,4 +18,5 @@ export const {
   SES_ACCESS_KEY,
   SES_REGION,
   SES_SENDER,
+  FC_NUM_RUNS,
 } = process.env;
