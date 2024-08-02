@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Layout, Row } from "antd";
 
 import AccountDetails from "./components/AccountDetails";
 import Loading from "@/components/common/Loading";
 import ModuleProgress from "./components/ModuleProgress";
 import OverallRating from "./components/OverallRating";
+import axiosClient from "@/lib/axiosInstance";
 import { calculateOverallRating } from "@/utils/rateEmployee";
 import { LMS } from "@/data/mockData";
 import useAuth from "@/context/auth/useAuth";
@@ -15,6 +16,23 @@ const { Content } = Layout;
 
 const InfoHome: React.FC = () => {
   const auth = useAuth();
+  const client = axiosClient();
+
+  const [rating, setRating] = useState<number>(-1);
+
+  /** Run this once on home page load */
+  useEffect(() => {
+    const loadData = async () => {
+      if (auth.user === null) {
+        return;
+      }
+
+      const userRating: number = await calculateOverallRating(client, auth.user);
+      setRating(userRating);
+    };
+
+    loadData();
+  }, []);
 
   if (auth.user === null) {
     console.error("User is not logged in, something went wrong.");
@@ -33,7 +51,7 @@ const InfoHome: React.FC = () => {
             <Col span={24} className='component'>
               <OverallRating
                 data-testid='OverallRating'
-                rating={calculateOverallRating(auth.user)}
+                rating={rating}
               />
             </Col>
           </Row>

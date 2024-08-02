@@ -50,7 +50,6 @@ export const RoleLables = {
 
 export type BaseUser = {
   _id?: string;
-  __v?: number;
   name: string;
   email: string;
   employeeId: string;
