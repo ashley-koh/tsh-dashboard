@@ -1,4 +1,10 @@
-import { IsString, IsNotEmpty, IsArray, IsMongoId } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsArray,
+  IsMongoId,
+  IsOptional,
+} from 'class-validator';
 
 export class CreateFormSectionDto {
   @IsString()
@@ -6,6 +12,7 @@ export class CreateFormSectionDto {
   public title: string;
 
   @IsString()
+  @IsOptional()
   public description: string;
 
   @IsArray()

@@ -1,6 +1,7 @@
 export interface User {
   _id: string;
   appraisals: string[];
+  rating: number;
   name: string;
   dept: string;
   role: string;

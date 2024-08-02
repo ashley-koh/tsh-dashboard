@@ -1,8 +1,22 @@
-import { IsEmail, IsIn, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsIn,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
 
 export default class UpdateUserDto {
   @IsString({ each: true })
   public appraisals: string[];
+
+  @IsNumber()
+  @Min(0)
+  @Max(100)
+  @IsOptional()
+  public rating: number;
 
   @IsString()
   public name: string;
