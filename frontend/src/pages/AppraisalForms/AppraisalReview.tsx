@@ -64,7 +64,7 @@ const AppraisalReview: React.FC = () => {
     let newAppraisalType: AppraisalType = {
       ...rest,
       comments: review.review,
-      // rating: review.rating,
+      rating: review.rating,
       status: AppraisalStatus.COMPLETE,
     };
 

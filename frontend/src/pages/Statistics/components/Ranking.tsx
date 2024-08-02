@@ -20,13 +20,20 @@ interface RankingProps {
 
 const Ranking: React.FC<RankingProps> = ({ department }) => {
   const client = axiosClient();
+
   const [employees, setEmployees] = useState<User[]>([]);
+  const [ratings, setRatings] = useState<number[]>([]);
 
   /** Run each time department changes */
   useEffect(() => {
     const loadData = async () => {
       const users: User[] = await fetchUsers(client);
+      const userRatings: number[] = await Promise.all(
+        users.map(async user => await calculateOverallRating(client, user))
+      );
+
       setEmployees(users.filter(user => user.dept === department));
+      setRatings(userRatings);
     };
 
     loadData();
@@ -61,7 +68,7 @@ const Ranking: React.FC<RankingProps> = ({ department }) => {
               title={employee.name}
               description={employee.jobTitle}
             />
-            <div>{calculateOverallRating(employee)}</div>
+            <div>{ratings[index]}</div>
           </List.Item>
         )}
       />
