@@ -4,7 +4,8 @@ import { Pie } from '@ant-design/plots';
 
 import {
   AVERAGE_KPI_THRESHOLD,
-  HIGH_KPI_THRESHOLD
+  HIGH_KPI_THRESHOLD,
+  calculateOverallRating
 } from '@/utils/rateEmployee';
 import User from '@/types/user.type';
 import axiosClient from '@/lib/axiosInstance';
@@ -63,12 +64,16 @@ const PieChart: React.FC<PieChartProps> = ({ department }) => {
       const users: User[] = await fetchUsers(client);
       const employees: User[] = users.filter(user => user.dept === department);
 
+      const ratings: number[] = await Promise.all(
+        employees.map(async employee => await calculateOverallRating(client, employee))
+      );
+
       let lowKPI = 0, aveKPI = 0, highKPI = 0;
-      for (const employee of employees) {
-        if ((employee?.rating || 80) >= HIGH_KPI_THRESHOLD) {
+      for (const rating of ratings) {
+        if (rating >= HIGH_KPI_THRESHOLD) {
           highKPI++;
         }
-        else if ((employee?.rating || 80) >= AVERAGE_KPI_THRESHOLD) {
+        else if (rating >= AVERAGE_KPI_THRESHOLD) {
           aveKPI++;
         }
         else {
