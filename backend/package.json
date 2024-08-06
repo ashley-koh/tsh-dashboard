@@ -7,8 +7,8 @@
     "start": "tsc && node dist/app.js",
     "dev": "cross-env NODE_ENV=development nodemon",
     "lint": "eslint . --fix --ext ts && prettier --write --config .prettierrc.json .",
-    "test": "cross-env NODE_ENV=test jest --forceExit --coverage --detectOpenHandles",
-    "fuzz": "cross-env NODE_ENV=fuzz jest"
+    "test": "cross-env NODE_ENV=test jest --testPathIgnorePatterns=fuzz --forceExit --coverage --coverageDirectory='coverage' --detectOpenHandles",
+    "fuzz": "cross-env NODE_ENV=fuzz jest --testPathPattern=fuzz"
   },
   "keywords": [],
   "author": "",
