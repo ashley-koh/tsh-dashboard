@@ -18,7 +18,7 @@ export default class UpdateUserDto {
   @Min(0)
   @Max(100)
   @IsOptional()
-  public rating: number;
+  public rating?: number;
 
   @IsString()
   public name: string;
