@@ -10,7 +10,7 @@ import { calculateOverallRating } from "@/utils/rateEmployee";
 import { LMS } from "@/data/mockData";
 import useAuth from "@/context/auth/useAuth";
 import "./InfoHome.css";
-import './components/InfoComponents.css';
+import "./components/InfoComponents.css";
 
 const { Content } = Layout;
 
@@ -27,12 +27,15 @@ const InfoHome: React.FC = () => {
         return;
       }
 
-      const userRating: number = await calculateOverallRating(client, auth.user);
+      const userRating: number = await calculateOverallRating(
+        client,
+        auth.user
+      );
       setRating(userRating);
     };
 
     loadData();
-  }, []);
+  }, [auth]);
 
   if (auth.user === null) {
     console.error("User is not logged in, something went wrong.");
@@ -43,27 +46,25 @@ const InfoHome: React.FC = () => {
   return (
     <Layout>
       <Row gutter={20}>
-        <Col span={10}>
-          <Row className='module-container'>
-            <Col span={24} className='component'>
-              <AccountDetails data-testid='AccountDetails' />
-            </Col>
-            <Col span={24} className='component'>
-              <OverallRating
-                data-testid='OverallRating'
-                rating={rating}
-              />
-            </Col>
+        <Col span={8}>
+          <Row>
+            <AccountDetails data-testid="AccountDetails" user={auth.user} />
+          </Row>
+          <Row style={{ marginTop: 20 }}>
+            <OverallRating data-testid="OverallRating" rating={rating} />
           </Row>
         </Col>
-        <Layout>
-          <Content className='component'>
+        <Col span={16}>
+          <ModuleProgress data-testid="ModuleProgress" modules={LMS.modules} />
+        </Col>
+        {/* <Layout>
+          <Content className="component">
             <ModuleProgress
-              data-testid='ModuleProgress'
+              data-testid="ModuleProgress"
               modules={LMS.modules}
             />
           </Content>
-        </Layout>
+        </Layout> */}
       </Row>
     </Layout>
   );

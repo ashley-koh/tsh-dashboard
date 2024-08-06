@@ -1,34 +1,25 @@
 import React from "react";
-import {
-  Avatar,
-  Card,
-  Flex,
-  Typography
-} from "antd";
+import { Avatar, Card, Flex, Typography } from "antd";
 
-import {
+import User, {
   defaultUser,
   DepartmentLabels,
   EmploymentStatusLabels,
   RoleLables,
 } from "@/types/user.type";
-import useAuth from "@/context/auth/useAuth";
 
 const { Title, Text } = Typography;
 
-const AccountDetails: React.FC = () => {
-  const auth = useAuth();
-  const user = auth.user || defaultUser;
-
+const AccountDetails: React.FC<{ user: User }> = ({ user }) => {
   return (
-    <Card title="Account Details">
-      <Flex justify="space-around">
+    <Card title="Account Details" style={{ width: "100%" }}>
+      <Flex>
         <Avatar
           size={{ xs: 30, sm: 30, md: 60, lg: 100, xl: 140, xxl: 180 }}
-          src={'https://api.dicebear.com/7.x/miniavs/svg?'}
-          style={{ border: '1px solid black' }}
+          src={"https://api.dicebear.com/7.x/miniavs/svg?"}
+          style={{ border: "1px solid black" }}
         />
-        <Flex vertical>
+        <Flex vertical style={{ marginLeft: 24 }}>
           <Title>{user.name}</Title>
           <Flex>
             <Flex vertical>
