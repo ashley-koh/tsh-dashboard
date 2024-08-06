@@ -21,7 +21,7 @@ const AccountDetails: React.FC = () => {
   const user = auth.user || defaultUser;
 
   return (
-    <Card title="Account Details">
+    <Card data-cy="account-details" title="Account Details">
       <Flex justify="space-around">
         <Avatar
           size={{ xs: 30, sm: 30, md: 60, lg: 100, xl: 140, xxl: 180 }}

@@ -5,7 +5,7 @@ import { twoColors } from "@/utils/rateEmployee";
 import './OverallRating.css';
 
 const OverallRating: React.FC<{ rating: number; }> = ({ rating }) => (
-  <Card title="Overall Rating">
+  <Card data-cy="overall-rating" title="Overall Rating">
     <Flex justify="center">
       <Progress
         type="dashboard"

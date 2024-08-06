@@ -54,7 +54,7 @@ const FormSelect: React.FC<FormSelectProps> = ({ onClose }) => {
     navigate('/edit', selectedForm === null ? undefined : { state: selectedForm._id });
 
   return (
-    <Modal
+    <Modal 
       title='Select Form'
       open={true}
       onCancel={onClose}
@@ -73,7 +73,7 @@ const FormSelect: React.FC<FormSelectProps> = ({ onClose }) => {
         </Button>,
       ]}
     >
-      <Form
+      <Form data-cy='form-selector'
         id='form-select'
         form={form}
         name='form-select'
@@ -84,7 +84,7 @@ const FormSelect: React.FC<FormSelectProps> = ({ onClose }) => {
           name='pick-form'
           label='Form:'
         >
-          <Select
+          <Select data-cy='select-form'
             showSearch
             placeholder='Leave blank to create a new form!'
             optionFilterProp='label'

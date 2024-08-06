@@ -46,7 +46,7 @@ const InfoHome: React.FC = () => {
         <Col span={10}>
           <Row className='module-container'>
             <Col span={24} className='component'>
-              <AccountDetails data-testid='AccountDetails' />
+              <AccountDetails data-cy='account-details' data-testid='AccountDetails' />
             </Col>
             <Col span={24} className='component'>
               <OverallRating
@@ -58,7 +58,7 @@ const InfoHome: React.FC = () => {
         </Col>
         <Layout>
           <Content className='component'>
-            <ModuleProgress
+            <ModuleProgress data-cy='module-progress'
               data-testid='ModuleProgress'
               modules={LMS.modules}
             />
