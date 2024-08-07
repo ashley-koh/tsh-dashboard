@@ -12,7 +12,7 @@ const { Title, Text } = Typography;
 
 const AccountDetails: React.FC<{ user: User }> = ({ user }) => {
   return (
-    <Card title="Account Details" style={{ width: "100%" }}>
+    <Card data-cy="account-details" title="Account Details" style={{ width: "100%" }}>
       <Flex>
         <Avatar
           size={{ xs: 30, sm: 30, md: 60, lg: 100, xl: 140, xxl: 180 }}

@@ -48,7 +48,7 @@ const InfoHome: React.FC = () => {
       <Row gutter={20}>
         <Col span={8}>
           <Row>
-            <AccountDetails data-testid="AccountDetails" user={auth.user} />
+            <AccountDetails data-cy='account-details' data-testid="AccountDetails" user={auth.user} />
           </Row>
           <Row style={{ marginTop: 20 }}>
             <OverallRating data-testid="OverallRating" rating={rating} />
@@ -57,9 +57,10 @@ const InfoHome: React.FC = () => {
         <Col span={16}>
           <ModuleProgress data-testid="ModuleProgress" modules={LMS.modules} />
         </Col>
+
         {/* <Layout>
           <Content className="component">
-            <ModuleProgress
+            <ModuleProgress data-cy='module-progress'
               data-testid="ModuleProgress"
               modules={LMS.modules}
             />

@@ -158,11 +158,12 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
           appraisals: [ ...user.appraisals, response.data.data._id ],
         });
       });
-
-      message.success(
-        `Scheduled meeting with ${selectedEmployee.name} ` +
-        `on ${selectedDate.format('DD MMM YYYY HH:mm')}`
+      const successMessage = (
+        <div data-cy="success-message">
+          Scheduled meeting with {selectedEmployee.name} on {selectedDate.format('DD MMM YYYY HH:mm')}
+        </div>
       );
+      message.success(successMessage);
       onClose();
     }
     catch (err) {
@@ -172,7 +173,7 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
   }
 
   return (
-    <Modal
+    <Modal  
       title='Schedule Meeting'
       open={true}
       onCancel={onClose}
@@ -181,7 +182,7 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
         <Button key='back' onClick={onClose}>
           Cancel
         </Button>,
-        <Button
+        <Button data-cy="submit"
           form='scheduler'
           key='submit'
           type='primary'
@@ -191,21 +192,21 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
         </Button>,
       ]}
     >
-      <Form
+      <Form data-cy='scheduler'
         id='scheduler'
         form={form}
         name='scheduler'
         layout='horizontal'
         onFinish={handleSubmit}
       >
-        <Form.Item
+        <Form.Item 
           name='pick-person'
           label='Employee:'
           rules={[
             { required: true, message: 'Please select an employee.' },
           ]}
         >
-          <Select
+          <Select data-cy='select-employee'
             showSearch
             placeholder='Select an employee'
             optionFilterProp='label'
@@ -225,7 +226,7 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
             { required: true, message: 'Please select a date.' },
           ]}
         >
-          <DatePicker minDate={dayjs()}
+          <DatePicker data-cy="select-date" minDate={dayjs()}
             showTime={{ format: 'HH:mm' }}
             onOk={setSelectedDate}
           />
@@ -237,7 +238,7 @@ const Scheduler: React.FC<SchedulerProps> = ({ onClose }) => {
             { required: true, message: 'Please select a form.' },
           ]}
         >
-          <Select
+          <Select data-cy="select-appraisal"
             showSearch
             placeholder='Select a form'
             optionFilterProp='label'

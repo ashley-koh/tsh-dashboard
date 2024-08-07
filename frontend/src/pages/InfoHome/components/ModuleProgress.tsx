@@ -23,7 +23,7 @@ interface ModuleProps {
 };
 
 const ModuleProgress: React.FC<ModuleProps> = ({ modules }) => (
-  <Card
+  <Card data-cy="module-progress"
     title='Module Progress Overview'
     className='module-container'
   >

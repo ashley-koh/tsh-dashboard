@@ -80,7 +80,8 @@ const Dashboard: React.FC = () => {
         setScheduledReviews(reviews);
       }
     };
-
+    console.log("Scheduled Reviews:", scheduledReviews);
+    console.log("Next Review:", nextReview);
     loadData();
   }, []);
 
@@ -88,7 +89,8 @@ const Dashboard: React.FC = () => {
     const listData = scheduledReviews.filter(review => dayjs(review.deadline).isSame(value, 'day'));
 
     return (
-      <ul className='events'>
+      
+      <ul data-cy='events' className='events'>
         {listData.map(review => {
           const reviewDate = dayjs(review.deadline);
           const key = reviewDate.toString();
@@ -169,7 +171,7 @@ const Dashboard: React.FC = () => {
         }} />}
       </Layout>
       {auth.user.role !== RoleOptions.EMPLOYEE && (
-        <FloatButton
+        <FloatButton data-cy='schedule-appraisal-button'
           type='primary'
           icon={<CalendarOutlined />}
           tooltip={<div>Schedule an appraisal review</div>}
@@ -177,7 +179,7 @@ const Dashboard: React.FC = () => {
         />
       )}
       {auth.user.dept === DepartmentOptions.HR && (
-        <FloatButton
+        <FloatButton data-cy='form-selector-button'
           type='primary'
           icon={<EditOutlined />}
           style={{ bottom: auth.user.role !== RoleOptions.EMPLOYEE ? 100 : 48 }}
