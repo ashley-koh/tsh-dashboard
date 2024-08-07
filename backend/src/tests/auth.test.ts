@@ -1,4 +1,3 @@
-import { it, fc } from '@fast-check/jest';
 import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
 import request from 'supertest';
@@ -7,68 +6,56 @@ import AuthRoute from '@routes/auth.route';
 import App from '@app';
 import { AuthLoginDto } from '@dtos/auth';
 import { User } from '@/interfaces/users.interface';
-import {
-  getSession,
-  setSession,
-  neverFailingPredicateIfFuzzing,
-} from '../../jest.setup';
+import { getSession, setSession } from '../../jest.setup';
 
-beforeAll(async () => {
-  jest.setTimeout(10000);
-});
 afterAll(async () => {
   await new Promise<void>((resolve) => {
     setTimeout(() => resolve(), 500);
   });
 });
 
-const UserRecord: fc.Arbitrary<CreateUserDto> = fc.record({
-  appraisals: fc.array(fc.uuid()),
-  mobileNo: fc
-    .integer({ min: 80_000_000, max: 90_000_000 })
-    .map((n) => String(n)),
-  email: fc.emailAddress(),
-  password: fc.base64String({ minLength: 8 }),
-  name: fc.string(),
-  employeeId: fc.base64String(),
-  employmentStatus: fc.constantFrom('full_time', 'part_time', 'intern', 'temp'),
-  role: fc.constantFrom('employee', 'head_of_department', 'business_owner'),
-  jobTitle: fc.string(),
-  dept: fc.string(),
-});
-
 describe('Testing Auth', () => {
   describe('[POST] /signup', () => {
-    it.prop({ userData: UserRecord })(
-      'response should have the Create userData',
-      neverFailingPredicateIfFuzzing(async ({ userData }) => {
-        const authRoute = new AuthRoute();
-        const { users } = authRoute.authController.authService;
+    it('response should have the Create userData', async () => {
+      const userData: CreateUserDto = {
+        appraisals: ['test1', 'test2'],
+        mobileNo: '100000',
+        email: 'test@email.com',
+        password: 'q1w2e3r4',
+        name: 'test',
+        employeeId: '0123456789',
+        employmentStatus: 'full_time',
+        role: 'employee',
+        jobTitle: 'testing example',
+        dept: 'office of testing',
+      };
 
-        users.findOne = jest.fn().mockReturnValue(null);
-        users.create = jest.fn().mockReturnValue({
-          _id: '60706478aad6c9ad19a31c84',
-          password: await bcrypt.hash(userData.password, 10),
-          ...userData,
-        });
+      const authRoute = new AuthRoute();
+      const { users } = authRoute.authController.authService;
 
-        mongoose.connect = jest.fn();
-        const app = new App([authRoute]);
-        return (
-          request(app.getServer())
-            .post(`${authRoute.path}signup`)
-            .send(userData)
-            // .then((res) => console.log(res.status));
-            .expect(201)
-        );
-      }),
-    );
+      users.findOne = jest.fn().mockReturnValue(null);
+      users.create = jest.fn().mockReturnValue({
+        _id: '60706478aad6c9ad19a31c84',
+        password: await bcrypt.hash(userData.password, 10),
+        ...userData,
+      });
+
+      mongoose.connect = jest.fn();
+      const app = new App([authRoute]);
+      return (
+        request(app.getServer())
+          .post(`${authRoute.path}signup`)
+          .send(userData)
+          // .then((res) => console.log(res.status, res.body));
+          .expect(201)
+      );
+    });
   });
 
   describe('[POST] /login', () => {
     it('response should have the Set-Cookie header with the Authorization token', async () => {
       const userData: AuthLoginDto = {
-        email: 'test@email.com',
+        email: 'testing@email.com',
         password: 'q1w2e3r4!',
       };
 

@@ -5,7 +5,6 @@ import { Routes } from '@interfaces/routes.interface';
 import validationMiddleware from '@middlewares/validation.middleware';
 import UpdateUserDto from '@/dtos/users/users.update.dto';
 import ResetPasswordDto from '@/dtos/users/users.password.dto';
-import authMiddleware from '@/middlewares/auth.middleware';
 
 class UsersRoute implements Routes {
   public path = '/user';
