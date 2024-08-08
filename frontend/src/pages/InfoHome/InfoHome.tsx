@@ -12,8 +12,6 @@ import useAuth from "@/context/auth/useAuth";
 import "./InfoHome.css";
 import "./components/InfoComponents.css";
 
-const { Content } = Layout;
-
 const InfoHome: React.FC = () => {
   const auth = useAuth();
   const client = axiosClient();
@@ -46,7 +44,7 @@ const InfoHome: React.FC = () => {
   return (
     <Layout>
       <Row gutter={20}>
-        <Col span={8}>
+        <Col span={9}>
           <Row>
             <AccountDetails data-cy='account-details' data-testid="AccountDetails" user={auth.user} />
           </Row>
@@ -54,7 +52,7 @@ const InfoHome: React.FC = () => {
             <OverallRating data-testid="OverallRating" rating={rating} />
           </Row>
         </Col>
-        <Col span={16}>
+        <Col span={15}>
           <ModuleProgress data-testid="ModuleProgress" modules={LMS.modules} />
         </Col>
 
